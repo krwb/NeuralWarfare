@@ -1,6 +1,6 @@
 #pragma once
 #include <cmath>
-
+#include "raylib.h"
 #if !defined (RAYLIB_H)
 struct Vector2 
 {
@@ -77,17 +77,23 @@ public:
 		return Vec2(x / rhs, y / rhs);
 	}
 
-	// - Vec2 operator
-	Vec2 operator -() const 
-	{
-		return Vec2(-x, -y);
-	}
-
 	// overloaded /= operator
 	void operator /= (float rhs) 
 	{
 		x /= rhs;
 		y /= rhs;
+	}
+
+	// overloaded / operator
+	Vec2 operator / (Vec2 rhs) const
+	{
+		return Vec2(x / rhs.x, y / rhs.y);
+	}
+
+	// overloaded /= operator
+	void operator /= (Vec2 rhs) {
+		x /= rhs.x;
+		y /= rhs.y;
 	}
 
 	// overloaded == operator
@@ -100,6 +106,12 @@ public:
 	bool operator != (const Vec2& rhs) 
 	{
 		return x != rhs.x && y != rhs.y;
+	}
+
+	// - Vec2 operator
+	Vec2 operator -() const
+	{
+		return Vec2(-x, -y);
 	}
 
 	// length function

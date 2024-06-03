@@ -1,34 +1,22 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\",
+  "WorkspaceRootPath": "C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEnv.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|solutionrelative:NeuralWarfareEnv\\NeuralWarfareEnv.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEnv.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|solutionrelative:NeuralWarfareEnv\\NeuralWarfareEnv.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|solutionrelative:NeuralWarfareEnv\\NeuralWarfareEngine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|solutionrelative:NeuralWarfareEnv\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|solutionrelative:NeuralWarfareEnv\\NeuralWarfareEngine.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEnv.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|solutionrelative:NeuralWarfareEnv\\NeuralWarfareEnv.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|solutionrelative:NeuralWarfareEnv\\NeuralWarfareEngine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Environment.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|solutionrelative:NeuralWarfareEnv\\Environment.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Environment.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{D9C956CC-AD5B-400A-B257-1FC623648E68}|NeuralWarfareEnv\\NeuralWarfareEnv.vcxproj|solutionrelative:NeuralWarfareEnv\\Environment.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,34 +26,46 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 6,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3822e751-eb69-4b0e-b301-595a9e4c74d5}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{004be353-6879-467c-9d1e-9ac23cdf6d49}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "NeuralWarfareEngine.h",
-              "DocumentMoniker": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.h",
+              "DocumentMoniker": "C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.h",
               "RelativeDocumentMoniker": "NeuralWarfareEnv\\NeuralWarfareEngine.h",
-              "ToolTip": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.h",
+              "ToolTip": "C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.h",
               "RelativeToolTip": "NeuralWarfareEnv\\NeuralWarfareEngine.h",
-              "ViewState": "AQIAAA8AAAAAAAAAAAAAAAsAAAABAAAA",
+              "ViewState": "AQIAABIAAAAAAAAAAAAAADEAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-06-03T04:11:36.264Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "NeuralWarfareEnv.h",
-              "DocumentMoniker": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEnv.h",
+              "DocumentMoniker": "C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEnv.h",
               "RelativeDocumentMoniker": "NeuralWarfareEnv\\NeuralWarfareEnv.h",
-              "ToolTip": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEnv.h",
+              "ToolTip": "C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEnv.h",
               "RelativeToolTip": "NeuralWarfareEnv\\NeuralWarfareEnv.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAAAAAA",
+              "ViewState": "AQIAADwAAAAAAAAAAAAAADgAAAAnAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-06-02T22:34:10.606Z",
               "EditorCaption": ""
@@ -73,66 +73,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "NeuralWarfareEnv.cpp",
-              "DocumentMoniker": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEnv.cpp",
-              "RelativeDocumentMoniker": "NeuralWarfareEnv\\NeuralWarfareEnv.cpp",
-              "ToolTip": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEnv.cpp",
-              "RelativeToolTip": "NeuralWarfareEnv\\NeuralWarfareEnv.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-06-02T22:34:19.116Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "Main.cpp",
-              "DocumentMoniker": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Main.cpp",
+              "DocumentMoniker": "C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Main.cpp",
               "RelativeDocumentMoniker": "NeuralWarfareEnv\\Main.cpp",
-              "ToolTip": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Main.cpp",
+              "ToolTip": "C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Main.cpp",
               "RelativeToolTip": "NeuralWarfareEnv\\Main.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAABAAAA",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAAA4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-06-02T22:32:10.532Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "NeuralWarfareEngine.cpp",
-              "DocumentMoniker": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.cpp",
+              "DocumentMoniker": "C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.cpp",
               "RelativeDocumentMoniker": "NeuralWarfareEnv\\NeuralWarfareEngine.cpp",
-              "ToolTip": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.cpp",
+              "ToolTip": "C:\\Users\\kyanw\\OneDrive\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\NeuralWarfareEngine.cpp",
               "RelativeToolTip": "NeuralWarfareEnv\\NeuralWarfareEngine.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAABAAAA",
+              "ViewState": "AQIAAFkAAAAAAAAAAAAewJQAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-06-03T04:12:11.611Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Environment.h",
-              "DocumentMoniker": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Environment.h",
-              "RelativeDocumentMoniker": "NeuralWarfareEnv\\Environment.h",
-              "ToolTip": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Environment.h",
-              "RelativeToolTip": "NeuralWarfareEnv\\Environment.h",
-              "ViewState": "AQIAADMAAAAAAAAAAAAAADoAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-06-03T02:08:07.312Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Environment.cpp",
-              "DocumentMoniker": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Environment.cpp",
-              "RelativeDocumentMoniker": "NeuralWarfareEnv\\Environment.cpp",
-              "ToolTip": "C:\\Users\\whitek\\Documents\\GitHub\\NeuralWarfare\\NeuralWarfareEnv\\NeuralWarfareEnv\\Environment.cpp",
-              "RelativeToolTip": "NeuralWarfareEnv\\Environment.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-06-02T23:13:02.624Z",
               "EditorCaption": ""
             }
           ]
@@ -144,14 +105,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             }
           ]
         }

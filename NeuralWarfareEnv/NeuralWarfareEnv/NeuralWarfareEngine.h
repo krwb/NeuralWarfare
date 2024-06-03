@@ -1,6 +1,8 @@
 #pragma once
 #include <list>
 #include "Vec2.h"
+#include <vector>
+#include "raylib.h"
 
 /// <summary>
 /// Engine for the NeuralWarfare environment
@@ -11,29 +13,35 @@
 class NeuralWarfareEngine
 {
 public:
+	NeuralWarfareEngine(Vec2 simSize);
+	~NeuralWarfareEngine();
+
 	/// <summary>
 	/// Agents are the basic players in the environment
 	/// </summary>
 	class Agent
 	{
 	public:
-		Agent();
+		Agent(size_t teamId);
 		~Agent();
-		size_t team; // team ID
+		size_t teamId; // team ID
 		Vec2 pos; // position
 		Vec2 dir; // direction
+		float health = 1;
 
 		/// <summary>
 		/// Makes the agent take an action
 		/// </summary>
 		/// <param name="action"></param>
 		void TakeAction(size_t action);
-		void UpdatePos();
+		void UpdatePos(float delta);
 	private:
 
 	};
 
 	std::list<Agent> agents; // list of all agents in the simulation
+	
+	Vec2 simSize;
 
 	/// <summary>
 	/// Primary update function for the engine
@@ -48,6 +56,6 @@ public:
 	/// <returns>The team of the created agents</returns>
 	size_t AddTeam(size_t numAgents);
 
+	void Draw(Rectangle drawRec);
 private:
-
 };

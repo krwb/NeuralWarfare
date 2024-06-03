@@ -28,25 +28,23 @@ std::vector<Environment::StepResult> NeuralWarfareEnv::Reset()
 	return std::vector<StepResult>();
 }
 
-void NeuralWarfareEnv::Draw(const Rectangle& drawRec)
+void NeuralWarfareEnv::ConnectToTeam(size_t teamId)
 {
-}
-
-void NeuralWarfareEnv::ConnectToTeam(size_t teamNum)
-{
-	NeuralWarfareEnv::teamNum = teamNum;
-	for (NeuralWarfareEngine::Agent agent : engine.agents)
+	NeuralWarfareEnv::teamId = teamId;
+	for (NeuralWarfareEngine::Agent& agent : engine.agents)
 	{
-		if (agent.team == teamNum)
+		if (agent.teamId == teamId)
 		{
-
+			agents.push_back(&agent);
 		}
 	}
 }
 
 Environment::Observation* NeuralWarfareEnv::getObservation(NeuralWarfareEngine::Agent* agent)
 {
-	return nullptr;
+	MyObservation observation;
+
+	return &observation;
 }
 
 std::vector<double> NeuralWarfareEnv::MyObservation::GetForNN()

@@ -31,11 +31,6 @@ public:
 	/// <returns>array of StepResult from the reset state of the Environment</returns>
 	std::vector<StepResult> Reset() override;
 
-	/// <summary>
-	/// Function to draw the Environment
-	/// </summary>
-	void Draw(const Rectangle& drawRec) override;
-
 private:
 	/// <summary>
 	/// Stores information for an AI to use to decide its next action.
@@ -50,12 +45,14 @@ private:
 		std::vector<double> GetForNN() override;
 	private:
 		float health;
+		std::vector<NeuralWarfareEngine::Agent*> hostileAgents;
+		std::vector<NeuralWarfareEngine::Agent*> friendlyAgents;
 	};
 
 
 	NeuralWarfareEngine& engine; // Reference to an instance of the game engine
 
-	size_t teamNum; // The team connected the environment
+	size_t teamId; // The team connected the environment
 
 	std::vector<NeuralWarfareEngine::Agent*> agents; // array of pointers that this environment is training
 
@@ -70,5 +67,5 @@ private:
 	/// function to connect the Environment to a team in the engine
 	/// </summary>
 	/// <param name="teamNum"> the team to connect to</param>
-	void ConnectToTeam(size_t teamNum);
+	void ConnectToTeam(size_t teamId);
 };

@@ -1,5 +1,4 @@
 #pragma once
-#include "raylib.h"
 #include <vector>
 
 
@@ -55,11 +54,6 @@ public:
 	/// </summary>
 	/// <returns>array of StepResult from the reset state of the Environment</returns>
 	virtual std::vector<StepResult> Reset() = 0;
-
-	/// <summary>
-	/// Function to draw the Environment
-	/// </summary>
-	virtual void Draw(const Rectangle& drawRec) = 0;
 
 	private:
 
