@@ -3,6 +3,7 @@
 #include "Vec2.h"
 #include <vector>
 #include "raylib.h"
+#include "KDTree.h"
 
 /// <summary>
 /// Engine for the NeuralWarfare environment
@@ -40,7 +41,9 @@ public:
 	};
 
 	std::list<Agent> agents; // list of all agents in the simulation
-	
+
+	KDTree<Agent>* kdTree = nullptr;
+
 	Vec2 simSize;
 
 	/// <summary>
@@ -48,6 +51,8 @@ public:
 	/// </summary>
 	/// <param name="delta">the duration of the update in seconds</param>
 	void Update(float delta);
+
+	void UpdateKDTree();
 
 	/// <summary>
 	/// Creates a new batch of agents

@@ -73,16 +73,9 @@ int main()
 		eng.Draw(drawRec);
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
-			std::vector<NeuralWarfareEngine::Agent*> points;
 			for (NeuralWarfareEngine::Agent& agent : eng.agents)
 			{
-				points.push_back(&agent);
-			}
-			KDTree<NeuralWarfareEngine::Agent> kdtree(points);
-
-			for (NeuralWarfareEngine::Agent& agent : eng.agents)
-			{
-			    std::vector<NeuralWarfareEngine::Agent*> n = kdtree.FindNearestNeighbors(agent.pos, 20);
+			    std::vector<NeuralWarfareEngine::Agent*> n = eng.kdTree->FindNearestNeighbors(agent.pos, 20);
 			}
 
 			//Vec2 drawScale = Vec2(drawRec.width, drawRec.height) / eng.simSize / 2;

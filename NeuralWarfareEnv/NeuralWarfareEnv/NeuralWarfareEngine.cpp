@@ -36,11 +36,12 @@ void NeuralWarfareEngine::Agent::UpdatePos(float delta)
 
 NeuralWarfareEngine::NeuralWarfareEngine(Vec2 simSize) : simSize(simSize)
 {
-    
+    UpdateKDTree();
 }
 
 NeuralWarfareEngine::~NeuralWarfareEngine()
 {
+    delete kdTree;
 }
 
 void NeuralWarfareEngine::Update(float delta)
@@ -59,8 +60,23 @@ void NeuralWarfareEngine::Update(float delta)
             continue;
         }
         agent.UpdatePos(delta);
-
 	}
+    UpdateKDTree();
+}
+
+void NeuralWarfareEngine::UpdateKDTree()
+{
+    if (kdTree != nullptr)
+    {
+        delete kdTree;
+    }
+    std::vector<NeuralWarfareEngine::Agent*> agentVector;
+    for (NeuralWarfareEngine::Agent& agent : agents)
+    {
+        agentVector.push_back(&agent);
+    }
+    kdTree = new KDTree<Agent>(agentVector);
+
 }
 
 size_t NeuralWarfareEngine::AddTeam(size_t numAgents)
