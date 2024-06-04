@@ -1,6 +1,4 @@
 #include "NeuralWarfareEngine.h"
-#include "KDTree.h"
-
 NeuralWarfareEngine::Agent::Agent(size_t teamId) : teamId(teamId)
 {
 }
@@ -62,14 +60,13 @@ void NeuralWarfareEngine::Update(float delta)
             continue;
         }
         agent.UpdatePos(delta);
-
 	}
     UpdateKDTree();
 }
 
 void NeuralWarfareEngine::UpdateKDTree()
 {
-    if (kdTree)
+    if (kdTree != nullptr)
     {
         delete kdTree;
     }
@@ -78,8 +75,8 @@ void NeuralWarfareEngine::UpdateKDTree()
     {
         agentVector.push_back(&agent);
     }
-    kdTree = new KDTree(agentVector);
-    
+    kdTree = new KDTree<Agent>(agentVector);
+
 }
 
 size_t NeuralWarfareEngine::AddTeam(size_t numAgents)

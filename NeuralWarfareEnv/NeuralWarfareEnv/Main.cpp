@@ -8,7 +8,7 @@
 
 std::vector<NeuralWarfareEngine::Agent*> getNearestNeighbors(NeuralWarfareEngine& eng, Vec2 query, size_t count)
 {
-	KDTree::MaxHeap maxHeap;
+	KDTree<NeuralWarfareEngine::Agent>::MaxHeap maxHeap;
 	for (NeuralWarfareEngine::Agent& agent : eng.agents)
 	{
 		float distance = (query - agent.pos).Length();
@@ -40,10 +40,9 @@ int main()
 	NeuralWarfareEngine eng(Vec2(1200, 800));
 	std::list<NeuralWarfareEnv> envs;
 	Rectangle drawRec{ 50, 50, 1100, 700 };
-	size_t teamSize = 200;
 	for (size_t i = 0; i < 20; i++)
 	{
-		envs.push_back(NeuralWarfareEnv(eng, eng.AddTeam(teamSize)));
+		envs.push_back(NeuralWarfareEnv(eng, eng.AddTeam(200)));
 	}
 
 
@@ -61,7 +60,7 @@ int main()
 		for (auto& env : envs)
 		{
 			std::vector<size_t> actions;
-			for (size_t i = 0; i < teamSize; i++)
+			for (size_t i = 0; i < 200; i++)
 			{
 				actions.push_back(dis(gen));
 			}
@@ -81,7 +80,6 @@ int main()
 					{
 						return a.teamId != agent.teamId;
 					}
-				
 				);
 			}
 

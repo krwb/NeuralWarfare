@@ -3,8 +3,7 @@
 #include "Vec2.h"
 #include <vector>
 #include "raylib.h"
-
-class KDTree;
+#include "KDTree.h"
 
 /// <summary>
 /// Engine for the NeuralWarfare environment
@@ -42,8 +41,8 @@ public:
 	};
 
 	std::list<Agent> agents; // list of all agents in the simulation
-	
-	KDTree* kdTree = nullptr;
+
+	KDTree<Agent>* kdTree = nullptr;
 
 	Vec2 simSize;
 
