@@ -40,6 +40,15 @@ void NeuralWarfareEnv::ConnectToTeam(size_t teamId)
 	}
 }
 
+std::pair<float,float> getPolar(const Vec2& origin, const Vec2& point, float rotation = 0)
+{
+	std::pair<float, float> out;
+	Vec2 relative = (origin - point);
+	out.first = relative.Length();
+	out.second = atan2(relative.x, relative.y);
+	return out;
+}
+
 Environment::Observation* NeuralWarfareEnv::getObservation(NeuralWarfareEngine::Agent* agent)
 {
 	MyObservation observation;

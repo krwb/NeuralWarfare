@@ -140,7 +140,7 @@ void NeuralWarfareEngine::Draw(Rectangle drawRec)
 {
     size_t lastTeamId = 0;
     Color teamColor = generateTeamColor(lastTeamId);
-    Vec2 drawScale = simSize / Vec2(drawRec.width, drawRec.height) / 2;
+    Vec2 drawScale = Vec2(drawRec.width, drawRec.height) / simSize / 2;
     Vec2 drawCenter(drawRec.x + drawRec.width / 2, drawRec.y + drawRec.height / 2);
 	for (Agent& agent : agents)
 	{

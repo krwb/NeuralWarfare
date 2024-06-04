@@ -45,8 +45,8 @@ private:
 		std::vector<double> GetForNN() override;
 	private:
 		float health;
-		std::vector<NeuralWarfareEngine::Agent*> hostileAgents;
-		std::vector<NeuralWarfareEngine::Agent*> friendlyAgents;
+		std::vector<std::pair<float,float>> hostileAgents;
+		std::vector<std::pair<float, float>> friendlyAgents;
 	};
 
 

@@ -1,2 +1,78 @@
-﻿  Main.cpp
-  NeuralWarfareEnv.vcxproj -> C:\Users\kyanw\OneDrive\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\x64\Debug\NeuralWarfareEnv.exe
+﻿  KDTree.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7833,17): error C2678: binary '=': no operator found which takes a left-hand operand of type 'const Vec2' (or there is no acceptable conversion)
+  (compiling source file 'KDTree.cpp')
+  C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Vec2.h(155,1):
+  could be 'Vec2 &Vec2::operator =(Vec2 &&)'
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7833,17):
+  	'Vec2 &Vec2::operator =(Vec2 &&)': cannot convert 'this' pointer from 'const Vec2' to 'Vec2 &'
+  		C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7833,17):
+  		Conversion loses qualifiers
+  C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Vec2.h(155,1):
+  or       'Vec2 &Vec2::operator =(const Vec2 &)'
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7833,17):
+  	'Vec2 &Vec2::operator =(const Vec2 &)': cannot convert 'this' pointer from 'const Vec2' to 'Vec2 &'
+  		C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7833,17):
+  		Conversion loses qualifiers
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7833,17):
+  while trying to match the argument list '(const Vec2, Vec2)'
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7833,17):
+  the template instantiation context (the oldest one first) is
+  	C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\KDTree.cpp(13,10):
+  	see reference to function template instantiation 'void std::nth_element<std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,KDTree::Build::<lambda_1>>(_RanIt,_RanIt,_RanIt,_Pr)' being compiled
+          with
+          [
+              _Ty=Vec2,
+              _RanIt=std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<Vec2>>>,
+              _Pr=KDTree::Build::<lambda_1>
+          ]
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(8953,5):
+  	see reference to function template instantiation '_BidIt std::_Insertion_sort_unchecked<const Vec2*,_Fn>(const _BidIt,const _BidIt,_Pr)' being compiled
+          with
+          [
+              _BidIt=const Vec2 *,
+              _Fn=KDTree::Build::<lambda_1>,
+              _Pr=KDTree::Build::<lambda_1>
+          ]
+  
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7836,21): error C2678: binary '=': no operator found which takes a left-hand operand of type 'const Vec2' (or there is no acceptable conversion)
+  (compiling source file 'KDTree.cpp')
+  C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Vec2.h(155,1):
+  could be 'Vec2 &Vec2::operator =(Vec2 &&)'
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7836,21):
+  	'Vec2 &Vec2::operator =(Vec2 &&)': cannot convert 'this' pointer from 'const Vec2' to 'Vec2 &'
+  		C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7836,21):
+  		Conversion loses qualifiers
+  C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Vec2.h(155,1):
+  or       'Vec2 &Vec2::operator =(const Vec2 &)'
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7836,21):
+  	'Vec2 &Vec2::operator =(const Vec2 &)': cannot convert 'this' pointer from 'const Vec2' to 'Vec2 &'
+  		C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7836,21):
+  		Conversion loses qualifiers
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7836,21):
+  while trying to match the argument list '(const Vec2, const Vec2)'
+  
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7839,17): error C2678: binary '=': no operator found which takes a left-hand operand of type 'const Vec2' (or there is no acceptable conversion)
+  (compiling source file 'KDTree.cpp')
+  C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Vec2.h(155,1):
+  could be 'Vec2 &Vec2::operator =(Vec2 &&)'
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7839,17):
+  	'Vec2 &Vec2::operator =(Vec2 &&)': cannot convert 'this' pointer from 'const Vec2' to 'Vec2 &'
+  		C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7839,17):
+  		Conversion loses qualifiers
+  C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Vec2.h(155,1):
+  or       'Vec2 &Vec2::operator =(const Vec2 &)'
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7839,17):
+  	'Vec2 &Vec2::operator =(const Vec2 &)': cannot convert 'this' pointer from 'const Vec2' to 'Vec2 &'
+  		C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7839,17):
+  		Conversion loses qualifiers
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\algorithm(7839,17):
+  while trying to match the argument list '(const Vec2, Vec2)'
+  
+  Main.cpp
+C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Main.cpp(72,83): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Main.cpp(72,45): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Main.cpp(105,83): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\Main.cpp(105,45): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  NeuralWarfareEnv.cpp
+  Generating Code...
+C:\Users\whitek\Documents\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv\NeuralWarfareEnv.cpp(56,1): warning C4172: returning address of local variable or temporary: observation

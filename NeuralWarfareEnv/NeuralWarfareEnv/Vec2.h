@@ -21,7 +21,7 @@ public:
 	Vec2(float x, float y) : x(x), y(y) {}
 
 	// overloaded + operator
-	Vec2 operator + (const Vec2& rhs)
+	Vec2 operator + (const Vec2& rhs) const
 	{
 		return Vec2(x + rhs.x, y + rhs.y);
 	}
@@ -34,7 +34,7 @@ public:
 	}
 
 	// overloaded - operator
-	Vec2 operator - (const Vec2& rhs) 
+	Vec2 operator - (const Vec2& rhs) const
 	{
 		return Vec2(x - rhs.x, y - rhs.y);
 	}
