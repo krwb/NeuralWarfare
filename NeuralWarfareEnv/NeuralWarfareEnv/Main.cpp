@@ -8,7 +8,7 @@
 
 std::vector<NeuralWarfareEngine::Agent*> getNearestNeighbors(NeuralWarfareEngine& eng, Vec2 query, size_t count)
 {
-	KDTree<NeuralWarfareEngine::Agent>::MaxHeap maxHeap;
+	KDTree::MaxHeap maxHeap;
 	for (NeuralWarfareEngine::Agent& agent : eng.agents)
 	{
 		float distance = (query - agent.pos).Length();
@@ -40,9 +40,10 @@ int main()
 	NeuralWarfareEngine eng(Vec2(1200, 800));
 	std::list<NeuralWarfareEnv> envs;
 	Rectangle drawRec{ 50, 50, 1100, 700 };
+	size_t teamSize = 200;
 	for (size_t i = 0; i < 20; i++)
 	{
-		envs.push_back(NeuralWarfareEnv(eng, eng.AddTeam(200)));
+		envs.push_back(NeuralWarfareEnv(eng, eng.AddTeam(teamSize)));
 	}
 
 
@@ -60,7 +61,7 @@ int main()
 		for (auto& env : envs)
 		{
 			std::vector<size_t> actions;
-			for (size_t i = 0; i < 200; i++)
+			for (size_t i = 0; i < teamSize; i++)
 			{
 				actions.push_back(dis(gen));
 			}
@@ -73,16 +74,9 @@ int main()
 		eng.Draw(drawRec);
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
-			std::vector<NeuralWarfareEngine::Agent*> points;
 			for (NeuralWarfareEngine::Agent& agent : eng.agents)
 			{
-				points.push_back(&agent);
-			}
-			KDTree<NeuralWarfareEngine::Agent> kdtree(points);
-
-			for (NeuralWarfareEngine::Agent& agent : eng.agents)
-			{
-			    std::vector<NeuralWarfareEngine::Agent*> n = kdtree.FindNearestNeighbors(agent.pos, 20);
+			    std::vector<NeuralWarfareEngine::Agent*> n = eng.kdTree->FindNearestNeighbors(agent.pos, 20);
 			}
 
 			//Vec2 drawScale = Vec2(drawRec.width, drawRec.height) / eng.simSize / 2;

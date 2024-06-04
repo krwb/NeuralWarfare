@@ -9,7 +9,6 @@
 /// <remarks>
 /// This is a new one for me so i was looking forward to this
 /// </remarks>
-
 class KDTree {
 public:
     KDTree(const std::vector<NeuralWarfareEngine::Agent*>& points) {
