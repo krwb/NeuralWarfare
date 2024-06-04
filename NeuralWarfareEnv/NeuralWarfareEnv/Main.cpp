@@ -76,7 +76,13 @@ int main()
 		{
 			for (NeuralWarfareEngine::Agent& agent : eng.agents)
 			{
-			    std::vector<NeuralWarfareEngine::Agent*> n = eng.kdTree->FindNearestNeighbors(agent.pos, 20);
+			    std::vector<NeuralWarfareEngine::Agent*> n = eng.kdTree->FindNearestNeighbors(agent.pos, 10,
+					[agent](const NeuralWarfareEngine::Agent& a)
+					{
+						return a.teamId != agent.teamId;
+					}
+				
+				);
 			}
 
 			//Vec2 drawScale = Vec2(drawRec.width, drawRec.height) / eng.simSize / 2;

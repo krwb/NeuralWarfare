@@ -22,14 +22,14 @@ KDTree::KDNode* KDTree::Build(std::vector<NeuralWarfareEngine::Agent*> points, i
     return node;
 }
 
-void KDTree::FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap) {
+void KDTree::FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap, Condition condition) {
     if (!node) return;
 
     double dist = Vec2(node->point->pos.x - query.x, node->point->pos.y - query.y).Length();
     if (maxHeap.size() < k) {
         maxHeap.emplace(dist, node->point); // Add point if less than k elements
     }
-    else if (dist < maxHeap.top().first) {
+    else if (dist < maxHeap.top().first && condition(*node->point)) {
         maxHeap.pop(); // Remove the farthest point
         maxHeap.emplace(dist, node->point); // Add the new closer point
     }
@@ -38,17 +38,17 @@ void KDTree::FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, M
     KDNode* nextBranch = (axis == 0 ? query.x < node->point->pos.x : query.y < node->point->pos.y) ? node->left : node->right;
     KDNode* otherBranch = (axis == 0 ? query.x < node->point->pos.x : query.y < node->point->pos.y) ? node->right : node->left;
 
-    FindNearest(nextBranch, query, k, depth + 1, maxHeap);
+    FindNearest(nextBranch, query, k, depth + 1, maxHeap,condition);
 
     double axisDist = axis == 0 ? std::abs(query.x - node->point->pos.x) : std::abs(query.y - node->point->pos.y);
     if (maxHeap.size() < k || axisDist < maxHeap.top().first) {
-        FindNearest(otherBranch, query, k, depth + 1, maxHeap);
+        FindNearest(otherBranch, query, k, depth + 1, maxHeap,condition);
     }
 }
 
-std::vector<NeuralWarfareEngine::Agent*> KDTree::FindNearestNeighbors(const Vec2& query, size_t k) {
+std::vector<NeuralWarfareEngine::Agent*> KDTree::FindNearestNeighbors(const Vec2& query, size_t k, Condition condition) {
     MaxHeap maxHeap;
-    FindNearest(root, query, k, 0, maxHeap);
+    FindNearest(root, query, k, 0, maxHeap, condition);
 
     std::vector<NeuralWarfareEngine::Agent*> neighbors;
     while (!maxHeap.empty()) {
