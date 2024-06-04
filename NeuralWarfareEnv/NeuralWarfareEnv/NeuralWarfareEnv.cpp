@@ -51,9 +51,9 @@ std::pair<float,float> getPolar(const Vec2& origin, const Vec2& point, float rot
 
 Environment::Observation* NeuralWarfareEnv::getObservation(NeuralWarfareEngine::Agent* agent)
 {
-	MyObservation observation;
+	MyObservation* observation = new MyObservation();
 
-	return &observation;
+	return observation;
 }
 
 std::vector<double> NeuralWarfareEnv::MyObservation::GetForNN()

@@ -47,7 +47,7 @@ public:
 	}
 
 	// overloaded * operator
-	Vec2 operator * (float rhs) 
+	Vec2 operator * (float rhs)
 	{
 		return Vec2(x * rhs, y * rhs);
 	}
@@ -97,13 +97,13 @@ public:
 	}
 
 	// overloaded == operator
-	bool operator == (const Vec2& rhs) 
+	bool operator == (const Vec2& rhs) const
 	{
 		return x == rhs.x && y == rhs.y;
 	}
 
 	// overloaded != operator
-	bool operator != (const Vec2& rhs) 
+	bool operator != (const Vec2& rhs)  const
 	{
 		return x != rhs.x && y != rhs.y;
 	}
@@ -115,7 +115,7 @@ public:
 	}
 
 	// length function
-	float Length() 
+	float Length() const
 	{
 		return sqrt(x * x + y * y);
 	}
@@ -136,13 +136,13 @@ public:
 	}
 
 	// dotproduct function
-	float dot(const Vec2& rhs) 
+	float dot(const Vec2& rhs) const
 	{
 		return x * rhs.x + y * rhs.y;
 	}
 
 	// crossproduct function
-	float Cross(const Vec2& rhs) 
+	float Cross(const Vec2& rhs) const
 	{
 		return x * rhs.y - y * rhs.x;
 	}

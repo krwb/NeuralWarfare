@@ -2,7 +2,7 @@
 #include <vector>
 #include "Vec2.h"
 #include <queue>
-
+#include "NeuralWarfareEngine.h"
 /// <summary>
 /// K-D tree class for efficiently finding neighbor
 /// </summary>
@@ -11,31 +11,41 @@
 /// </remarks>
 class KDTree {
 public:
-    KDTree(const std::vector<Vec2>& points) {
+    KDTree(const std::vector<NeuralWarfareEngine::Agent*>& points) {
         root = Build(points, 0);
     }
-
-    std::vector<Vec2> FindNearestNeighbors(const Vec2& query, size_t k);
+    ~KDTree() {
+        Clear(root);
+    }
+    std::vector<NeuralWarfareEngine::Agent*> FindNearestNeighbors(const Vec2& query, size_t k);
 
     struct CompareDist
     {
-        bool operator()(const std::pair<double, Vec2>& a, const std::pair<double, Vec2>& b) {
+        bool operator()(const std::pair<double, NeuralWarfareEngine::Agent*>& a, const std::pair<double, NeuralWarfareEngine::Agent*>& b) const {
             return a.first < b.first;
         }
     };
-    using MaxHeap = std::priority_queue<std::pair<double, Vec2>, std::vector<std::pair<double, Vec2>>, CompareDist>;
+    using MaxHeap = std::priority_queue<std::pair<double, NeuralWarfareEngine::Agent*>, std::vector<std::pair<double, NeuralWarfareEngine::Agent*>>, CompareDist>;
 
 private:
     struct KDNode {
-        Vec2 point;
+        NeuralWarfareEngine::Agent* point;
         KDNode* left;
         KDNode* right;
 
-        KDNode(const Vec2& pt) : point(pt), left(nullptr), right(nullptr) {}
+        KDNode(NeuralWarfareEngine::Agent*& pt) : point(pt), left(nullptr), right(nullptr) {}
     };
     KDNode* root;
 
-    KDNode* Build(const std::vector<Vec2>& points, int depth);
+    KDNode* Build(std::vector<NeuralWarfareEngine::Agent*> points, int depth);
 
     void FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap);
+
+    void Clear(KDNode* node) {
+        if (node) {
+            Clear(node->left);
+            Clear(node->right);
+            delete node;
+        }
+    }
 };
