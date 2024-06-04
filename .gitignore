@@ -1,3 +1,21 @@
+.obsidian/
+.obsidian/app.json
+.obsidian/appearance.json
+.obsidian/core-plugins-migration.json
+.obsidian/core-plugins.json
+.obsidian/hotkeys.json
+.obsidian/workspace.json
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+mono_crash.*
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
 #x64/
 x86/
 [Ww][Ii][Nn]32/
@@ -11,6 +29,20 @@ bld/
 .vs/
 #wwwroot/
 Generated\ Files/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUnit
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+# Build Results of an ATL Project
+[Dd]ebugPS/
+[Rr]eleasePS/
+dlldata.c
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
@@ -748,3 +780,14 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# JetBrains Rider
+*.sln.iml
+Jack - Software/C\# Code/Excersise 1/Excersise 1/Excersise 1.csproj
+Jack - Software/C\# Projects/Software EX1/Software EX1/App.config
+Jack - Software/C\# Projects/Software EX1/Software EX1/Properties/AssemblyInfo.cs
+Jack - Software/C\# Projects/Software EX1/Software EX1/Software EX1.csproj
+Jack - Software/C\# Projects/Software EX2/Software EX2/App.config
+Jack - Software/C\# Projects/Software EX2/Software EX2/Properties/AssemblyInfo.cs
+Jack - Software/C\# Projects/Software EX2/Software EX2/Software EX2.csproj
+Jack - Software/C\# Projects/Test7/Test7.csproj
