@@ -4,6 +4,8 @@
 #include <vector>
 #include "raylib.h"
 #include "KDTree.h"
+#include <random>
+#include <numbers>
 
 /// <summary>
 /// Engine for the NeuralWarfare environment
@@ -14,7 +16,7 @@
 class NeuralWarfareEngine
 {
 public:
-	NeuralWarfareEngine(Vec2 simSize);
+	NeuralWarfareEngine(std::mt19937& gen, Vec2 simSize);
 	~NeuralWarfareEngine();
 
 	/// <summary>
@@ -23,11 +25,11 @@ public:
 	class Agent
 	{
 	public:
-		Agent(size_t teamId);
+		Agent(size_t teamId,float dir);
 		~Agent();
 		size_t teamId; // team ID
 		Vec2 pos; // position
-		Vec2 dir; // direction
+		float dir; // direction
 		float health = 1;
 
 		/// <summary>
@@ -39,6 +41,8 @@ public:
 	private:
 
 	};
+
+	std::mt19937& gen; // random number generator
 
 	std::list<Agent> agents; // list of all agents in the simulation
 
@@ -64,3 +68,5 @@ public:
 	void Draw(Rectangle drawRec);
 private:
 };
+
+

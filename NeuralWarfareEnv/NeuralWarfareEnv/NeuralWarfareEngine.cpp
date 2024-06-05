@@ -1,6 +1,48 @@
 #include "NeuralWarfareEngine.h"
-NeuralWarfareEngine::Agent::Agent(size_t teamId) : teamId(teamId)
+
+std::vector<NeuralWarfareEngine::Agent*> getNearestNeighbors(NeuralWarfareEngine* eng, Vec2 query, size_t count, KDTree<NeuralWarfareEngine::Agent>::Condition condition = [](const NeuralWarfareEngine::Agent* a) { return true; })
 {
+    KDTree<NeuralWarfareEngine::Agent>::MaxHeap maxHeap;
+    for (NeuralWarfareEngine::Agent& agent : eng->agents)
+    {
+        float distance = (query - agent.pos).Length();
+        if (maxHeap.size() < count)
+        {
+            maxHeap.emplace(distance, &agent);
+        }
+        else if (distance < maxHeap.top().first && condition(&agent))
+        {
+            maxHeap.pop();
+            maxHeap.emplace(distance, &agent);
+        }
+    }
+    std::vector<NeuralWarfareEngine::Agent*> neighbors;
+    while (!maxHeap.empty()) {
+        neighbors.push_back(maxHeap.top().second);
+        maxHeap.pop();
+    }
+    return neighbors;
+}
+
+std::vector<NeuralWarfareEngine::Agent*> getInRange(NeuralWarfareEngine* eng, Vec2 query, float range, KDTree<NeuralWarfareEngine::Agent>::Condition condition = [](const NeuralWarfareEngine::Agent* a) { return true; })
+{
+    std::vector<NeuralWarfareEngine::Agent*> agents;
+    for (NeuralWarfareEngine::Agent& agent : eng->agents)
+    {
+        if ((agent.pos - query).Length() < range && condition(&agent))
+        {
+            agents.push_back(&agent);
+        }
+    }
+    return agents;
+}
+
+
+float agentSize = 6;
+
+NeuralWarfareEngine::Agent::Agent(size_t teamId,float dir) : teamId(teamId), dir(dir)
+{
+
 }
 
 NeuralWarfareEngine::Agent::~Agent()
@@ -9,21 +51,13 @@ NeuralWarfareEngine::Agent::~Agent()
 
 void NeuralWarfareEngine::Agent::TakeAction(size_t action)
 {
-    dir = Vec2();
     switch (action)
     {
     case 1:
-        dir.x = 1;
+        dir += 0.1;
         break;
     case 2:
-        dir.y = 1;
-        break;
-    case 3:
-        dir.x = -1;
-        break;
-    case 4:
-        dir.y = -1;
-        break;
+        dir += -0.1;
     default:
         break;
     }
@@ -31,10 +65,11 @@ void NeuralWarfareEngine::Agent::TakeAction(size_t action)
 
 void NeuralWarfareEngine::Agent::UpdatePos(float delta)
 {
-    pos += dir * delta;
+    pos.x += cos(dir) * delta;
+    pos.y += sin(dir) * delta;
 }
 
-NeuralWarfareEngine::NeuralWarfareEngine(Vec2 simSize) : simSize(simSize)
+NeuralWarfareEngine::NeuralWarfareEngine(std::mt19937& gen, Vec2 simSize) : gen(gen), simSize(simSize)
 {
     UpdateKDTree();
 }
@@ -53,15 +88,31 @@ void NeuralWarfareEngine::Update(float delta)
             agent.pos.x > simSize.x ||
             agent.pos.y > simSize.y)
         {
-            agent.health = 0;
+            agent.pos = -(agent.pos - agent.pos.Normalize() * delta);
         }
         if (agent.health <= 0)
         {
             continue;
         }
+        if (agent.health > 1)
+        {
+            agent.health--;
+        }
         agent.UpdatePos(delta);
 	}
     UpdateKDTree();
+    std::uniform_int_distribution<size_t> dis(0, 100);
+    for (Agent& agentA : agents)
+    {
+        for (Agent* agentB : kdTree->FindInRange(agentA.pos, agentSize,
+            [agentA](const NeuralWarfareEngine::Agent* a)
+            {
+                return a->teamId != agentA.teamId && a->health > 0;
+            }))
+        {
+            agentA.health = 30;
+        }
+    }
 }
 
 void NeuralWarfareEngine::UpdateKDTree()
@@ -90,9 +141,10 @@ size_t NeuralWarfareEngine::AddTeam(size_t numAgents)
 	{
         teamid = agents.back().teamId + 1;
 	}
+    std::uniform_real_distribution<float> radDis(0, std::numbers::pi * 2);
     for (size_t i = 0; i < numAgents; i++)
     {
-        agents.push_back(Agent(teamid));
+        agents.push_back(Agent(teamid, radDis(gen)));
     }
 	return teamid;
 }
@@ -169,7 +221,7 @@ void NeuralWarfareEngine::Draw(Rectangle drawRec)
             lastTeamId = agent.teamId;
             teamColor = generateTeamColor(lastTeamId);
         }
-        DrawCircle(drawCenter.x + agent.pos.x * drawScale.x, drawCenter.y + agent.pos.y * drawScale.y, 2, teamColor);
+        DrawEllipse(drawCenter.x + agent.pos.x * drawScale.x, drawCenter.y + agent.pos.y * drawScale.y, agentSize * drawScale.x, agentSize * drawScale.y, agent.health > 1 ? ORANGE : teamColor);
 	}
 }
 

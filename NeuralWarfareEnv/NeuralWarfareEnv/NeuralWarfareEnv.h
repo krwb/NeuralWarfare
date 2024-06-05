@@ -11,7 +11,7 @@ class NeuralWarfareEnv : public Environment
 public:
 
 	NeuralWarfareEnv(NeuralWarfareEngine& engine, size_t teamNum);
-	~NeuralWarfareEnv();
+	~NeuralWarfareEnv() override;
 
 	/// <summary>
 	/// Function to preform an action in the Environment
@@ -23,13 +23,13 @@ public:
 	/// Function to get the result of the last action preformed
 	/// </summary>
 	/// <returns>array of StepResult from the last taken action</returns>
-	std::vector<StepResult> GetResult() override;
+	std::vector<StepResult*> GetResult() override;
 
 	/// <summary>
 	/// Function to reset the environment
 	/// </summary>
 	/// <returns>array of StepResult from the reset state of the Environment</returns>
-	std::vector<StepResult> Reset() override;
+	std::vector<StepResult*> Reset() override;
 
 private:
 	/// <summary>
@@ -38,15 +38,18 @@ private:
 	class MyObservation : public Observation
 	{
 	public:
+		MyObservation();
+		~MyObservation() override;
 		/// <summary>
 		/// Converts the information for use by a neural network.
 		/// </summary>
 		/// <returns>The inputs for a neural network</returns>
 		std::vector<double> GetForNN() override;
-	private:
-		float health;
-		std::vector<std::pair<float,float>> hostileAgents;
+		float health = 0;
+		std::vector<std::pair<float, float>> hostileAgents;
 		std::vector<std::pair<float, float>> friendlyAgents;
+	private:
+
 	};
 
 
@@ -69,3 +72,4 @@ private:
 	/// <param name="teamNum"> the team to connect to</param>
 	void ConnectToTeam(size_t teamId);
 };
+

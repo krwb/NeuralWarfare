@@ -3,46 +3,61 @@
 #include "Vec2.h"
 #include <queue>
 #include <functional>
+
+/// <summary>
+/// Objects used in a K-D tree require a member 'pos' that is convertible to a vec2
+/// </summary>
+/// <remarks>s
+/// concepts are new to c++ 20, they allow you to place constraints on types used for a templates
+/// this gives you a more useful compile time error if the type is incapable of doing what is required of them
+/// </remarks>
+template<typename T>
+concept Object = requires(T a)
+{
+    { a.pos } -> std::convertible_to<Vec2>;
+};
+
 /// <summary>
 /// K-D tree class for efficiently finding neighbor
 /// </summary>
+/// <typeparam name="T"></typeparam>
 /// <remarks>
 /// This is a new one for me so i was looking forward to this
 /// </remarks>
-template<typename T>
+template<Object Obj>
 class KDTree {
 public:
     struct CompareDist {
-        bool operator()(const std::pair<double, T*>& a, const std::pair<double, T*>& b) const {
+        bool operator()(const std::pair<double, Obj*>& a, const std::pair<double, Obj*>& b) const {
             return a.first < b.first;
         }
     };
-    using MaxHeap = std::priority_queue<std::pair<double, T*>, std::vector<std::pair<double, T*>>, CompareDist>;
-    using Condition = std::function<bool(const T&)>;
+    using MaxHeap = std::priority_queue<std::pair<double, Obj*>, std::vector<std::pair<double, Obj*>>, CompareDist>;
+    using Condition = std::function<bool(const Obj*)>;
 
-    KDTree(const std::vector<T*>& points) {
+    KDTree(const std::vector<Obj*>& points) {
         root = Build(points, 0);
     }
     ~KDTree() {
         Clear(root);
     }
-    std::vector<T*> FindNearestNeighbors(const Vec2& query, size_t k, Condition condition = [](const T& a) { return true; });
+    std::vector<Obj*> FindNearestNeighbors(const Vec2& query, size_t k, Condition condition = [](const Obj* a) { return true; });
+    std::vector<Obj*> FindInRange(const Vec2& query, float range, Condition condition = [](const Obj* a) { return true; });
 
-
-
-private:
     struct KDNode {
-        T* point;
+        Obj* point;
         KDNode* left;
         KDNode* right;
 
-        KDNode(T*& pt) : point(pt), left(nullptr), right(nullptr) {}
+        KDNode(Obj*& pt) : point(pt), left(nullptr), right(nullptr) {}
     };
     KDNode* root;
+private:
 
-    KDNode* Build(std::vector<T*> points, int depth);
+    KDNode* Build(std::vector<Obj*> points, int depth);
 
     void FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap, Condition condition);
+    void FindRange(KDNode* node, const Vec2& query, float range, int depth, std::vector<Obj*>& objects, Condition condition);
 
     void Clear(KDNode* node) {
         if (node) {
@@ -53,22 +68,22 @@ private:
     }
 };
 
-template<typename T>
-typename KDTree<T>::KDNode* KDTree<T>::Build(std::vector<T*> points, int depth) {
+template<Object Obj>
+typename KDTree<Obj>::KDNode* KDTree<Obj>::Build(std::vector<Obj*> points, int depth) {
     if (points.empty()) return nullptr;
 
     size_t axis = depth % 2;
     size_t median = points.size() / 2;
 
-    auto compare = [axis](T*& a, T*& b) {
+    auto compare = [axis](Obj*& a, Obj*& b) {
         return axis == 0 ? a->pos.x < b->pos.x : a->pos.y < b->pos.y;
         };
 
     std::nth_element(points.begin(), points.begin() + median, points.end(), compare);
 
     KDNode* node = new KDNode(points[median]);
-    std::vector<T*> leftPoints(points.begin(), points.begin() + median);
-    std::vector<T*> rightPoints(points.begin() + median + 1, points.end());
+    std::vector<Obj*> leftPoints(points.begin(), points.begin() + median);
+    std::vector<Obj*> rightPoints(points.begin() + median + 1, points.end());
 
     node->left = Build(leftPoints, depth + 1);
     node->right = Build(rightPoints, depth + 1);
@@ -76,37 +91,81 @@ typename KDTree<T>::KDNode* KDTree<T>::Build(std::vector<T*> points, int depth) 
     return node;
 }
 
-template<typename T>
-void KDTree<T>::FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap, Condition condition) {
+template<Object Obj>
+void KDTree<Obj>::FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap, Condition condition) {
     if (!node) return;
 
+    // Calculate the distance from the query point to the current node's point
     double dist = Vec2(node->point->pos.x - query.x, node->point->pos.y - query.y).Length();
+
+    // If the heap has less than k elements, add the current node's point
     if (maxHeap.size() < k) {
         maxHeap.emplace(dist, node->point); // Add point if less than k elements
     }
-    else if (dist < maxHeap.top().first && condition(*node->point)) {
+
+    // If the heap has k elements and the current point is closer than the farthest point in the heap, replace the farthest point
+    else if (dist < maxHeap.top().first && condition(node->point)) {
         maxHeap.pop(); // Remove the farthest point
         maxHeap.emplace(dist, node->point); // Add the new closer point
     }
 
+    // Determine the current axis (0 for x, 1 for y)
     size_t axis = depth % 2;
+
+    // Determine which branch to explore next based on the query point's coordinate and the current node's coordinate
     KDNode* nextBranch = (axis == 0 ? query.x < node->point->pos.x : query.y < node->point->pos.y) ? node->left : node->right;
     KDNode* otherBranch = (axis == 0 ? query.x < node->point->pos.x : query.y < node->point->pos.y) ? node->right : node->left;
 
+    // Recursively search the next branch
     FindNearest(nextBranch, query, k, depth + 1, maxHeap, condition);
 
+    // Calculate the distance to the splitting plane (axis distance)
     double axisDist = axis == 0 ? std::abs(query.x - node->point->pos.x) : std::abs(query.y - node->point->pos.y);
+
+    // If the heap has less than k elements or the distance to the splitting plane is less than the farthest distance in the heap search the other branch too.
     if (maxHeap.size() < k || axisDist < maxHeap.top().first) {
         FindNearest(otherBranch, query, k, depth + 1, maxHeap, condition);
     }
 }
 
-template<typename T>
-std::vector<T*> KDTree<T>::FindNearestNeighbors(const Vec2& query, size_t k, Condition condition) {
+template <Object Obj>
+void KDTree<Obj>::FindRange(KDNode* node, const Vec2& query, float range, int depth, std::vector<Obj*>& objects, Condition condition) {
+    if (!node) return;
+
+    // Calculate distance from the query point to the current node's point
+    double dist = Vec2(node->point->pos.x - query.x, node->point->pos.y - query.y).Length();
+
+    // If the point is within the range and meets the condition, add it to the result vector
+    if (dist < range && condition(node->point)) {
+        objects.push_back(node->point);
+    }
+
+    // Determine the axis (0 for x, 1 for y)
+    size_t axis = depth % 2;
+
+    // Determine which branch to search next
+    KDNode* nextBranch = (axis == 0 ? query.x < node->point->pos.x : query.y < node->point->pos.y) ? node->left : node->right;
+    KDNode* otherBranch = (axis == 0 ? query.x < node->point->pos.x : query.y < node->point->pos.y) ? node->right : node->left;
+
+    // Recursively search the next branch
+    FindRange(nextBranch, query, range, depth + 1, objects, condition);
+
+    // Determine the distance to the splitting plane
+    double axisDist = (axis == 0 ? std::abs(query.x - node->point->pos.x) : std::abs(query.y - node->point->pos.y));
+
+    // If the distance to the splitting plane is less than the range search the other branch too.
+    if (axisDist < range) {
+        FindRange(otherBranch, query, range, depth + 1, objects, condition);
+    }
+}
+
+
+
+template<Object Obj>
+std::vector<Obj*> KDTree<Obj>::FindNearestNeighbors(const Vec2& query, size_t k, Condition condition) {
     MaxHeap maxHeap;
     FindNearest(root, query, k, 0, maxHeap, condition);
-
-    std::vector<T*> neighbors;
+    std::vector<Obj*> neighbors;
     while (!maxHeap.empty()) {
         neighbors.push_back(maxHeap.top().second);
         maxHeap.pop();
@@ -114,4 +173,12 @@ std::vector<T*> KDTree<T>::FindNearestNeighbors(const Vec2& query, size_t k, Con
 
     std::reverse(neighbors.begin(), neighbors.end());
     return neighbors;
+}
+
+template<Object Obj>
+inline std::vector<Obj*> KDTree<Obj>::FindInRange(const Vec2& query, float range, Condition condition)
+{
+    std::vector<Obj*> objects;
+    FindRange(root, query, range, 0, objects, condition);
+    return objects;
 }

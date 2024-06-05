@@ -8,13 +8,16 @@
 class Environment
 {
 public:
-
+	Environment();
+	virtual ~Environment();
 	/// <summary>
 	/// Stores information for an AI to use to decide its next action.
 	/// </summary>
 	class Observation
 	{
 	public:
+		Observation();
+		virtual ~Observation();
 		/// <summary>
 		/// Converts the information for use by a neural network.
 		/// </summary>
@@ -47,13 +50,13 @@ public:
 	/// Function to get the result of the last action preformed
 	/// </summary>
 	/// <returns>array of StepResult from the last taken action</returns>
-	virtual std::vector<StepResult> GetResult() = 0;
+	virtual std::vector<StepResult*> GetResult() = 0;
 
 	/// <summary>
 	/// Function to reset the environment
 	/// </summary>
 	/// <returns>array of StepResult from the reset state of the Environment</returns>
-	virtual std::vector<StepResult> Reset() = 0;
+	virtual std::vector<StepResult*> Reset() = 0;
 
 	private:
 

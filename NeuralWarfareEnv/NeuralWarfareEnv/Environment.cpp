@@ -13,3 +13,19 @@ Environment::StepResult::~StepResult()
 {
 	delete observation;
 }
+
+Environment::Observation::Observation()
+{
+}
+
+Environment::Observation::~Observation()
+{
+}
+
+Environment::Environment()
+{
+}
+
+Environment::~Environment()
+{
+}
