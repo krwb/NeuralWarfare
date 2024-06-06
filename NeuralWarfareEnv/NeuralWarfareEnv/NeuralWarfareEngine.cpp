@@ -56,10 +56,10 @@ void NeuralWarfareEngine::Agent::TakeAction(size_t action)
     switch (action)
     {
     case 1:
-        dir += 0.1;
+        dir += 0.05;
         break;
     case 2:
-        dir += -0.1;
+        dir += -0.05;
     default:
         break;
     }
@@ -83,7 +83,7 @@ void NeuralWarfareEngine::doCollision(Agent* agentA, Agent* agentB)
 
     if (diffA > diffB)
     {
-        agentA->health = -60;
+        agentA->health = -600;
         std::vector<Agent*> nearestAllys = kdTree->FindNearestNeighbors(agentA->pos, 1,
             [agentA](const NeuralWarfareEngine::Agent* a)
             {
@@ -96,7 +96,7 @@ void NeuralWarfareEngine::doCollision(Agent* agentA, Agent* agentB)
     }
     if (diffA < diffB)
     {
-         agentB->health = -60;
+         agentB->health = -600;
          std::vector<Agent*> nearestAllys = kdTree->FindNearestNeighbors(agentB->pos, 1,
              [agentB](const NeuralWarfareEngine::Agent* a)
              {
@@ -175,7 +175,10 @@ void NeuralWarfareEngine::UpdateKDTree()
     std::vector<NeuralWarfareEngine::Agent*> agentVector;
     for (NeuralWarfareEngine::Agent& agent : agents)
     {
-        agentVector.push_back(&agent);
+        if (agent.health > 0)
+        {
+            agentVector.push_back(&agent);
+        }
     }
     kdTree = new KDTree<Agent>(agentVector);
 
@@ -296,7 +299,7 @@ void NeuralWarfareEngine::Draw(Rectangle drawRec)
             lastTeamId = agent.teamId;
             teamColor = generateTeamColor(lastTeamId);
         }
-        DrawEllipse(drawCenter.x + agent.pos.x * drawScale.x, drawCenter.y + agent.pos.y * drawScale.y, agentSize * drawScale.x, agentSize * drawScale.y, agent.health > 1 ? WHITE : teamColor);
+        DrawEllipse(drawCenter.x + agent.pos.x * drawScale.x, drawCenter.y + agent.pos.y * drawScale.y, agentSize * drawScale.x, agentSize * drawScale.y, teamColor);
 	}
 }
 

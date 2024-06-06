@@ -28,7 +28,7 @@ public:
 		size_t teamId; // team ID
 		Vec2 pos; // position
 		double dir; // direction
-		float health = 1;
+		float health = 100;
 
 		/// <summary>
 		/// Makes the agent take an action
