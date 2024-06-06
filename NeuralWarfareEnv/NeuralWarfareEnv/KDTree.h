@@ -52,12 +52,12 @@ public:
         KDNode(Obj*& pt) : point(pt), left(nullptr), right(nullptr) {}
     };
     KDNode* root;
+    void FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap, Condition condition);
+    void FindRange(KDNode* node, const Vec2& query, float range, int depth, std::vector<Obj*>& objects, Condition condition);
+
 private:
 
     KDNode* Build(std::vector<Obj*> points, int depth);
-
-    void FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap, Condition condition);
-    void FindRange(KDNode* node, const Vec2& query, float range, int depth, std::vector<Obj*>& objects, Condition condition);
 
     void Clear(KDNode* node) {
         if (node) {
@@ -100,7 +100,10 @@ void KDTree<Obj>::FindNearest(KDNode* node, const Vec2& query, size_t k, int dep
 
     // If the heap has less than k elements, add the current node's point
     if (maxHeap.size() < k) {
-        maxHeap.emplace(dist, node->point); // Add point if less than k elements
+        if (condition(node->point))
+        {
+            maxHeap.emplace(dist, node->point); // Add point if less than k elements
+        }
     }
 
     // If the heap has k elements and the current point is closer than the farthest point in the heap, replace the farthest point
@@ -158,8 +161,6 @@ void KDTree<Obj>::FindRange(KDNode* node, const Vec2& query, float range, int de
         FindRange(otherBranch, query, range, depth + 1, objects, condition);
     }
 }
-
-
 
 template<Object Obj>
 std::vector<Obj*> KDTree<Obj>::FindNearestNeighbors(const Vec2& query, size_t k, Condition condition) {

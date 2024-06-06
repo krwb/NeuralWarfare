@@ -1,4 +1,5 @@
 #include "NeuralWarfareEnv.h"
+#include "angleTools.h"
 
 NeuralWarfareEnv::NeuralWarfareEnv(NeuralWarfareEngine& engine, size_t teamNum) : engine(engine)
 {
@@ -9,20 +10,20 @@ NeuralWarfareEnv::~NeuralWarfareEnv()
 {
 }
 
-void NeuralWarfareEnv::TakeAction(const std::vector<size_t>& actions)
+void NeuralWarfareEnv::TakeAction(const std::vector<Action>& actions)
 {
-	for (size_t i = 0; i < agents.size() && i < actions.size(); i++)
+	for (size_t i = 0; i < actions.size(); i++)
 	{
-		agents[i]->TakeAction(actions[i]);
+		agents[actions[i].ID]->TakeAction(actions[i].action);
 	}
 }
 
 std::vector<Environment::StepResult*> NeuralWarfareEnv::GetResult()
 {
 	std::vector<StepResult*> sr;
-	for (NeuralWarfareEngine::Agent* agent : agents)
+	for (size_t i = 0; i < agents.size(); i++)
 	{
-		sr.push_back(new StepResult(getObservation(agent),0,false,false));
+		sr.push_back(new StepResult(getObservation(agents[i]), 0, false, false,i));
 	}
 	return sr;
 }
@@ -44,12 +45,12 @@ void NeuralWarfareEnv::ConnectToTeam(size_t teamId)
 	}
 }
 
-std::pair<float,float> getRelativePolarPos(const Vec2& origin, const Vec2& point, float originDirection = 0)
+std::pair<float,double> getRelativePolarPos(const Vec2& origin, const Vec2& point, double originDirection = 0)
 {
-	std::pair<float, float> out;
+	std::pair<float, double> out;
 	Vec2 relative = (origin - point);
 	out.first = relative.Length();
-	out.second = atan2(relative.x, relative.y) - originDirection;
+	out.second = normalizeAngle(relative.Direction() - originDirection);
 	return out;
 }
 
@@ -59,7 +60,7 @@ Environment::Observation* NeuralWarfareEnv::getObservation(NeuralWarfareEngine::
 	std::vector<NeuralWarfareEngine::Agent*> hostileAgents =
 		engine.kdTree->FindNearestNeighbors(agent->pos, 5,
 			[agent](const NeuralWarfareEngine::Agent* a) {
-				return a->teamId != agent->teamId || a->health > 0;
+				return a->teamId != agent->teamId && a->health > 0;
 			}
 		);
 	std::vector<NeuralWarfareEngine::Agent*> friendlyAgents =
@@ -95,5 +96,10 @@ NeuralWarfareEnv::MyObservation::~MyObservation()
 
 std::vector<double> NeuralWarfareEnv::MyObservation::GetForNN()
 {
-	return std::vector<double>();
+	std::vector<double> out;
+	if (!hostileAgents.empty())
+	{
+		out.push_back(hostileAgents.front().second);
+	}
+	return out;
 }

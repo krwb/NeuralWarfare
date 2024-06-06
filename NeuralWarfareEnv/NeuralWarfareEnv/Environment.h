@@ -25,26 +25,41 @@ public:
 		virtual std::vector<double> GetForNN() = 0;
 	};
 
+
 	/// <summary>
 	/// Stores the information resulting from a step.
 	/// </summary>
 	class StepResult
 	{
 	public:
-		StepResult(Observation* observation, float reward, bool terminated, bool truncated);
+		StepResult(Observation* observation, float reward, bool terminated, bool truncated, size_t ID);
 		~StepResult();
 
 		Environment::Observation* observation; // Observation from which the AI will determine its next action 
 		float reward; // The reward granted to the AI for its action in the last step.
 		bool terminated; // Whether the AI was terminated before the episode has ended.
 		bool truncated; // Whether the episode has ended.
+
+		size_t ID; // used to match an action to its step result in environments where there are multiple 
+	};
+
+	class Action
+	{
+	public:
+		Action(StepResult* sr, size_t action);
+		Action(size_t ID, size_t action);
+		virtual ~Action();
+		
+		size_t action;
+
+		size_t ID; // used to match an action to its step result in environments where there are multiple 
 	};
 
 	/// <summary>
 	/// Function to preform an action in the Environment
 	/// </summary>
 	/// <param name="actions"></param>
-	virtual void TakeAction(const std::vector<size_t>& actions) = 0;
+	virtual void TakeAction(const std::vector<Action>& actions) = 0;
 	
 	/// <summary>
 	/// Function to get the result of the last action preformed

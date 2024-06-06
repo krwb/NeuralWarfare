@@ -44,5 +44,8 @@
     <ClInclude Include="KDTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="angleTools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

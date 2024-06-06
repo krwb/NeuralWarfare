@@ -1,11 +1,9 @@
 #pragma once
 #include <list>
-#include "Vec2.h"
 #include <vector>
 #include "raylib.h"
 #include "KDTree.h"
 #include <random>
-#include <numbers>
 
 /// <summary>
 /// Engine for the NeuralWarfare environment
@@ -25,11 +23,11 @@ public:
 	class Agent
 	{
 	public:
-		Agent(size_t teamId,float dir);
+		Agent(size_t teamId, Vec2 pos, double dir);
 		~Agent();
 		size_t teamId; // team ID
 		Vec2 pos; // position
-		float dir; // direction
+		double dir; // direction
 		float health = 1;
 
 		/// <summary>
@@ -56,17 +54,19 @@ public:
 	/// <param name="delta">the duration of the update in seconds</param>
 	void Update(float delta);
 
-	void UpdateKDTree();
-
 	/// <summary>
 	/// Creates a new batch of agents
 	/// </summary>
 	/// <param name="numAgents"></param>
 	/// <returns>The team of the created agents</returns>
-	size_t AddTeam(size_t numAgents);
+	size_t AddTeam(size_t numAgents, Vec2 pos = {});
 
 	void Draw(Rectangle drawRec);
 private:
+
+	void UpdateKDTree();
+	void DoCollisions(KDTree<Agent>::KDNode* node);
+	void doCollision(Agent* agentA, Agent* agentB);
 };
 
 

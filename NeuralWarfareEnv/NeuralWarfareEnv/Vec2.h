@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 #include "raylib.h"
+#include <numbers>
 #if !defined (RAYLIB_H)
 struct Vector2 
 {
@@ -135,7 +136,7 @@ public:
 		return Vec2(-y, x);
 	}
 
-	// dotproduct function
+	// dot-product function
 	float dot(const Vec2& rhs) const
 	{
 		return x * rhs.x + y * rhs.y;
@@ -145,6 +146,12 @@ public:
 	float Cross(const Vec2& rhs) const
 	{
 		return x * rhs.y - y * rhs.x;
+	}
+
+	// Function to get the direction (angle) of the vector
+	float Direction() const
+	{
+		return atan2(y, x);
 	}
 
 	// raylib Vector2

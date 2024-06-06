@@ -147,6 +147,7 @@
     <ClCompile Include="NeuralWarfareEnv.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="angleTools.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="KDTree.h" />
     <ClInclude Include="NeuralWarfareEngine.h" />

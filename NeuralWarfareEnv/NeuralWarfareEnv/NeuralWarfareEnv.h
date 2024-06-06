@@ -17,7 +17,7 @@ public:
 	/// Function to preform an action in the Environment
 	/// </summary>
 	/// <param name="actions"></param>
-	void TakeAction(const std::vector<size_t>& actions) override;
+	void TakeAction(const std::vector<Action>& actions) override;
 
 	/// <summary>
 	/// Function to get the result of the last action preformed
@@ -46,8 +46,8 @@ private:
 		/// <returns>The inputs for a neural network</returns>
 		std::vector<double> GetForNN() override;
 		float health = 0;
-		std::vector<std::pair<float, float>> hostileAgents;
-		std::vector<std::pair<float, float>> friendlyAgents;
+		std::vector<std::pair<float, double>> hostileAgents;
+		std::vector<std::pair<float, double>> friendlyAgents;
 	private:
 
 	};
