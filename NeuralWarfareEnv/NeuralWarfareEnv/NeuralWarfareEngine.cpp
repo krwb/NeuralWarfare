@@ -39,12 +39,15 @@ std::vector<NeuralWarfareEngine::Agent*> getInRange(NeuralWarfareEngine* eng, Ve
     return agents;
 }
 
-
 float agentSize = 4;
 
-NeuralWarfareEngine::Agent::Agent(size_t teamId, Vec2 pos, double dir) : teamId(teamId), pos(pos), dir(dir)
+NeuralWarfareEngine::Agent::Agent(size_t teamId, Vec2 pos, float health, double dir) :
+    teamId(teamId),
+    spawnPos(pos),
+    baseHealth(health),
+    dir(dir)
 {
-
+    Reset();
 }
 
 NeuralWarfareEngine::Agent::~Agent()
@@ -56,10 +59,10 @@ void NeuralWarfareEngine::Agent::TakeAction(size_t action)
     switch (action)
     {
     case 1:
-        dir += 0.05;
+        dir += 0.1;
         break;
     case 2:
-        dir += -0.05;
+        dir += -0.1;
     default:
         break;
     }
@@ -70,6 +73,12 @@ void NeuralWarfareEngine::Agent::UpdatePos(float delta)
     dir = normalizeAngle(dir);
     pos.x += cos(dir) * delta;
     pos.y += sin(dir) * delta;
+}
+
+void NeuralWarfareEngine::Agent::Reset()
+{
+    pos = spawnPos;
+    health = baseHealth;
 }
 
 void NeuralWarfareEngine::doCollision(Agent* agentA, Agent* agentB)
@@ -83,7 +92,7 @@ void NeuralWarfareEngine::doCollision(Agent* agentA, Agent* agentB)
 
     if (diffA > diffB)
     {
-        agentA->health = -600;
+        agentA->health = -720;
         std::vector<Agent*> nearestAllys = kdTree->FindNearestNeighbors(agentA->pos, 1,
             [agentA](const NeuralWarfareEngine::Agent* a)
             {
@@ -96,7 +105,7 @@ void NeuralWarfareEngine::doCollision(Agent* agentA, Agent* agentB)
     }
     if (diffA < diffB)
     {
-         agentB->health = -600;
+         agentB->health = -720;
          std::vector<Agent*> nearestAllys = kdTree->FindNearestNeighbors(agentB->pos, 1,
              [agentB](const NeuralWarfareEngine::Agent* a)
              {
@@ -160,10 +169,20 @@ void NeuralWarfareEngine::Update(float delta)
         }
         agent.UpdatePos(delta);
 	}
+
     UpdateKDTree();
+
     std::uniform_int_distribution<size_t> dis(0, 100);
     DoCollisions(kdTree->root);
 
+}
+
+void NeuralWarfareEngine::Reset()
+{
+    for (Agent& agent : agents)
+    {
+        agent.Reset();
+    }
 }
 
 void NeuralWarfareEngine::UpdateKDTree()
@@ -205,7 +224,7 @@ void NeuralWarfareEngine::DoCollisions(KDTree<Agent>::KDNode* node)
     DoCollisions(node->right);
 }
 
-size_t NeuralWarfareEngine::AddTeam(size_t numAgents, Vec2 pos)
+size_t NeuralWarfareEngine::AddTeam(size_t numAgents, float health, Vec2 pos)
 {
 	size_t teamid;
 	if (agents.size() == 0)
@@ -219,9 +238,25 @@ size_t NeuralWarfareEngine::AddTeam(size_t numAgents, Vec2 pos)
     std::uniform_real_distribution<float> radDis(0, std::numbers::pi * 2);
     for (size_t i = 0; i < numAgents; i++)
     {
-        agents.push_back(Agent(teamid, pos, radDis(gen)));
+        agents.push_back(Agent(teamid, pos, health, radDis(gen)));
     }
 	return teamid;
+}
+
+void NeuralWarfareEngine::RemoveTeam(size_t teamID)
+{
+    std::list<Agent>::iterator iter = agents.begin();
+    while (iter != agents.end())
+    {
+        if ((*iter).teamId = teamID)
+        {
+            iter = agents.erase(iter);
+        }
+        else
+        {
+            iter++;
+        }
+    }
 }
 
 
@@ -302,4 +337,3 @@ void NeuralWarfareEngine::Draw(Rectangle drawRec)
         DrawEllipse(drawCenter.x + agent.pos.x * drawScale.x, drawCenter.y + agent.pos.y * drawScale.y, agentSize * drawScale.x, agentSize * drawScale.y, teamColor);
 	}
 }
-

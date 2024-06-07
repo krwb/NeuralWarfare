@@ -23,7 +23,7 @@ public:
 	class Agent
 	{
 	public:
-		Agent(size_t teamId, Vec2 pos, double dir);
+		Agent(size_t teamId, Vec2 pos, float health, double dir);
 		~Agent();
 		size_t teamId; // team ID
 		Vec2 pos; // position
@@ -36,17 +36,27 @@ public:
 		/// <param name="action"></param>
 		void TakeAction(size_t action);
 		void UpdatePos(float delta);
+		void Reset();
 	private:
-
+		Vec2 spawnPos;
+		float baseHealth;
 	};
 
-	std::mt19937& gen; // random number generator
+	std::mt19937& gen; // random number generator ref
+	Vec2 simSize;
 
 	std::list<Agent> agents; // list of all agents in the simulation
-
 	KDTree<Agent>* kdTree = nullptr;
 
-	Vec2 simSize;
+	/// <summary>
+	/// Creates a new team of agents
+	/// </summary>
+	/// <param name="numAgents"></param>
+	/// <returns>The teamID of the created agents</returns>
+	size_t AddTeam(size_t numAgents, float health, Vec2 pos);
+
+	void RemoveTeam(size_t teamID);
+
 
 	/// <summary>
 	/// Primary update function for the engine
@@ -55,14 +65,15 @@ public:
 	void Update(float delta);
 
 	/// <summary>
-	/// Creates a new batch of agents
+	/// Resets the engine
 	/// </summary>
-	/// <param name="numAgents"></param>
-	/// <returns>The team of the created agents</returns>
-	size_t AddTeam(size_t numAgents, Vec2 pos = {});
+	/// <param name="delta"></param>
+	void Reset();
 
 	void Draw(Rectangle drawRec);
 private:
+
+
 
 	void UpdateKDTree();
 	void DoCollisions(KDTree<Agent>::KDNode* node);

@@ -115,10 +115,16 @@ public:
 		return Vec2(-x, -y);
 	}
 
+	// Squared Distance function
+	float SqDist() const
+	{
+		return x * x + y * y;
+	}
+
 	// length function
 	float Length() const
 	{
-		return sqrt(x * x + y * y);
+		return sqrt(SqDist());
 	}
 
 	// Normalize function
@@ -137,7 +143,7 @@ public:
 	}
 
 	// dot-product function
-	float dot(const Vec2& rhs) const
+	float Dot(const Vec2& rhs) const
 	{
 		return x * rhs.x + y * rhs.y;
 	}

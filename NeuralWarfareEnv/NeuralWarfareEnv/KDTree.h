@@ -96,20 +96,18 @@ void KDTree<Obj>::FindNearest(KDNode* node, const Vec2& query, size_t k, int dep
     if (!node) return;
 
     // Calculate the distance from the query point to the current node's point
-    double dist = Vec2(node->point->pos.x - query.x, node->point->pos.y - query.y).Length();
+    double dist = (node->point->pos - query).Length();
 
-    // If the heap has less than k elements, add the current node's point
-    if (maxHeap.size() < k) {
-        if (condition(node->point))
-        {
-            maxHeap.emplace(dist, node->point); // Add point if less than k elements
+    if (condition(node->point)) {
+        if (maxHeap.size() < k) {
+            // Add the point directly if heap is not full
+            maxHeap.emplace(dist, node->point);
         }
-    }
-
-    // If the heap has k elements and the current point is closer than the farthest point in the heap, replace the farthest point
-    else if (dist < maxHeap.top().first && condition(node->point)) {
-        maxHeap.pop(); // Remove the farthest point
-        maxHeap.emplace(dist, node->point); // Add the new closer point
+        else if (dist < maxHeap.top().first) {
+            // Replace the farthest point if the current point is closer
+            maxHeap.pop();
+            maxHeap.emplace(dist, node->point);
+        }
     }
 
     // Determine the current axis (0 for x, 1 for y)
@@ -136,7 +134,7 @@ void KDTree<Obj>::FindRange(KDNode* node, const Vec2& query, float range, int de
     if (!node) return;
 
     // Calculate distance from the query point to the current node's point
-    double dist = Vec2(node->point->pos.x - query.x, node->point->pos.y - query.y).Length();
+    double dist = (node->point->pos - query).Length();
 
     // If the point is within the range and meets the condition, add it to the result vector
     if (dist < range && condition(node->point)) {
