@@ -77,7 +77,7 @@ private:
 
 	void UpdateKDTree();
 	void DoCollisions(KDTree<Agent>::KDNode* node);
-	void doCollision(Agent* agentA, Agent* agentB);
+	void DoCollision(Agent* agentA, Agent* agentB);
 };
 
 

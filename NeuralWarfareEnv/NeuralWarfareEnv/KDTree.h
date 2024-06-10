@@ -95,18 +95,21 @@ template<Object Obj>
 void KDTree<Obj>::FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap, Condition condition) {
     if (!node) return;
 
-    // Calculate the distance from the query point to the current node's point
-    double dist = (node->point->pos - query).Length();
+    // Calculate the squared distance from the query point to the current node's point
+    double dx = node->point->pos.x - query.x;
+    double dy = node->point->pos.y - query.y;
+    double squaredDist = dx * dx + dy * dy;
 
+    // If the heap has less than k elements or the current point is closer than the farthest point in the heap
     if (condition(node->point)) {
         if (maxHeap.size() < k) {
             // Add the point directly if heap is not full
-            maxHeap.emplace(dist, node->point);
+            maxHeap.emplace(squaredDist, node->point);
         }
-        else if (dist < maxHeap.top().first) {
+        else if (squaredDist < maxHeap.top().first) {
             // Replace the farthest point if the current point is closer
             maxHeap.pop();
-            maxHeap.emplace(dist, node->point);
+            maxHeap.emplace(squaredDist, node->point);
         }
     }
 
@@ -114,17 +117,19 @@ void KDTree<Obj>::FindNearest(KDNode* node, const Vec2& query, size_t k, int dep
     size_t axis = depth % 2;
 
     // Determine which branch to explore next based on the query point's coordinate and the current node's coordinate
-    KDNode* nextBranch = (axis == 0 ? query.x < node->point->pos.x : query.y < node->point->pos.y) ? node->left : node->right;
-    KDNode* otherBranch = (axis == 0 ? query.x < node->point->pos.x : query.y < node->point->pos.y) ? node->right : node->left;
+    bool goLeft = (axis == 0 ? query.x < node->point->pos.x : query.y < node->point->pos.y);
+    KDNode* nextBranch = goLeft ? node->left : node->right;
+    KDNode* otherBranch = goLeft ? node->right : node->left;
 
     // Recursively search the next branch
     FindNearest(nextBranch, query, k, depth + 1, maxHeap, condition);
 
-    // Calculate the distance to the splitting plane (axis distance)
-    double axisDist = axis == 0 ? std::abs(query.x - node->point->pos.x) : std::abs(query.y - node->point->pos.y);
+    // Calculate the squared distance to the splitting plane (axis distance)
+    double axisDist = (axis == 0 ? query.x - node->point->pos.x : query.y - node->point->pos.y);
+    double axisDistSq = axisDist * axisDist;
 
-    // If the heap has less than k elements or the distance to the splitting plane is less than the farthest distance in the heap search the other branch too.
-    if (maxHeap.size() < k || axisDist < maxHeap.top().first) {
+    // If the heap has less than k elements or the distance to the splitting plane is less than the farthest distance in the heap, search the other branch too
+    if (maxHeap.size() < k || axisDistSq < maxHeap.top().first) {
         FindNearest(otherBranch, query, k, depth + 1, maxHeap, condition);
     }
 }

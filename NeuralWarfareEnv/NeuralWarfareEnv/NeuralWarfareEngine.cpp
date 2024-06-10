@@ -2,43 +2,6 @@
 #include <iostream>
 #include "angleTools.h"
 
-std::vector<NeuralWarfareEngine::Agent*> getNearestNeighbors(NeuralWarfareEngine* eng, Vec2 query, size_t count, KDTree<NeuralWarfareEngine::Agent>::Condition condition = [](const NeuralWarfareEngine::Agent* a) { return true; })
-{
-    KDTree<NeuralWarfareEngine::Agent>::MaxHeap maxHeap;
-    for (NeuralWarfareEngine::Agent& agent : eng->agents)
-    {
-        float distance = (query - agent.pos).Length();
-        if (maxHeap.size() < count)
-        {
-            maxHeap.emplace(distance, &agent);
-        }
-        else if (distance < maxHeap.top().first && condition(&agent))
-        {
-            maxHeap.pop();
-            maxHeap.emplace(distance, &agent);
-        }
-    }
-    std::vector<NeuralWarfareEngine::Agent*> neighbors;
-    while (!maxHeap.empty()) {
-        neighbors.push_back(maxHeap.top().second);
-        maxHeap.pop();
-    }
-    return neighbors;
-}
-
-std::vector<NeuralWarfareEngine::Agent*> getInRange(NeuralWarfareEngine* eng, Vec2 query, float range, KDTree<NeuralWarfareEngine::Agent>::Condition condition = [](const NeuralWarfareEngine::Agent* a) { return true; })
-{
-    std::vector<NeuralWarfareEngine::Agent*> agents;
-    for (NeuralWarfareEngine::Agent& agent : eng->agents)
-    {
-        if ((agent.pos - query).Length() < range && condition(&agent))
-        {
-            agents.push_back(&agent);
-        }
-    }
-    return agents;
-}
-
 float agentSize = 4;
 
 NeuralWarfareEngine::Agent::Agent(size_t teamId, Vec2 pos, float health, double dir) :
@@ -59,10 +22,10 @@ void NeuralWarfareEngine::Agent::TakeAction(size_t action)
     switch (action)
     {
     case 1:
-        dir += 0.1;
+        dir += 0.5;
         break;
     case 2:
-        dir += -0.1;
+        dir += -0.5;
     default:
         break;
     }
@@ -81,7 +44,7 @@ void NeuralWarfareEngine::Agent::Reset()
     health = baseHealth;
 }
 
-void NeuralWarfareEngine::doCollision(Agent* agentA, Agent* agentB)
+void NeuralWarfareEngine::DoCollision(Agent* agentA, Agent* agentB)
 {
     Vec2 colVec = agentA->pos - agentB->pos;
     double colAngle = colVec.Direction();
@@ -93,28 +56,10 @@ void NeuralWarfareEngine::doCollision(Agent* agentA, Agent* agentB)
     if (diffA > diffB)
     {
         agentA->health = -720;
-        std::vector<Agent*> nearestAllys = kdTree->FindNearestNeighbors(agentA->pos, 1,
-            [agentA](const NeuralWarfareEngine::Agent* a)
-            {
-                return a->teamId == agentA->teamId && a != agentA && a->health > 0;
-            });
-        if (!nearestAllys.empty())
-        {
-            agentA->pos = nearestAllys.front()->pos;
-        }
     }
     if (diffA < diffB)
     {
          agentB->health = -720;
-         std::vector<Agent*> nearestAllys = kdTree->FindNearestNeighbors(agentB->pos, 1,
-             [agentB](const NeuralWarfareEngine::Agent* a)
-             {
-                 return a->teamId == agentB->teamId && a != agentB && a->health > 0;
-             });
-         if (!nearestAllys.empty())
-         {
-             agentB->pos = nearestAllys.front()->pos;
-         }
     }
 }
 
@@ -171,8 +116,6 @@ void NeuralWarfareEngine::Update(float delta)
 	}
 
     UpdateKDTree();
-
-    std::uniform_int_distribution<size_t> dis(0, 100);
     DoCollisions(kdTree->root);
 
 }
@@ -183,6 +126,7 @@ void NeuralWarfareEngine::Reset()
     {
         agent.Reset();
     }
+    UpdateKDTree();
 }
 
 void NeuralWarfareEngine::UpdateKDTree()
@@ -191,16 +135,18 @@ void NeuralWarfareEngine::UpdateKDTree()
     {
         delete kdTree;
     }
-    std::vector<NeuralWarfareEngine::Agent*> agentVector;
-    for (NeuralWarfareEngine::Agent& agent : agents)
+    std::vector<Agent*> agentVector;
+    Agent* lastAdded = nullptr;
+    float blurRange = agentSize * 5;
+    for (Agent& agent : agents)
     {
-        if (agent.health > 0)
+        if (agent.health > 0 && (lastAdded == nullptr || lastAdded->teamId != agent.teamId || (lastAdded->pos - agent.pos).Length() > blurRange))
         {
             agentVector.push_back(&agent);
+            lastAdded = &agent;
         }
     }
     kdTree = new KDTree<Agent>(agentVector);
-
 }
 
 void NeuralWarfareEngine::DoCollisions(KDTree<Agent>::KDNode* node)
@@ -217,7 +163,7 @@ void NeuralWarfareEngine::DoCollisions(KDTree<Agent>::KDNode* node)
     }
     for (Agent* agent : others)
     {
-        doCollision(node->point, agent);
+        DoCollision(node->point, agent);
     }
 
     DoCollisions(node->left);
