@@ -15,7 +15,7 @@ int main()
 
 	std::uniform_real_distribution<float> spawnXDis(-eng.simSize.x, eng.simSize.x);
 	std::uniform_real_distribution<float> spawnYDis(-eng.simSize.y, eng.simSize.y);
-	for (size_t i = 0; i < 5; i++)
+	for (size_t i = 0; i < 3; i++)
 	{
 		envs.push_back(NeuralWarfareEnv(eng, eng.AddTeam(200, 100, { spawnXDis(gen),spawnYDis(gen) })));
 	}
@@ -23,7 +23,7 @@ int main()
 	Rectangle drawRec{ 50, 50, 1100, 700 };
 
 	InitWindow(1200, 800, "test");
-	SetTargetFPS(120);
+	SetTargetFPS(60);
 
 	auto framestart = std::chrono::high_resolution_clock::now();
 	auto frameend = std::chrono::high_resolution_clock::now();

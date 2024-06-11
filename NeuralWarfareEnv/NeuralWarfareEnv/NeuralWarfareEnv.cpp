@@ -47,6 +47,7 @@ NeuralWarfareEnv::NeuralWarfareEnv(NeuralWarfareEngine& engine, size_t teamNum) 
 
 NeuralWarfareEnv::~NeuralWarfareEnv()
 {
+
 }
 
 void NeuralWarfareEnv::TakeAction(const std::vector<Action>& actions)
@@ -98,13 +99,13 @@ Environment::Observation* NeuralWarfareEnv::getObservation(NeuralWarfareEngine::
 
 	MyObservation* observation = new MyObservation();
 	std::vector<NeuralWarfareEngine::Agent*> hostileAgents =
-		engine.kdTree->FindNearestNeighbors(agent->pos, 5,
+		engine.kdTree.FindNearestNeighbors(agent->pos, 5,
 			[agent](const NeuralWarfareEngine::Agent* a) {
 				return a->teamId != agent->teamId && a->health > 0;
 			}
 		);
 	std::vector<NeuralWarfareEngine::Agent*> friendlyAgents =
-		engine.kdTree->FindNearestNeighbors(agent->pos, 5,
+		engine.kdTree.FindNearestNeighbors(agent->pos, 5,
 			[agent](const NeuralWarfareEngine::Agent* a) {
 				return a->teamId == agent->teamId && a != agent && a->health > 0;
 			}

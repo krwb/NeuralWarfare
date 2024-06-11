@@ -20,45 +20,124 @@ concept Object = requires(T a)
 /// <summary>
 /// K-D tree class for efficiently finding neighbor
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="Obj"> must satisfy the requirements of the Object concept</typeparam>
 /// <remarks>
-/// This is a new one for me so i was looking forward to this
+/// This is a new one for me so i had a blast
 /// </remarks>
 template<Object Obj>
 class KDTree {
 public:
+
+    /// <summary>
+    /// Simple struct required by priority_queue to determine what object has the highest value
+    /// </summary>
     struct CompareDist {
         bool operator()(const std::pair<double, Obj*>& a, const std::pair<double, Obj*>& b) const {
             return a.first < b.first;
         }
     };
-    using MaxHeap = std::priority_queue<std::pair<double, Obj*>, std::vector<std::pair<double, Obj*>>, CompareDist>;
+    using MaxHeap = std::priority_queue<std::pair<double, Obj*>, std::vector<std::pair<double, Obj*>>, CompareDist>; // Max heap data structure meaning it always keeps the largest element at the top
+    
+    /// <summary>
+    /// A function to be passed a param, used to determine whether given pointer is valid for return
+    /// this can be used to ensure the returned pointer is not the same as the one used for the query
+    /// or for placing any other constraint on the returned pointers
+    /// </summary>
+    /// <param name="object"> for evaluation</param>
+    /// <returns>Boolean representing weather the object satisfies the condition</returns>
     using Condition = std::function<bool(const Obj*)>;
 
+    /// <summary>
+    /// KDTree constructor
+    /// </summary>
+    KDTree() {
+        root = nullptr;
+    }
+
+    /// <summary>
+    /// KDTree constructor
+    /// </summary>
+    /// <param name="points"> array</param>
     KDTree(const std::vector<Obj*>& points) {
         root = Build(points, 0);
     }
+
+    /// <summary>
+    /// KDTree destructor
+    /// </summary>
     ~KDTree() {
         Clear(root);
     }
+
+    /// <summary>
+    /// Finds the nearest Neighbors to a query position
+    /// </summary>
+    /// <param name="query"> position to find Neighbors to</param>
+    /// <param name="k"> the number of Neighbors to be found</param>
+    /// <param name="condition"> a condition a Neighbor must satisfy to be returned</param>
+    /// <returns>array of neighbors</returns>
     std::vector<Obj*> FindNearestNeighbors(const Vec2& query, size_t k, Condition condition = [](const Obj* a) { return true; });
+
+    /// <summary>
+    /// Finds all Neighbors within range of a query position
+    /// </summary>
+    /// <param name="query"> position to find objs in range of</param>
+    /// <param name="range"> distance to search</param>
+    /// <param name="condition">a condition a Neighbor must satisfy to be returned</param>
+    /// <returns>array of neighbors</returns>
     std::vector<Obj*> FindInRange(const Vec2& query, float range, Condition condition = [](const Obj* a) { return true; });
 
+    /// <summary>
+    /// KDNode structure, used to build the KD tree
+    /// </summary>
     struct KDNode {
-        Obj* point;
-        KDNode* left;
-        KDNode* right;
+        Obj* point; // pointer to the node's obj
+        KDNode* left; // left child in the KD tree
+        KDNode* right; // right child in the KD tree
 
+        /// <summary>
+        /// KDNode constructor
+        /// </summary>
+        /// <param name="pt">pointer to obj</param>
         KDNode(Obj*& pt) : point(pt), left(nullptr), right(nullptr) {}
     };
-    KDNode* root;
+
+    KDNode* root; // root node, used to start a search and should point to the most central point
+
+    /// <summary>
+    /// Function for finding nearest neighbors
+    /// </summary>
+    /// <param name="node"> the current node in the search</param>
+    /// <param name="query"> position to find neighbors to</param>
+    /// <param name="k"> the number of neighbors to be found</param>
+    /// <param name="depth"> the depth of the search, used to determine the current axis </param>
+    /// <param name="maxHeap"> heap containing the current known nearest neighbors to the query point</param>
+    /// <param name="condition"> a condition a neighbor must satisfy to be returned</param>
     void FindNearest(KDNode* node, const Vec2& query, size_t k, int depth, MaxHeap& maxHeap, Condition condition);
+    
+    /// <summary>
+    /// function for finding objs in range
+    /// </summary>
+    /// <param name="node"> the current node in the search</param>
+    /// <param name="query"> position to find objs in range of</param>
+    /// <param name="range"> distance to search</param>
+    /// <param name="depth"> the depth of the search, used to determine the current axis </param>
+    /// <param name="objects"> array of objects within range</param>
+    /// <param name="condition"> a condition a object must satisfy to be returned</param>
     void FindRange(KDNode* node, const Vec2& query, float range, int depth, std::vector<Obj*>& objects, Condition condition);
 
-private:
-
+    /// <summary>
+    /// Function to build KD tree
+    /// </summary>
+    /// <param name="points"> points to add to tree</param>
+    /// <param name="depth"> used to determine the current axis </param>
+    /// <returns>Created node, can be considered the root of "points"'s KD tree</returns>
     KDNode* Build(std::vector<Obj*> points, int depth);
 
+    /// <summary>
+    /// clears and deletes the given node and its children (calling this on root will delete the whole tree)
+    /// </summary>
+    /// <param name="node"> node to delete</param>
     void Clear(KDNode* node) {
         if (node) {
             Clear(node->left);
@@ -66,6 +145,8 @@ private:
             delete node;
         }
     }
+    private:
+
 };
 
 template<Object Obj>
@@ -75,11 +156,11 @@ typename KDTree<Obj>::KDNode* KDTree<Obj>::Build(std::vector<Obj*> points, int d
     size_t axis = depth % 2;
     size_t median = points.size() / 2;
 
-    auto compare = [axis](Obj*& a, Obj*& b) {
-        return axis == 0 ? a->pos.x < b->pos.x : a->pos.y < b->pos.y;
-        };
-
-    std::nth_element(points.begin(), points.begin() + median, points.end(), compare);
+    std::nth_element(points.begin(), points.begin() + median, points.end(), 
+        [axis](Obj*& a, Obj*& b) 
+        {
+            return axis == 0 ? a->pos.x < b->pos.x : a->pos.y < b->pos.y;
+        });
 
     KDNode* node = new KDNode(points[median]);
     std::vector<Obj*> leftPoints(points.begin(), points.begin() + median);
@@ -100,7 +181,7 @@ void KDTree<Obj>::FindNearest(KDNode* node, const Vec2& query, size_t k, int dep
     double dy = node->point->pos.y - query.y;
     double squaredDist = dx * dx + dy * dy;
 
-    // If the heap has less than k elements or the current point is closer than the farthest point in the heap
+    // If the point satisfies the condition
     if (condition(node->point)) {
         if (maxHeap.size() < k) {
             // Add the point directly if heap is not full

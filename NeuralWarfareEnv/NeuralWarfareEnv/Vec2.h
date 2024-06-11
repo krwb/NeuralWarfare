@@ -10,7 +10,9 @@ struct Vector2
 };
 #endif // !RAYLIB_H
 
-
+/// <summary>
+/// 2d vector class for working with a 2d simulation
+/// </summary>  
 class Vec2
 {
 public:
@@ -127,7 +129,7 @@ public:
 		return sqrt(SqDist());
 	}
 
-	// Normalize function
+	// Normalization function
 	Vec2 Normalize() 
 	{
 		float length = Length();
@@ -160,7 +162,7 @@ public:
 		return atan2(y, x);
 	}
 
-	// raylib Vector2
+	// Raylib Vector2
 	Vector2 vector2() 
 	{
 		return { x,y };

@@ -32,7 +32,20 @@ public:
 	class StepResult
 	{
 	public:
+
+		/// <summary>
+		/// StepResult Constructor 
+		/// </summary>
+		/// <param name="observation"> used by an AI to determine next action</param>
+		/// <param name="reward"> awarded to an AI, used for training</param>
+		/// <param name="terminated"> Whether the AI was terminated before the episode has ended</param>
+		/// <param name="truncated"> Whether the episode has ended</param>
+		/// <param name="ID"> used to match an action to its step result in environments where there are multiple agents</param>
 		StepResult(Observation* observation, float reward, bool terminated, bool truncated, size_t ID);
+
+		/// <summary>
+		/// StepResult destructor
+		/// </summary>
 		~StepResult();
 
 		Environment::Observation* observation; // Observation from which the AI will determine its next action 
@@ -40,19 +53,36 @@ public:
 		bool terminated; // Whether the AI was terminated before the episode has ended.
 		bool truncated; // Whether the episode has ended.
 
-		size_t ID; // used to match an action to its step result in environments where there are multiple 
+		size_t ID; // used to match an action to its step result in environments where there are multiple agents
 	};
 
+	/// <summary>
+	/// Used to pair an agent with its action to prevent accidental crossover
+	/// </summary>
 	class Action
 	{
 	public:
+		/// <summary>
+		/// Action constructor
+		/// </summary>
+		/// <param name="sr"> used to obtain the ID</param>
+		/// <param name="action"></param>
 		Action(StepResult* sr, size_t action);
+
+		/// <summary>
+		/// Action constructor
+		/// </summary>
+		/// <param name="ID"> used to match the action to an agent</param>
+		/// <param name="action"></param>
 		Action(size_t ID, size_t action);
+
+		/// <summary>
+		/// Action destructor
+		/// </summary>
 		virtual ~Action();
 		
-		size_t action;
-
 		size_t ID; // used to match an action to its step result in environments where there are multiple 
+		size_t action;
 	};
 
 	/// <summary>

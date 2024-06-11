@@ -2,7 +2,6 @@
 #include "Environment.h"
 #include "NeuralWarfareEngine.h"
 
-
 /// <summary>
 /// Environment that serves as a connection between the game engine and the AI
 /// </summary>
@@ -10,7 +9,16 @@ class NeuralWarfareEnv : public Environment
 {
 public:
 
-	NeuralWarfareEnv(NeuralWarfareEngine& engine, size_t teamNum);
+	/// <summary>
+	/// NeuralWarfareEnv constructor
+	/// </summary>
+	/// <param name="engine"> Reference the game engine</param>
+	/// <param name="teamID"> The team ID of the agents connected the environment</param>
+	NeuralWarfareEnv(NeuralWarfareEngine& engine, size_t teamID);
+
+	/// <summary>
+	/// NeuralWarfareEnv destructor
+	/// </summary>
 	~NeuralWarfareEnv() override;
 
 	/// <summary>
@@ -32,6 +40,7 @@ public:
 	std::vector<StepResult*> Reset() override;
 
 private:
+
 	/// <summary>
 	/// Stores information for an AI to use to decide its next action.
 	/// </summary>
@@ -45,18 +54,17 @@ private:
 		/// </summary>
 		/// <returns>The inputs for a neural network</returns>
 		std::vector<double> GetForNN() override;
-		float health = 0;
-		std::vector<std::pair<float, double>> hostileAgents;
-		std::vector<std::pair<float, double>> friendlyAgents;
+		
+		float health; // Health of the agent
+		std::vector<std::pair<float, double>> hostileAgents; // list of hostile Agents
+		std::vector<std::pair<float, double>> friendlyAgents; // List of friendly Agents
+
 	private:
 
 	};
 
-
-	NeuralWarfareEngine& engine; // Reference to an instance of the game engine
-
-	size_t teamId; // The team connected the environment
-
+	size_t teamId; // The team ID of the agents connected the environment
+	NeuralWarfareEngine& engine; // Reference the game engine
 	std::vector<NeuralWarfareEngine::Agent*> agents; // array of pointers that this environment is training
 
 	/// <summary>
