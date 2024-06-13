@@ -2,6 +2,25 @@
 #include "NeuralWarfareEnv.h"
 #include <chrono>
 #include <string>
+#include <future>
+
+
+std::vector<std::vector<Environment::Action>> GetActions(std::vector<std::vector<Environment::StepResult*>> srts)
+{
+	std::vector <std::vector<Environment::Action>> actions(srts.size());
+	for (size_t i = 0; i < srts.size(); i++)
+	{
+		while (!srts[i].empty())
+		{
+			double nearestHostileDirection = srts[i].back()->observation->GetForTest();
+			size_t action = nearestHostileDirection == 0 ? 0 : nearestHostileDirection < 0 ? 1 : 2;
+			actions[i].push_back(Environment::Action(srts[i].back(), action));
+			delete srts[i].back();
+			srts[i].pop_back();
+		}
+	}
+	return actions;
+}
 
 int main()
 {
@@ -9,15 +28,15 @@ int main()
 	std::mt19937 gen(rd());
 
 	std::uniform_int_distribution<size_t> dis(1, 2);
-	NeuralWarfareEngine eng(gen, Vec2(550, 350));	
-	
+	NeuralWarfareEngine eng(gen, Vec2(550, 350));
+
 	std::vector<NeuralWarfareEnv> envs;
 
 	std::uniform_real_distribution<float> spawnXDis(-eng.simSize.x, eng.simSize.x);
 	std::uniform_real_distribution<float> spawnYDis(-eng.simSize.y, eng.simSize.y);
 	for (size_t i = 0; i < 3; i++)
 	{
-		envs.push_back(NeuralWarfareEnv(eng, eng.AddTeam(200, 100, { spawnXDis(gen),spawnYDis(gen) })));
+		envs.push_back(NeuralWarfareEnv(eng, eng.AddTeam(100, 2, { spawnXDis(gen),spawnYDis(gen) })));
 	}
 
 	Rectangle drawRec{ 50, 50, 1100, 700 };
@@ -31,43 +50,41 @@ int main()
 
 	float resetTimer = 0;
 
+	std::future<std::vector<std::vector<Environment::Action>>>* actionFuture = nullptr;
+
 	while (!WindowShouldClose())
 	{
 		frameend = std::chrono::high_resolution_clock::now();
 		deltaTime = std::chrono::duration<float>(frameend - framestart).count();
 		framestart = frameend;
 
-		//resetTimer += deltaTime;
+		resetTimer += deltaTime;
 
-		//if (resetTimer > 5)
-		//{
-		//	eng.Reset();
-		//	resetTimer = 0;
-		//}
+		if (resetTimer > 5)
+		{
+			eng.Reset();
+			resetTimer = 0;
+		}
 
 		for (size_t i = 0; i < 5; i++)
 		{
+			if (actionFuture)
+			{
+				std::vector <std::vector<Environment::Action>> actions = actionFuture->get();
+				delete actionFuture;
+				for (size_t i = 0; i < envs.size(); i++)
+				{
+					envs[i].TakeAction(actions[i]);
+				}
+			}
+
+			std::vector<std::vector<Environment::StepResult*>> srts;
 			for (size_t i = 0; i < envs.size(); i++)
 			{
-				std::vector<Environment::StepResult*> sr = envs[i].GetResult();
-
-				std::vector<Environment::Action> actions;
-				while (!sr.empty())
-				{
-					std::vector<double> d = sr.back()->observation->GetForNN();
-					double nearestHostileDirection = 0;
-					if (!d.empty())
-					{
-						nearestHostileDirection = d.front();
-					}
-					size_t action = nearestHostileDirection == 0 ? 0 : nearestHostileDirection < 0 ? 1 : 2;
-					actions.push_back(Environment::Action(sr.back(), action));
-					delete sr.back();
-					sr.pop_back();
-				}
-
-				envs[i].TakeAction(actions);
+				srts.push_back(envs[i].GetResult());
 			}
+			actionFuture = new std::future<std::vector<std::vector<Environment::Action>>>(std::async(std::launch::async, GetActions, srts));
+
 			eng.Update(2);
 		}
 

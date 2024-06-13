@@ -55,6 +55,8 @@ private:
 		/// <returns>The inputs for a neural network</returns>
 		std::vector<double> GetForNN() override;
 		
+		double GetForTest() override;
+
 		float health; // Health of the agent
 		std::vector<std::pair<float, double>> hostileAgents; // list of hostile Agents
 		std::vector<std::pair<float, double>> friendlyAgents; // List of friendly Agents

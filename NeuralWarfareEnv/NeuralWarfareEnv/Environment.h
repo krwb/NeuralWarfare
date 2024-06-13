@@ -23,6 +23,7 @@ public:
 		/// </summary>
 		/// <returns>The inputs for a neural network</returns>
 		virtual std::vector<double> GetForNN() = 0;
+		virtual double GetForTest() = 0;
 	};
 
 
