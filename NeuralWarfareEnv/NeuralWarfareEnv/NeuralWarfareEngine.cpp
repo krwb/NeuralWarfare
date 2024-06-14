@@ -22,10 +22,10 @@ void NeuralWarfareEngine::Agent::TakeAction(size_t action)
     switch (action)
     {
     case 1:
-        dir += 0.2;
+        dir += 0.1;
         break;
     case 2:
-        dir += -0.2;
+        dir += -0.1;
     default:
         break;
     }
@@ -56,14 +56,14 @@ void NeuralWarfareEngine::DoCollision(Agent* agentA, Agent* agentB)
     if (diffA > diffB)
     {
         agentA->health -= 1;
-        agentA->UpdatePos(agentSize);
-        agentB->UpdatePos(agentSize);
+        agentA->UpdatePos(agentSize * 2);
+        agentB->UpdatePos(agentSize * 2);
     }
     if (diffA < diffB)
     {
         agentB->health -= 1;
-        agentA->UpdatePos(agentSize);
-        agentB->UpdatePos(agentSize);
+        agentA->UpdatePos(agentSize * 2);
+        agentB->UpdatePos(agentSize * 2);
     }
 }
 

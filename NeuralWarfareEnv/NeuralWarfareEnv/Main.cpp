@@ -34,7 +34,7 @@ int main()
 
 	std::uniform_real_distribution<float> spawnXDis(-eng.simSize.x, eng.simSize.x);
 	std::uniform_real_distribution<float> spawnYDis(-eng.simSize.y, eng.simSize.y);
-	for (size_t i = 0; i < 3; i++)
+	for (size_t i = 0; i < 10; i++)
 	{
 		envs.push_back(NeuralWarfareEnv(eng, eng.AddTeam(100, 2, { spawnXDis(gen),spawnYDis(gen) })));
 	}
@@ -52,40 +52,58 @@ int main()
 
 	std::future<std::vector<std::vector<Environment::Action>>>* actionFuture = nullptr;
 
+	bool running = true;
+
 	while (!WindowShouldClose())
 	{
 		frameend = std::chrono::high_resolution_clock::now();
 		deltaTime = std::chrono::duration<float>(frameend - framestart).count();
 		framestart = frameend;
 
-		resetTimer += deltaTime;
+		if (running)
+		{
+			resetTimer += deltaTime;
+		}
 
-		if (resetTimer > 5)
+		if (resetTimer > 20)
 		{
 			eng.Reset();
 			resetTimer = 0;
 		}
 
-		for (size_t i = 0; i < 5; i++)
+		if (IsKeyPressed(KEY_R))
 		{
-			if (actionFuture)
+			eng.Reset();
+		}
+
+		if (IsKeyPressed(KEY_SPACE))
+		{
+			running = !running;
+		}
+
+		if (running || IsKeyPressed(KEY_PERIOD))
+		{
+			for (size_t i = 0; i < 5; i++)
 			{
-				std::vector <std::vector<Environment::Action>> actions = actionFuture->get();
-				delete actionFuture;
+				if (actionFuture)
+				{
+					std::vector <std::vector<Environment::Action>> actions = actionFuture->get();
+					delete actionFuture;
+					for (size_t i = 0; i < envs.size(); i++)
+					{
+						envs[i].TakeAction(actions[i]);
+					}
+				}
+
+				std::vector<std::vector<Environment::StepResult*>> srts;
 				for (size_t i = 0; i < envs.size(); i++)
 				{
-					envs[i].TakeAction(actions[i]);
+					srts.push_back(envs[i].GetResult());
 				}
-			}
+				actionFuture = new std::future<std::vector<std::vector<Environment::Action>>>(std::async(std::launch::async, GetActions, srts));
 
-			std::vector<std::vector<Environment::StepResult*>> srts;
-			for (size_t i = 0; i < envs.size(); i++)
-			{
-				srts.push_back(envs[i].GetResult());
+				eng.Update(1);
 			}
-			actionFuture = new std::future<std::vector<std::vector<Environment::Action>>>(std::async(std::launch::async, GetActions, srts));
-
-			eng.Update(2);
 		}
 
 		BeginDrawing();
