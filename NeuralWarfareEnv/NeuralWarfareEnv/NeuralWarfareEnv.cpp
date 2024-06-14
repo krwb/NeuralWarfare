@@ -60,12 +60,14 @@ Environment::Observation* NeuralWarfareEnv::getObservation(NeuralWarfareEngine::
 {
 	MyObservation* observation = new MyObservation();
 
+	// use KD tree to find hostileAgents
 	std::vector<NeuralWarfareEngine::Agent*> hostileAgents =
 		engine.kdTree.FindNearestNeighbors(agent->pos, 5,
 			[agent](const NeuralWarfareEngine::Agent* a) {
 				return a->teamId != agent->teamId && a->health > 0;
 			}
 		);
+	// use KD tree to find friendlyAgents
 	std::vector<NeuralWarfareEngine::Agent*> friendlyAgents =
 		engine.kdTree.FindNearestNeighbors(agent->pos, 5,
 			[agent](const NeuralWarfareEngine::Agent* a) {
