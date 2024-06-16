@@ -75,6 +75,7 @@ public:
 
 	std::mt19937& gen; // random number generator ref
 	Vec2 simSize; // the size of the simulation, measured from center
+	bool wasReset = false;
 
 	std::list<Agent> agents; // list of all agents in the simulation
 	KDTree<Agent> kdTree; // KD tree used for collision optimization and by environment observations

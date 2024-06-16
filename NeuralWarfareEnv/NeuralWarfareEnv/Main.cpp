@@ -4,22 +4,22 @@
 #include <string>
 #include <future>
 
-
-std::vector<std::vector<Environment::Action>> GetActions(std::vector<std::vector<Environment::StepResult*>> srts)
+std::vector<std::list<Environment::Action>*> GetActions(std::vector<std::list<Environment::StepResult>*> srts)
 {
-	std::vector <std::vector<Environment::Action>> actions(srts.size());
+	std::vector <std::list<Environment::Action>*> allActions;
+
 	for (size_t i = 0; i < srts.size(); i++)
 	{
-		while (!srts[i].empty())
+		std::list<Environment::Action>* actions = new std::list<Environment::Action>();
+		for (Environment::StepResult& sr : *srts[i])
 		{
-			double nearestHostileDirection = srts[i].back()->observation->GetForTest();
+			double nearestHostileDirection = sr.observation->GetForTest();
 			size_t action = nearestHostileDirection == 0 ? 0 : nearestHostileDirection < 0 ? 1 : 2;
-			actions[i].push_back(Environment::Action(srts[i].back(), action));
-			delete srts[i].back();
-			srts[i].pop_back();
+			actions->push_back({ sr, action });
 		}
+		allActions.push_back(actions);
 	}
-	return actions;
+	return allActions;
 }
 
 int main()
@@ -50,7 +50,7 @@ int main()
 
 	float resetTimer = 0;
 
-	std::future<std::vector<std::vector<Environment::Action>>>* actionFuture = nullptr;
+	std::future<std::vector<std::list<Environment::Action>*>>* actionFuture = nullptr;
 
 	bool running = true;
 
@@ -85,22 +85,28 @@ int main()
 		{
 			for (size_t i = 0; i < 5; i++)
 			{
-				if (actionFuture)
-				{
-					std::vector <std::vector<Environment::Action>> actions = actionFuture->get();
-					delete actionFuture;
-					for (size_t i = 0; i < envs.size(); i++)
-					{
-						envs[i].TakeAction(actions[i]);
-					}
-				}
+				//if (actionFuture)
+				//{
+				//	std::vector <std::list<Environment::Action>*> actions = actionFuture->get();
+				//	delete actionFuture;
+				//	for (size_t i = 0; i < envs.size(); i++)
+				//	{
+				//		envs[i].TakeAction(*actions[i]);
+				//	}
+				//}
 
-				std::vector<std::vector<Environment::StepResult*>> srts;
+				std::vector<std::list<Environment::StepResult>*> srts;
 				for (size_t i = 0; i < envs.size(); i++)
 				{
 					srts.push_back(envs[i].GetResult());
 				}
-				actionFuture = new std::future<std::vector<std::vector<Environment::Action>>>(std::async(std::launch::async, GetActions, srts));
+				//actionFuture = new std::future<std::vector<std::list<Environment::Action>*>>(std::async(std::launch::async, GetActions, srts));
+				
+				std::vector <std::list<Environment::Action>*> actions = GetActions(srts);
+				for (size_t i = 0; i < envs.size(); i++)
+				{
+					envs[i].TakeAction(*actions[i]);
+				}
 
 				eng.Update(1);
 			}

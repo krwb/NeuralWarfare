@@ -25,21 +25,20 @@ public:
 	/// Function to preform an action in the Environment
 	/// </summary>
 	/// <param name="actions"></param>
-	void TakeAction(const std::vector<Action>& actions) override;
+	void TakeAction(std::list<Action>& actions) override;
 
 	/// <summary>
 	/// Function to get the result of the last action preformed
 	/// </summary>
 	/// <returns>array of StepResult from the last taken action</returns>
-	std::vector<StepResult*> GetResult() override;
+	std::list<StepResult>* GetResult() override;
 
 	/// <summary>
 	/// Function to reset the environment
 	/// </summary>
 	/// <returns>array of StepResult from the reset state of the Environment</returns>
-	std::vector<StepResult*> Reset() override;
+	std::list<StepResult>* Reset() override;
 
-private:
 
 	/// <summary>
 	/// Stores information for an AI to use to decide its next action.
@@ -54,7 +53,7 @@ private:
 		/// </summary>
 		/// <returns>The inputs for a neural network</returns>
 		std::vector<double> GetForNN() override;
-		
+
 		double GetForTest() override;
 
 		float health; // Health of the agent
@@ -64,6 +63,8 @@ private:
 	private:
 
 	};
+private:
+
 
 	size_t teamId; // The team ID of the agents connected the environment
 	NeuralWarfareEngine& engine; // Reference the game engine

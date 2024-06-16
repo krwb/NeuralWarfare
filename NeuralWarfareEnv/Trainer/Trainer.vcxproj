@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a73da270-061b-49b4-8dce-cbe41a98cb34}</ProjectGuid>
-    <RootNamespace>NeuralWarfareNN</RootNamespace>
+    <ProjectGuid>{d7d54a41-53d5-4090-a528-525f6567fbc8}</ProjectGuid>
+    <RootNamespace>Trainer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>NeuralWarfareNN</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,13 +70,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(SolutionDir)Raylib\bin\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <ExternalIncludePath>$(SolutionDir)Raylib\include;$(ExternalIncludePath)</ExternalIncludePath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)Raylib\include;$(ExternalIncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Raylib\bin\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <ExternalIncludePath>$(SolutionDir)Raylib\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x64)</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)Raylib\include;$(ExternalIncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Raylib\bin\$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <ReferencePath>$(VC_ReferencesPath_x64)</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,13 +117,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareNN;E:\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Raylib\bin\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>raylib.lib;winmm.lib;$(SolutionDir)opencv\build\x64\vc16\lib\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>raylib.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,6 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareNN;E:\GitHub\NeuralWarfare\NeuralWarfareEnv\NeuralWarfareEnv;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -137,20 +142,19 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Raylib\bin\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>raylib.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\NeuralWarfareEnv\NeuralWarfareEngine.cpp" />
+    <ClCompile Include="..\NeuralWarfareEnv\NeuralWarfareEnv.cpp" />
+    <ClCompile Include="..\NeuralWarfareNN\NeuralNetwork.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="NeuralNetwork.cpp" />
+    <ClCompile Include="NeuralWarfareTrainers.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ActivationFunctions.h" />
-    <ClInclude Include="NeuralNetwork.h" />
-    <ClInclude Include="RaylibNetworkVis.h" />
-    <ClInclude Include="SimpleMutate.h" />
+    <ClInclude Include="NeuralWarfareTrainers.h" />
+    <ClInclude Include="Trainer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

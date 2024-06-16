@@ -22,10 +22,10 @@ void NeuralWarfareEngine::Agent::TakeAction(size_t action)
     switch (action)
     {
     case 1:
-        dir += 0.1;
+        dir += 0.2;
         break;
     case 2:
-        dir += -0.1;
+        dir += -0.2;
     default:
         break;
     }
@@ -78,6 +78,7 @@ NeuralWarfareEngine::~NeuralWarfareEngine()
 
 void NeuralWarfareEngine::Update(float delta)
 {
+    wasReset = false;
 	for (Agent& agent : agents)
 	{
         // handle simulation boundary
@@ -102,7 +103,7 @@ void NeuralWarfareEngine::Reset()
     {
         agent.Reset();
     }
-    UpdateKDTree();
+    wasReset = true;
 }
 
 void NeuralWarfareEngine::UpdateKDTree()

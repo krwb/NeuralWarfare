@@ -12,25 +12,25 @@ NeuralWarfareEnv::~NeuralWarfareEnv()
 
 }
 
-void NeuralWarfareEnv::TakeAction(const std::vector<Action>& actions)
+void NeuralWarfareEnv::TakeAction(std::list<Action>& actions)
 {
-	for (size_t i = 0; i < actions.size(); i++)
+	for (Action& action : actions)
 	{
-		agents[actions[i].ID]->TakeAction(actions[i].action);
+		agents[action.ID]->TakeAction(action.action);
 	}
 }
 
-std::vector<Environment::StepResult*> NeuralWarfareEnv::GetResult()
+std::list<Environment::StepResult>* NeuralWarfareEnv::GetResult()
 {
-	std::vector<StepResult*> srts;
+	std::list<StepResult>* srts = new std::list<StepResult>();
 	for (size_t i = 0; i < agents.size(); i++)
 	{
-		srts.push_back(new StepResult(getObservation(agents[i]), 0, false, false,i));
+		srts->emplace_back(getObservation(agents[i]), 0, agents[i]->health <= 0, engine.wasReset, i);
 	}
 	return srts;
 }
 
-std::vector<Environment::StepResult*> NeuralWarfareEnv::Reset()
+std::list<Environment::StepResult>* NeuralWarfareEnv::Reset()
 {
 	return GetResult();
 }
@@ -92,6 +92,7 @@ Environment::Observation* NeuralWarfareEnv::getObservation(NeuralWarfareEngine::
 
 NeuralWarfareEnv::MyObservation::MyObservation()
 {
+
 }
 
 NeuralWarfareEnv::MyObservation::~MyObservation()
