@@ -8,7 +8,6 @@
 class NeuralWarfareEnv : public Environment
 {
 public:
-
 	/// <summary>
 	/// NeuralWarfareEnv constructor
 	/// </summary>

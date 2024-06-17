@@ -3,15 +3,16 @@
 #include <random>
 #include <future>
 #include "raylib.h"
+#include "NeuralWarfareEngine.h"
+#include "NeuralWarfareEnv.h"
 #include "NeuralNetwork.h"
 #include "ActivationFunctions.h"
 #include "RaylibNetworkVis.h"
 #include "Trainer.h"
 #include "NeuralWarfareTrainers.h"
-#include "NeuralWarfareEnv.h"
-#include "NeuralWarfareEngine.h"
 
-void UpdateTrainers(std::vector<TestTrainer>& trainers)
+
+static void UpdateTrainers(std::vector<TestTrainer>& trainers)
 {
 	for (Trainer& trainer : trainers)
 	{
@@ -37,6 +38,8 @@ int main()
 
 	NeuralNetwork* network = NeuralNetwork::Load(functions, "test.bin");
 	NetworkVis netVis(network, { windowWidth / 2,windowHeight / 2, 1200, 800 });
+
+	GeneticAlgorithmNNTrainer::MyHyperparameters(0.1, 0.2, 0.5, 0.2, 0.05, 1, 0.01, 0.005, 5, 3, addfunction.name).Save("test.xml");
 
 	std::vector<NeuralWarfareEnv*> envs;
 	std::vector<TestTrainer> trainers;
@@ -91,7 +94,6 @@ int main()
 
 		BeginDrawing();
 		ClearBackground(BLACK);
-		netVis.Draw();
 		eng.Draw(drawRec);
 		DrawText(("FPS: " + std::to_string(1 / deltaTime)).c_str(), 0, 0, 18, WHITE);
 		EndDrawing();

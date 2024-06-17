@@ -1,7 +1,6 @@
 #pragma once
-#include "Environment.h"
 #include <string>
-#include "NeuralWarfareEnv.h"
+#include "Environment.h"
 
 /// <summary>
 /// Base class for training agents in an environment.
@@ -12,7 +11,7 @@ public:
 	/// <summary>
 	/// Class representing hyperparameters for the trainer.
 	/// </summary>
-	class Hyperparameters
+	static class Hyperparameters
 	{
 	public:
 		/// <summary>
@@ -21,7 +20,7 @@ public:
 		Hyperparameters() {}
 
 		/// <summary>
-		/// Virtual destructor for Hyperparameters.
+		/// Destructor for Hyperparameters.
 		/// </summary>
 		virtual ~Hyperparameters() {}
 
@@ -80,8 +79,8 @@ public:
 	}
 
 protected:
-	Environment* env; ///< Pointer to the environment being used for training.
-	std::list<Environment::StepResult>* LastStepResults = nullptr; ///< List of the last step results observed from the environment.
-	std::list<Environment::Action>* nextActions = nullptr; ///< List of the next actions to be executed in the environment.
+	Environment* env; // Pointer to the environment being used for training.
+	std::list<Environment::StepResult>* LastStepResults = nullptr; // List of the last step results observed from the environment.
+	std::list<Environment::Action>* nextActions = nullptr; // List of the next actions to be executed in the environment.
 };
 

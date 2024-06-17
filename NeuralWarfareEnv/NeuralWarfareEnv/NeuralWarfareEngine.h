@@ -1,8 +1,8 @@
 #pragma once
 #include <list>
 #include <vector>
-#include "raylib.h"
 #include <random>
+#include "raylib.h"
 #include "KDTree.h"
 
 /// <summary>

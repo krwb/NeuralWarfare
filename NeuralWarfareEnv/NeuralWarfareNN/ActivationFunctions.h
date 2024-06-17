@@ -1,5 +1,6 @@
 #pragma once
 #include "NeuralNetwork.h"
+#include <cmath>
 
 // Add Function
 // Behavior: Simply returns the sum of the nodes inputs
