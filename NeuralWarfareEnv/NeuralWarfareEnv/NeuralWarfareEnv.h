@@ -43,10 +43,10 @@ public:
 	/// <summary>
 	/// Stores information for an AI to use to decide its next action.
 	/// </summary>
-	class MyObservation : public Observation
+	static class MyObservation : public Observation
 	{
 	public:
-		MyObservation();
+		MyObservation(NeuralWarfareEngine& eng, NeuralWarfareEngine::Agent* agent);
 		~MyObservation() override;
 		/// <summary>
 		/// Converts the information for use by a neural network.
@@ -54,12 +54,16 @@ public:
 		/// <returns>The inputs for a neural network</returns>
 		std::vector<double> GetForNN() override;
 
+		virtual size_t NNInputSize() override;
+
 		double GetForTest() override;
 
 		float health; // Health of the agent
 		std::vector<std::pair<float, double>> hostileAgents; // list of hostile Agents
 		std::vector<std::pair<float, double>> friendlyAgents; // List of friendly Agents
 
+		static size_t hostileAgentCount;
+		static size_t friendlyAgentCount;
 	private:
 
 	};
@@ -83,4 +87,3 @@ private:
 	/// <param name="teamNum"> the team to connect to</param>
 	void ConnectToTeam(size_t teamId);
 };
-

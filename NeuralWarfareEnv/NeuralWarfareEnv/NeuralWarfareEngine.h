@@ -29,7 +29,7 @@ public:
 	/// <summary>
 	/// Agents are the basic players in the environment
 	/// </summary>
-	class Agent
+	static class Agent
 	{
 	public:
 		/// <summary>

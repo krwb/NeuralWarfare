@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <random>
+#include <future>
 #include "raylib.h"
 #include "NeuralNetwork.h"
 #include "ActivationFunctions.h"
@@ -9,6 +10,14 @@
 #include "NeuralWarfareTrainers.h"
 #include "NeuralWarfareEnv.h"
 #include "NeuralWarfareEngine.h"
+
+void UpdateTrainers(std::vector<TestTrainer>& trainers)
+{
+	for (Trainer& trainer : trainers)
+	{
+		trainer.Update();
+	}
+}
 
 int main()
 {
@@ -40,11 +49,13 @@ int main()
 	}
 
 	InitWindow(windowWidth, windowHeight, "test");
+	SetTargetFPS(60);
 
 	auto framestart = std::chrono::high_resolution_clock::now();
 	auto frameend = std::chrono::high_resolution_clock::now();
 	float deltaTime = std::chrono::duration<float>(frameend - framestart).count();
 	float resetTimer = 0;
+	std::future<void>* trainerFuture = nullptr;
 	while (!WindowShouldClose())
 	{
 		frameend = std::chrono::high_resolution_clock::now();
@@ -63,18 +74,17 @@ int main()
 		{
 			for (Trainer& trainer : trainers)
 			{
-				trainer.Do();
+				trainer.ObserveEnvironment();
 			}
 
-			for (Trainer& trainer : trainers)
-			{
-				trainer.Think();
-			}
+			delete trainerFuture;
+			trainerFuture = new std::future<void>(std::async(std::launch::async, UpdateTrainers, std::ref(trainers)));
 			eng.Update(2);
+			trainerFuture->wait();
 
 			for (Trainer& trainer : trainers)
 			{
-				trainer.Look();
+				trainer.ExecuteAction();
 			}
 		}
 

@@ -9,7 +9,7 @@ TestTrainer::~TestTrainer()
 
 }
 
-void TestTrainer::Think()
+void TestTrainer::Update()
 {
 	if (LastStepResults)
 	{
@@ -33,7 +33,7 @@ StaticNNTrainer::~StaticNNTrainer()
 
 }
 
-void StaticNNTrainer::Think()
+void StaticNNTrainer::Update()
 {
 	if (LastStepResults)
 	{

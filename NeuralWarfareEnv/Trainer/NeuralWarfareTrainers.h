@@ -7,7 +7,7 @@ class TestTrainer : public Trainer
 public:
 	TestTrainer(Environment* env);
 	~TestTrainer();
-	void Think() override;
+	void Update() override;
 
 private:
 };
@@ -17,7 +17,7 @@ class StaticNNTrainer : public Trainer
 public:
 	StaticNNTrainer(Environment* env, NeuralNetwork* network);
 	~StaticNNTrainer();
-	void Think() override;
+	void Update() override;
 
 private:
 	NeuralNetwork* network;

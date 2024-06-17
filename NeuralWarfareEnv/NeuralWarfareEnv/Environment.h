@@ -13,7 +13,7 @@ public:
 	/// <summary>
 	/// Stores information for an AI to use to decide its next action.
 	/// </summary>
-	class Observation
+	static class Observation
 	{
 	public:
 		Observation() {};
@@ -23,6 +23,9 @@ public:
 		/// </summary>
 		/// <returns>The inputs for a neural network</returns>
 		virtual std::vector<double> GetForNN() = 0;
+
+		virtual size_t NNInputSize() = 0;
+
 		virtual double GetForTest() = 0;
 	};
 
@@ -30,7 +33,7 @@ public:
 	/// <summary>
 	/// Stores the information resulting from a step.
 	/// </summary>
-	class StepResult
+	static class StepResult
 	{
 	public:
 
@@ -65,7 +68,7 @@ public:
 	/// <summary>
 	/// Used to pair an agent with its action to prevent accidental crossover
 	/// </summary>
-	class Action
+	static class Action
 	{
 	public:
 		/// <summary>
