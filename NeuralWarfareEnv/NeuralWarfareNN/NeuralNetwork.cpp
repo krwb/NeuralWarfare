@@ -378,6 +378,9 @@ NeuralNetwork* NeuralNetwork::Copy(NeuralNetwork* oldNetwork)
 	{
 		newNetwork->outputNodes[i] = nodeMap[oldNetwork->outputNodes[i]];
 	}
+
+	newNetwork->Update();
+
 	return newNetwork;
 }
 

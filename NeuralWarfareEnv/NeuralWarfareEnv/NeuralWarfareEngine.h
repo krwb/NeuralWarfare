@@ -50,6 +50,8 @@ public:
 		Vec2 pos; // position
 		double dir; // direction in radians
 		float health; // agent health
+		
+		float reward = 0;
 
 		/// <summary>
 		/// Makes the agent take an action

@@ -117,5 +117,4 @@ void SimpleMutate(
 		}
 		layerIter++;
 	}
-	net->Clean();
 }

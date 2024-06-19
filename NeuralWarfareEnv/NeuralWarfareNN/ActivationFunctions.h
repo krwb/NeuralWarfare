@@ -77,7 +77,7 @@ public:
 };
 
 // Rectified Linear Unit (ReLU) Function
-// Behavior: The ReLU function outputs the input as - is if positive, and zero otherwise.It is widely used in hidden layersand has been shown to accelerate convergence during training.
+// Behavior: The ReLU function outputs the input as - is if positive, and zero otherwise. It is widely used in hidden layers and has been shown to accelerate convergence during training.
 // Use case: Hidden layers of a neural network, especially in deep neural networks.
 class ReLUFunction : public ActivationFunction
 {

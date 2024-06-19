@@ -38,7 +38,6 @@ public:
 	/// <returns>array of StepResult from the reset state of the Environment</returns>
 	std::list<StepResult>* Reset() override;
 
-
 	/// <summary>
 	/// Stores information for an AI to use to decide its next action.
 	/// </summary>
@@ -53,7 +52,7 @@ public:
 		/// <returns>The inputs for a neural network</returns>
 		std::vector<double> GetForNN() override;
 
-		virtual size_t NNInputSize() override;
+		size_t NNInputSize() override;
 
 		double GetForTest() override;
 

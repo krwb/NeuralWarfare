@@ -28,7 +28,7 @@ std::list<Environment::StepResult>* NeuralWarfareEnv::GetResult()
 	std::list<StepResult>* srts = new std::list<StepResult>();
 	for (size_t i = 0; i < agents.size(); i++)
 	{
-		srts->emplace_back(getObservation(agents[i]), 0, agents[i]->health <= 0, engine.wasReset, i);
+		srts->emplace_back(getObservation(agents[i]), agents[i]->reward, agents[i]->health <= 0, engine.wasReset, i);
 	}
 	return srts;
 }
@@ -69,31 +69,34 @@ Environment::Observation* NeuralWarfareEnv::getObservation(NeuralWarfareEngine::
 
 NeuralWarfareEnv::MyObservation::MyObservation(NeuralWarfareEngine& engine, NeuralWarfareEngine::Agent* agent)
 {
-	// use KD tree to find hostileAgents
-	std::vector<NeuralWarfareEngine::Agent*> hostileAgentsVector =
-		engine.kdTree.FindNearestNeighbors(agent->pos, hostileAgentCount,
-			[agent](const NeuralWarfareEngine::Agent* a) {
-				return a->teamId != agent->teamId && a->health > 0;
-			}
-	);
-	// use KD tree to find friendlyAgents
-	std::vector<NeuralWarfareEngine::Agent*> friendlyAgentsVector =
-		engine.kdTree.FindNearestNeighbors(agent->pos, friendlyAgentCount,
-			[agent](const NeuralWarfareEngine::Agent* a) {
-				return a->teamId == agent->teamId && a != agent && a->health > 0;
-			}
-	);
-
-	health = agent->health;
-
-	for (NeuralWarfareEngine::Agent* hostileAgent : hostileAgentsVector)
+	if (agent)
 	{
-		hostileAgents.emplace_back(getRelativePolarPos(agent->pos, hostileAgent->pos, agent->dir));
-	}
+		// use KD tree to find hostileAgents
+		std::vector<NeuralWarfareEngine::Agent*> hostileAgentsVector =
+			engine.kdTree.FindNearestNeighbors(agent->pos, hostileAgentCount,
+				[agent](const NeuralWarfareEngine::Agent* a) {
+					return a->teamId != agent->teamId && a->health > 0;
+				}
+		);
+		// use KD tree to find friendlyAgents
+		std::vector<NeuralWarfareEngine::Agent*> friendlyAgentsVector =
+			engine.kdTree.FindNearestNeighbors(agent->pos, friendlyAgentCount,
+				[agent](const NeuralWarfareEngine::Agent* a) {
+					return a->teamId == agent->teamId && a != agent && a->health > 0;
+				}
+		);
 
-	for (NeuralWarfareEngine::Agent* friendlyAgent : friendlyAgentsVector)
-	{
-		friendlyAgents.emplace_back(getRelativePolarPos(agent->pos, friendlyAgent->pos, agent->dir));
+		health = agent->health;
+
+		for (NeuralWarfareEngine::Agent* hostileAgent : hostileAgentsVector)
+		{
+			hostileAgents.emplace_back(getRelativePolarPos(agent->pos, hostileAgent->pos, agent->dir));
+		}
+
+		for (NeuralWarfareEngine::Agent* friendlyAgent : friendlyAgentsVector)
+		{
+			friendlyAgents.emplace_back(getRelativePolarPos(agent->pos, friendlyAgent->pos, agent->dir));
+		}
 	}
 }
 
@@ -123,7 +126,7 @@ std::vector<double> NeuralWarfareEnv::MyObservation::GetForNN()
 
 size_t NeuralWarfareEnv::MyObservation::NNInputSize()
 {
-	return (hostileAgentCount + friendlyAgentCount) * 3 + 1;
+	return (hostileAgentCount + friendlyAgentCount) * 2 + 1;
 }
 
 double NeuralWarfareEnv::MyObservation::GetForTest()

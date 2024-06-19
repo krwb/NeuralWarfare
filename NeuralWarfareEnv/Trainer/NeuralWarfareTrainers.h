@@ -37,6 +37,8 @@ public:
 		}
 
 		MyHyperparameters(
+			size_t topAgentCount,
+			size_t mutationCouunt,
 			double biasMutationRate,
 			double biasMutationMagnitude,
 			double weightMutationRate,
@@ -48,6 +50,8 @@ public:
 			int newLayerSizeAverage,
 			int newLayerSizeRange,
 			std::string newLayerFunction ) :
+			topAgentCount(topAgentCount),
+			mutationCouunt(mutationCouunt),
 			biasMutationRate(biasMutationRate),
 			biasMutationMagnitude(biasMutationMagnitude),
 			weightMutationRate(weightMutationRate),
@@ -75,6 +79,8 @@ public:
 		/// <param name="fileName">The file to which to save hyperparameters.</param>
 		void Save(std::string fileName) override;
 
+		size_t topAgentCount;
+		size_t mutationCouunt;
 		double biasMutationRate;
 		double biasMutationMagnitude;
 		double weightMutationRate;
@@ -91,28 +97,32 @@ public:
 
 	};
 
-	GeneticAlgorithmNNTrainer(Environment* env, MyHyperparameters hyperparameters, NeuralNetwork* masterNetwork);
+	GeneticAlgorithmNNTrainer(Environment* env, std::mt19937& gen, MyHyperparameters hyperparameters, NeuralNetwork* masterNetwork);
 	~GeneticAlgorithmNNTrainer() override;
 	void Update() override;
+
+	NeuralNetwork* masterNetwork;
+
 private:
 
 	void SetNewLayerFunction();
 
+	void Evolve();
+
 	static class Agent
 	{
 	public:
-		Agent() {}
-		~Agent()
-		{
-			network->Delete();
-		}
+		Agent(NeuralNetwork* network);
+		~Agent();
 		NeuralNetwork* network;
+		void SetNetwork(NeuralNetwork* newNetwork);
 		float fitness = 0;
 	private:
 
 	};
-	NeuralNetwork* masterNetwork;
+
 	ActivationFunction* newLayerFunction = nullptr;
-	std::vector<NeuralNetwork*> networks;
+	std::vector<Agent*> agents;
+	std::mt19937& gen;
 	MyHyperparameters hyperparameters;
 };
