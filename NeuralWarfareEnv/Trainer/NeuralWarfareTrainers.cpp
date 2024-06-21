@@ -106,7 +106,13 @@ void GeneticAlgorithmNNTrainer::SetNewLayerFunction()
 	{
 		functionMap[function->name] = function;
 	}
-	newLayerFunction = functionMap.at(hyperparameters.newLayerFunction);
+	try {
+		newLayerFunction = functionMap.at(hyperparameters.newLayerFunction);
+	}
+	catch (const std::out_of_range& e)
+	{
+		std::cerr << "Unknown Function : " << hyperparameters.newLayerFunction << std::endl;
+	}
 }
 
 void GeneticAlgorithmNNTrainer::Evolve()
@@ -149,7 +155,7 @@ void GeneticAlgorithmNNTrainer::Evolve()
 					newLayerFunction
 					);
 			}
-			(*otherAgentsIter)->network->Clean();
+			(*otherAgentsIter)->network->CleanSynapses();
 			otherAgentsIter++;
 			topAgentsIter++;
 		}

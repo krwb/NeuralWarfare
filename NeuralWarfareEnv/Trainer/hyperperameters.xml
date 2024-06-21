@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Hyperparameters topAgentCount="10" 
+<Hyperparameters topAgentCount="50" 
 				 mutationCouunt="10" 
 				 biasMutationRate="0.10000000000000001" 
 				 biasMutationMagnitude="0.20000000000000001" 
@@ -7,8 +7,8 @@
 				 weightMutationMagnitude="0.20000000000000001" 
 				 synapseMutationRate="0.050000000000000003" 
 				 newSynapseMagnitude="1" 
-				 nodeMutationRate="0.01" 
+				 nodeMutationRate="0.     1" 
 				 ayerMutationRate="0.0050000000000000001" 
 				 newLayerSizeAverage="5" 
 				 newLayerSizeRange="3" 
-				 newLayerFunction="basicAdd"/>
+				 newLayerFunction="tanh"/>

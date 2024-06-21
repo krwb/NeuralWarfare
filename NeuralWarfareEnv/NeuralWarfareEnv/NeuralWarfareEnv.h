@@ -63,7 +63,7 @@ public:
 		void ExecuteAction(void* ptr) override;
 
 	private:
-		size_t action = 0;
+		double action = 0;
 	};
 
 	/// <summary>
