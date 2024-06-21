@@ -54,12 +54,6 @@ public:
 		float reward = 0;
 
 		/// <summary>
-		/// Makes the agent take an action
-		/// </summary>
-		/// <param name="action"> id of the action</param>
-		void TakeAction(size_t action);
-
-		/// <summary>
 		/// update the position of the agent
 		/// </summary>
 		/// <param name="delta">the duration of the update</param>
@@ -111,6 +105,8 @@ public:
 	/// <param name="drawRec"> used to scale and position the visualization on the window</param>
 	void Draw(Rectangle drawRec);
 
+
+	static Color GenerateTeamColor(size_t teamID);
 private:
 
 	/// <summary>

@@ -68,7 +68,7 @@ public:
 	/// <summary>
 	/// Used to pair an agent with its action to prevent accidental crossover
 	/// </summary>
-	static class Action
+	class Action
 	{
 	public:
 		/// <summary>
@@ -76,33 +76,38 @@ public:
 		/// </summary>
 		/// <param name="sr"> used to obtain the ID</param>
 		/// <param name="action"></param>
-		Action(StepResult& sr, size_t action) :
-			ID(sr.ID),
-			action(action) {}
+		Action(StepResult& sr) :
+			ID(sr.ID) {}
 
 		/// <summary>
 		/// Action constructor
 		/// </summary>
 		/// <param name="ID"> used to match the action to an agent</param>
 		/// <param name="action"></param>
-		Action(size_t ID, size_t action) :
-			ID(ID),
-			action(action) {}
+		Action(size_t ID) :
+			ID(ID) {}
 
 		/// <summary>
 		/// Action destructor
 		/// </summary>
 		virtual ~Action() {};
+
+		virtual size_t NNOutputSize() = 0;
+
+		virtual void GetFromNN(std::vector<double> outputs) = 0;
 		
+		virtual void GetFromTest(double value) = 0;
+
+		virtual void ExecuteAction(void* ptr) = 0;
+
 		size_t ID; // used to match an action to its step result in environments where there are multiple 
-		size_t action;
 	};
 
 	/// <summary>
 	/// Function to preform an action in the Environment
 	/// </summary>
 	/// <param name="actions"></param>
-	virtual void TakeAction(std::list<Action>& actions) = 0;
+	virtual void TakeAction(std::list<Action*>& actions) = 0;
 	
 	/// <summary>
 	/// Function to get the result of the last action preformed

@@ -2,8 +2,8 @@
 #include "angleTools.h"
 #include "KDTree.h"
 
-size_t NeuralWarfareEnv::MyObservation::hostileAgentCount = 5;
-size_t NeuralWarfareEnv::MyObservation::friendlyAgentCount = 5;
+size_t NeuralWarfareEnv::MyObservation::hostileAgentCount = 2;
+size_t NeuralWarfareEnv::MyObservation::friendlyAgentCount = 2;
 
 NeuralWarfareEnv::NeuralWarfareEnv(NeuralWarfareEngine& engine, size_t teamNum) : engine(engine)
 {
@@ -15,11 +15,11 @@ NeuralWarfareEnv::~NeuralWarfareEnv()
 
 }
 
-void NeuralWarfareEnv::TakeAction(std::list<Action>& actions)
+void NeuralWarfareEnv::TakeAction(std::list<Action*>& actions)
 {
-	for (Action& action : actions)
+	for (Action* action : actions)
 	{
-		agents[action.ID]->TakeAction(action.action);
+		action->ExecuteAction(agents[action->ID]);
 	}
 }
 
@@ -90,12 +90,12 @@ NeuralWarfareEnv::MyObservation::MyObservation(NeuralWarfareEngine& engine, Neur
 
 		for (NeuralWarfareEngine::Agent* hostileAgent : hostileAgentsVector)
 		{
-			hostileAgents.emplace_back(getRelativePolarPos(agent->pos, hostileAgent->pos, agent->dir));
+			hostileAgents.emplace_back(getRelativePolarPos(agent->pos, hostileAgent->pos, 0));
 		}
 
 		for (NeuralWarfareEngine::Agent* friendlyAgent : friendlyAgentsVector)
 		{
-			friendlyAgents.emplace_back(getRelativePolarPos(agent->pos, friendlyAgent->pos, agent->dir));
+			friendlyAgents.emplace_back(getRelativePolarPos(agent->pos, friendlyAgent->pos, 0));
 		}
 	}
 }
@@ -132,4 +132,66 @@ size_t NeuralWarfareEnv::MyObservation::NNInputSize()
 double NeuralWarfareEnv::MyObservation::GetForTest()
 {
 	return hostileAgents.empty() ? 0 : hostileAgents.front().second;
+}
+
+void NeuralWarfareEnv::MyAction::ExecuteAction(void* ptr)
+{
+	NeuralWarfareEngine::Agent* agent = static_cast<NeuralWarfareEngine::Agent*>(ptr);
+	switch (action)
+	{
+	case 1:
+		agent->dir += 0.2;
+		break;
+	case 2:
+		agent->dir += -0.2;
+	default:
+		break;
+	}
+}
+
+NeuralWarfareEnv::MyAction::MyAction(StepResult& sr) : Action(sr)
+{
+}
+
+NeuralWarfareEnv::MyAction::MyAction(size_t ID) : Action(ID)
+{
+}
+
+void NeuralWarfareEnv::MyAction::GetFromNN(std::vector<double> outputs)
+{
+	double totalSpread = 0.0;
+
+	// Calculate sum of absolute differences
+	for (size_t i = 1; i < outputs.size(); ++i) {
+		totalSpread += std::abs(outputs[i] - outputs[i - 1]);
+	}
+
+	// Calculate average difference
+	double averageSpread = totalSpread / (outputs.size() - 1);
+
+	if (averageSpread < 0.2)
+	{
+		action = 0;
+		return;
+	}
+
+	double maxValue = 0;
+	for (size_t i = 0; i < outputs.size(); i++)
+	{
+		if (maxValue < outputs[i])
+		{
+			maxValue = outputs[i];
+			action = i;
+		}
+	}
+}
+
+size_t NeuralWarfareEnv::MyAction::NNOutputSize()
+{
+	return 3;
+}
+
+void NeuralWarfareEnv::MyAction::GetFromTest(double value)
+{
+	size_t action = value == 0 ? 0 : value < 0 ? 1 : 2;
 }

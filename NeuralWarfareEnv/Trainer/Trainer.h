@@ -73,14 +73,20 @@ public:
 		if (nextActions)
 		{
 			env->TakeAction(*nextActions);
+			while (!nextActions->empty())
+			{
+				delete nextActions->front();
+				nextActions->pop_front();
+			}
 			delete nextActions;
 			nextActions = nullptr;
 		}
 	}
 
-protected:
 	Environment* env; // Pointer to the environment being used for training.
+
+protected:
 	std::list<Environment::StepResult>* LastStepResults = nullptr; // List of the last step results observed from the environment.
-	std::list<Environment::Action>* nextActions = nullptr; // List of the next actions to be executed in the environment.
+	std::list<Environment::Action*>* nextActions = nullptr; // List of the next actions to be executed in the environment.
 };
 

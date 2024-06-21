@@ -17,20 +17,6 @@ NeuralWarfareEngine::Agent::~Agent()
 {
 }
 
-void NeuralWarfareEngine::Agent::TakeAction(size_t action)
-{
-    switch (action)
-    {
-    case 1:
-        dir += 0.2;
-        break;
-    case 2:
-        dir += -0.2;
-    default:
-        break;
-    }
-}
-
 void NeuralWarfareEngine::Agent::UpdatePos(float delta)
 {
     dir = normalizeAngle(dir);
@@ -53,17 +39,17 @@ void NeuralWarfareEngine::DoCollision(Agent* agentA, Agent* agentB)
     double diffA = normalizeAngle(colAngle - agentA->dir);
     double diffB = normalizeAngle(colAngle + std::numbers::pi - agentB->dir);
 
-    if (diffA > diffB)
+    if (diffA > diffB) 
     {
         agentA->health -= 1;
-        agentB->reward += 1;
+        agentB->reward += 1000;
         agentA->UpdatePos(agentSize * 2);
         agentB->UpdatePos(agentSize * 2);
     }
     if (diffA < diffB)
     {
         agentB->health -= 1;
-        agentA->reward += 1;
+        agentA->reward += 1000;
         agentA->UpdatePos(agentSize * 2);
         agentB->UpdatePos(agentSize * 2);
     }
@@ -83,15 +69,36 @@ void NeuralWarfareEngine::Update(float delta)
     wasReset = false;
 	for (Agent& agent : agents)
 	{
-        // handle simulation boundary
         agent.reward = 0;
+        //handle simulation boundary
+        
         if (agent.pos.x < -simSize.x ||
             agent.pos.y < -simSize.y ||
             agent.pos.x > simSize.x ||
             agent.pos.y > simSize.y)
         {
-            agent.pos = -(agent.pos - agent.pos.Normalize() * (delta + 1));
+            agent.health = 0;
+            agent.reward -= 100;
+            //agent.pos = -(agent.pos - agent.pos.Normalize() * (delta + 1));
         }
+
+        //if (agent.pos.x < -simSize.x)
+        //{
+        //    agent.pos.x = -simSize.x;
+        //}
+        //else if (agent.pos.x > simSize.x)
+        //{
+        //    agent.pos.x = simSize.x;
+        //}
+        //if (agent.pos.y < -simSize.y)
+        //{
+        //    agent.pos.y = -simSize.y;
+        //}
+        //else if (agent.pos.y > simSize.y)
+        //{
+        //    agent.pos.y = simSize.y;
+        //}
+
         agent.UpdatePos(delta);
 	}
 
@@ -229,7 +236,7 @@ Color HSLToRGB(float H, float S, float L) {
 /// <summary>
 /// Function to generate a color based on the team ID
 /// </summary>
-Color generateTeamColor(size_t teamID) {
+Color NeuralWarfareEngine::GenerateTeamColor(size_t teamID) {
     // Normalize the team ID to a hue value (0-360 degrees)
     const float goldenRatioConjugate = 1.61803398874989;
     float hue = fmod((teamID * goldenRatioConjugate * 360.0f), 360.0f);
@@ -243,7 +250,7 @@ Color generateTeamColor(size_t teamID) {
 void NeuralWarfareEngine::Draw(Rectangle drawRec)
 {
     size_t lastTeamId = 0;
-    Color teamColor = generateTeamColor(lastTeamId);
+    Color teamColor = GenerateTeamColor(lastTeamId);
     Vec2 drawScale = Vec2(drawRec.width, drawRec.height) / simSize / 2;
     Vec2 drawCenter(drawRec.x + drawRec.width / 2, drawRec.y + drawRec.height / 2);
 
@@ -256,7 +263,7 @@ void NeuralWarfareEngine::Draw(Rectangle drawRec)
         if (agent.teamId != lastTeamId)
         {
             lastTeamId = agent.teamId;
-            teamColor = generateTeamColor(lastTeamId);
+            teamColor = GenerateTeamColor(lastTeamId);
         }
         Vec2 drawPos = drawCenter + agent.pos * drawScale;
         DrawEllipse(drawPos.x, drawPos.y, agentSize * drawScale.x, agentSize * drawScale.y, teamColor);

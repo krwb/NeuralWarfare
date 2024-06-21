@@ -17,12 +17,12 @@ void TestTrainer::Update()
 {
 	if (LastStepResults)
 	{
-		nextActions = new std::list<Environment::Action>();
+		nextActions = new std::list<Environment::Action*>();
 		for (Environment::StepResult& sr : *LastStepResults)
 		{
-			double nearestHostileDirection = sr.observation->GetForTest();
-			size_t action = nearestHostileDirection == 0 ? 0 : nearestHostileDirection < 0 ? 1 : 2;
-			nextActions->push_back({ sr, action });
+			Environment::Action* action = new NeuralWarfareEnv::MyAction(sr);
+			action->GetFromTest(sr.observation->GetForTest());
+			nextActions->push_back(action);
 		}
 	}
 }
@@ -41,12 +41,15 @@ void StaticNNTrainer::Update()
 {
 	if (LastStepResults)
 	{
-		nextActions = new std::list<Environment::Action>();
+		nextActions = new std::list<Environment::Action*>();
 		for (Environment::StepResult& sr : *LastStepResults)
 		{
-			std::vector<double> outputs = network->Evaluate(sr.observation->GetForNN());
-			size_t action = std::distance(outputs.begin(), std::max_element(outputs.begin(), outputs.end()));
-			nextActions->push_back({ sr, action });
+			Environment::Action* action = new NeuralWarfareEnv::MyAction(sr);
+			if (!(sr.terminated))
+			{
+				action->GetFromNN(network->Evaluate(sr.observation->GetForNN()));
+			}
+			nextActions->push_back(action);
 		}
 	}
 }
@@ -73,7 +76,7 @@ void GeneticAlgorithmNNTrainer::Update()
 		{
 			agents.push_back(new Agent { NeuralNetwork::Copy(masterNetwork) });
 		}
-		nextActions = new std::list<Environment::Action>();
+		nextActions = new std::list<Environment::Action*>();
 		bool allTruncated = true;
 		for (Environment::StepResult& sr : *LastStepResults)
 		{
@@ -86,21 +89,12 @@ void GeneticAlgorithmNNTrainer::Update()
 		}
 		for (Environment::StepResult& sr : *LastStepResults)
 		{
-			size_t action = 0;
+			Environment::Action* action = new NeuralWarfareEnv::MyAction(sr);
 			if (!(sr.terminated))
 			{
-				std::vector<double> nnOutputs = agents[sr.ID]->network->Evaluate(sr.observation->GetForNN());
-				double maxValue = 0;
-				for (size_t i = 0; i < nnOutputs.size(); i++)
-				{
-					if (maxValue < nnOutputs[i])
-					{
-						maxValue = nnOutputs[i];
-						action = i;
-					}
-				}
+				action->GetFromNN(agents[sr.ID]->network->Evaluate(sr.observation->GetForNN()));
 			}
-			nextActions->emplace_back(sr, action);
+			nextActions->push_back(action);
 		}
 	}
 }
@@ -155,7 +149,7 @@ void GeneticAlgorithmNNTrainer::Evolve()
 					newLayerFunction
 					);
 			}
-			//(*otherAgentsIter)->network->Clean();
+			(*otherAgentsIter)->network->Clean();
 			otherAgentsIter++;
 			topAgentsIter++;
 		}

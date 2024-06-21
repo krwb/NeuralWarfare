@@ -24,7 +24,7 @@ public:
 	/// Function to preform an action in the Environment
 	/// </summary>
 	/// <param name="actions"></param>
-	void TakeAction(std::list<Action>& actions) override;
+	void TakeAction(std::list<Action*>& actions) override;
 
 	/// <summary>
 	/// Function to get the result of the last action preformed
@@ -37,6 +37,34 @@ public:
 	/// </summary>
 	/// <returns>array of StepResult from the reset state of the Environment</returns>
 	std::list<StepResult>* Reset() override;
+
+	static class MyAction : public Action
+	{
+	public:
+		/// <summary>
+		/// Action constructor
+		/// </summary>
+		/// <param name="sr"> used to obtain the ID</param>
+		/// <param name="action"></param>
+		MyAction(StepResult& sr);
+		/// <summary>
+		/// Action constructor
+		/// </summary>
+		/// <param name="ID"> used to match the action to an agent</param>
+		/// <param name="action"></param>
+		MyAction(size_t ID);
+
+		void GetFromNN(std::vector<double> outputs) override;
+
+		size_t NNOutputSize() override;
+
+		void GetFromTest(double value) override;
+
+		void ExecuteAction(void* ptr) override;
+
+	private:
+		size_t action = 0;
+	};
 
 	/// <summary>
 	/// Stores information for an AI to use to decide its next action.
@@ -65,9 +93,8 @@ public:
 	private:
 
 	};
+
 private:
-
-
 	size_t teamId; // The team ID of the agents connected the environment
 	NeuralWarfareEngine& engine; // Reference the game engine
 	std::vector<NeuralWarfareEngine::Agent*> agents; // array of pointers that this environment is training
