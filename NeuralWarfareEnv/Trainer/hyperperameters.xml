@@ -8,7 +8,7 @@
 				 synapseMutationRate="0.050000000000000003" 
 				 newSynapseMagnitude="1" 
 				 nodeMutationRate="0.01" 
-				 ayerMutationRate="0.0050000000000000001" 
+				 layerMutationRate="0.0050000000000000001" 
 				 newLayerSizeAverage="5" 
 				 newLayerSizeRange="3" 
-				 newLayerFunction="basicAdd"/>
+				 newLayerFunction="tanh"/>

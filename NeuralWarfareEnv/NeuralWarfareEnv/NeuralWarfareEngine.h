@@ -64,9 +64,11 @@ public:
 		/// </summary>
 		void Reset();
 
+		float baseHealth; // agent spawn/starting health
+
 	private:
 		Vec2 spawnPos; // Agent spawn/starting position
-		float baseHealth; // agent spawn/starting health
+
 	};
 
 	std::mt19937& gen; // random number generator ref

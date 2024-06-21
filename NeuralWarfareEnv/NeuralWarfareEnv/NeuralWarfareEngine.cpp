@@ -42,14 +42,14 @@ void NeuralWarfareEngine::DoCollision(Agent* agentA, Agent* agentB)
     if (diffA > diffB) 
     {
         agentA->health -= 1;
-        agentB->reward += 1000;
+        agentB->reward += 1;
         agentA->UpdatePos(agentSize * 2);
         agentB->UpdatePos(agentSize * 2);
     }
     if (diffA < diffB)
     {
         agentB->health -= 1;
-        agentA->reward += 1000;
+        agentA->reward += 1;
         agentA->UpdatePos(agentSize * 2);
         agentB->UpdatePos(agentSize * 2);
     }
@@ -78,7 +78,6 @@ void NeuralWarfareEngine::Update(float delta)
             agent.pos.y > simSize.y)
         {
             agent.health = 0;
-            agent.reward -= 100;
             //agent.pos = -(agent.pos - agent.pos.Normalize() * (delta + 1));
         }
 

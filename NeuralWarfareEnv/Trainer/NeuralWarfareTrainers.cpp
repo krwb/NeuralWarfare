@@ -169,18 +169,18 @@ void GeneticAlgorithmNNTrainer::MyHyperparameters::Load(std::string fileName)
 	}
 
 	// Read attributes from root element
-	root->QueryUnsigned64Attribute("topAgentCount", &topAgentCount);
-	root->QueryUnsigned64Attribute("mutationCouunt", &mutationCouunt);
-	root->QueryDoubleAttribute("biasMutationRate", &biasMutationRate);
-	root->QueryDoubleAttribute("biasMutationMagnitude", &biasMutationMagnitude);
-	root->QueryDoubleAttribute("weightMutationRate", &weightMutationRate);
-	root->QueryDoubleAttribute("weightMutationMagnitude", &weightMutationMagnitude);
-	root->QueryDoubleAttribute("synapseMutationRate", &synapseMutationRate);
-	root->QueryDoubleAttribute("newSynapseMagnitude", &newSynapseMagnitude);
-	root->QueryDoubleAttribute("nodeMutationRate", &nodeMutationRate);
-	root->QueryDoubleAttribute("layerMutationRate", &layerMutationRate);
-	root->QueryIntAttribute("newLayerSizeAverage", &newLayerSizeAverage);
-	root->QueryIntAttribute("newLayerSizeRange", &newLayerSizeRange);
+	if(size_t e = root->QueryUnsigned64Attribute("topAgentCount", &topAgentCount) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'topAgentCount' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryUnsigned64Attribute("mutationCouunt", &mutationCouunt) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'mutationCouunt' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryDoubleAttribute("biasMutationRate", &biasMutationRate) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'biasMutationRate' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryDoubleAttribute("biasMutationMagnitude", &biasMutationMagnitude) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'biasMutationMagnitude' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryDoubleAttribute("weightMutationRate", &weightMutationRate) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'weightMutationRate' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryDoubleAttribute("weightMutationMagnitude", &weightMutationMagnitude) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'weightMutationMagnitude' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryDoubleAttribute("synapseMutationRate", &synapseMutationRate) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'synapseMutationRate' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryDoubleAttribute("newSynapseMagnitude", &newSynapseMagnitude) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'newSynapseMagnitude' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryDoubleAttribute("nodeMutationRate", &nodeMutationRate) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'nodeMutationRate' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryDoubleAttribute("layerMutationRate", &layerMutationRate) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'layerMutationRate' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryIntAttribute("newLayerSizeAverage", &newLayerSizeAverage) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'newLayerSizeAverage' : TinyXMLError[" << e << "]\n";
+	if(size_t e = root->QueryIntAttribute("newLayerSizeRange", &newLayerSizeRange) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load hyperperameter 'newLayerSizeRange' : TinyXMLError[" << e << "]\n";
 	newLayerFunction = root->Attribute("newLayerFunction");
 }
 
