@@ -118,12 +118,12 @@ std::vector<double> NeuralWarfareEnv::MyObservation::GetForNN()
 	out.push_back(health);
 	for (size_t i = 0; i < friendlyAgents.size(); i++) 
 	{
-		//out.push_back(friendlyAgents[i].first);
+		out.push_back(friendlyAgents[i].first);
 		out.push_back(friendlyAgents[i].second);
 	}
 	for (size_t i = 0; i < hostileAgents.size(); i++)
 	{
-		//out.push_back(hostileAgents[i].first);
+		out.push_back(hostileAgents[i].first);
 		out.push_back(hostileAgents[i].second);
 	}
 	return out;
@@ -131,7 +131,7 @@ std::vector<double> NeuralWarfareEnv::MyObservation::GetForNN()
 
 size_t NeuralWarfareEnv::MyObservation::NNInputSize()
 {
-	return (hostileAgentCount + friendlyAgentCount) * 1 + 1;
+	return (hostileAgentCount + friendlyAgentCount) * 2 + 1;
 }
 
 double NeuralWarfareEnv::MyObservation::GetForTest()

@@ -11,6 +11,12 @@
 #include "Trainer.h"
 #include "NeuralWarfareTrainers.h"
 
+std::string MakeFilename(const std::string& filename, const std::string& extension) {
+	std::string correctExtension = (extension[0] == '.') ? extension : "." + extension;
+	size_t lastDot = filename.find_last_of('.');
+	std::string baseFilename = (lastDot != std::string::npos) ? filename.substr(0, lastDot) : filename;
+	return baseFilename + correctExtension;
+}
 
 static void UpdateTrainers(std::vector<Trainer*>& trainers)
 {
@@ -56,7 +62,7 @@ int main()
 	{
 		network->AddOutput(new Node(nullptr, &sigmoidFunction));
 	}
-	network->MakeFullyConnected();
+	//network->MakeFullyConnected();
 	NetworkVis netVis(network, { windowWidth / 2,windowHeight / 2, 1200, 800 });
 	size_t netVisI = 0;
 	size_t stepsPerFrame = 1;
@@ -71,17 +77,11 @@ int main()
 	std::uniform_real_distribution<float> spawnYDis(-eng.simSize.y, eng.simSize.y);
 
 
-	//envs.push_back(new NeuralWarfareEnv(eng, eng.AddTeam(100, 1, { -eng.simSize.x / 2 ,0 })));
-	//trainers.push_back(new GeneticAlgorithmNNTrainer(envs.back(), gen, hyperperameters, NeuralNetwork::Copy(network)));
-
-	//envs.push_back(new NeuralWarfareEnv(eng, eng.AddTeam(100, 1, { eng.simSize.x / 2,0 })));
-	//trainers.push_back(new TestTrainer(envs.back()));
-
-	     
 	size_t trainerCount = 2;
+
 	for (size_t i = 0; i < trainerCount; i++)
 	{
-		envs.push_back(new NeuralWarfareEnv(eng, eng.AddTeam(100, 2, { static_cast<float>(cos(std::numbers::pi * (static_cast<double>(i) / static_cast<double>(trainerCount) * 2.0f))) * eng.simSize.x / 2.0f, static_cast<float>(sin(std::numbers::pi * (static_cast<double>(i) / static_cast<double>(trainerCount) * 2.0f))) * eng.simSize.y / 2.0f })));
+		envs.push_back(new NeuralWarfareEnv(eng, eng.AddTeam(200, 2, { static_cast<float>(cos(std::numbers::pi * (static_cast<double>(i) / static_cast<double>(trainerCount) * 2.0f))) * eng.simSize.x / 2.0f, static_cast<float>(sin(std::numbers::pi * (static_cast<double>(i) / static_cast<double>(trainerCount) * 2.0f))) * eng.simSize.y / 2.0f })));
 		trainers.push_back(new GeneticAlgorithmNNTrainer(envs.back(), gen, hyperperameters, NeuralNetwork::Copy(network)));
 	}
 
@@ -103,7 +103,7 @@ int main()
 		{
 			resetTimer += 1.0f/60.0f;//deltaTime;
 
-			if (resetTimer > 10)
+			if (resetTimer > 20)
 			{
 				eng.Reset();
 				resetTimer = 0;
@@ -115,7 +115,6 @@ int main()
 
 			delete trainerFuture;
 			trainerFuture = new std::future<void>(std::async(std::launch::async, UpdateTrainers, std::ref(trainers)));
-			//UpdateTrainers(trainers);
 			eng.Update(2);
 			trainerFuture->wait();
 
@@ -150,7 +149,7 @@ int main()
 			std::string filename;
 			std::cout << "Filename : ";
 			std::cin >> filename;
-			NeuralNetwork::Save(*selectedTrainer->masterNetwork, filename);
+			NeuralNetwork::Save(*selectedTrainer->masterNetwork, MakeFilename(filename, "bin"));
 		}
 		if (IsKeyPressed(KEY_MINUS))
 		{

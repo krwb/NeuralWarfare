@@ -69,7 +69,7 @@ void NeuralWarfareEngine::Update(float delta)
     wasReset = false;
 	for (Agent& agent : agents)
 	{
-        agent.reward = 0;
+        agent.reward = 1;
         //handle simulation boundary
         
         if (agent.pos.x < -simSize.x ||
