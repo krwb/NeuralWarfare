@@ -229,3 +229,48 @@ void GeneticAlgorithmNNTrainer::Agent::SetNetwork(NeuralNetwork* newNetwork)
 	network->Delete();
 	network = newNetwork;
 }
+
+NEATTrainer::NEATTrainer(Environment* env, std::mt19937& gen, ActivationFunction* newLayerFunction, size_t populationSize)
+	: gen(gen), newLayerFunction(newLayerFunction), environment(env), populationSize(populationSize), compatibilityThreshold(3.0)
+{
+	// Initialize agents and their networks
+	InitializeAgents();
+}
+
+NEATTrainer::~NEATTrainer()
+{
+	for (auto agent : agents) {
+		delete agent;
+	}
+	agents.clear();
+}
+
+
+void NEATTrainer::InitializeAgents()
+{
+	// Initialize agents with initial networks
+	for (size_t i = 0; i < populationSize; i++)
+	{
+		NeuralNetwork* initialNetwork = NeuralNetwork::Copy(masterNetwork);
+		agents.push_back(new Agent(initialNetwork, new NEATNetworkInterface(initialNetwork)));
+	}
+}
+void NEATTrainer::Update()
+{
+}
+
+void NEATTrainer::Evolve()
+{
+}
+
+
+NEATTrainer::Agent::Agent()
+{
+}
+
+void NEATTrainer::Agent::SetNetwork()
+{
+	std::vector<ActivationFunction*>& functions = network->functions;
+	network->Delete();
+	network = neatInterface->ConstructNetworkFromGenes(functions);
+}

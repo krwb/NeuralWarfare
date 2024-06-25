@@ -1,7 +1,9 @@
 #pragma once
 #include <list>
 #include <vector>
+#include <unordered_map>
 #include <string>
+#include <iostream>
 
 /// <summary>
 /// Represents an activation function used by neural network nodes.
@@ -30,6 +32,8 @@ private:
 class Layer;
 class Node;
 class Synapse;
+
+
 
 /// <summary>
 /// Represents a neural network composed of layers of nodes.
@@ -420,4 +424,62 @@ public:
 
 private:
 
+};
+
+enum class NodeType
+{
+	INPUT,
+	OUTPUT,
+	HIDDEN
+};
+
+class NodeGene 
+{
+public:
+	NodeGene(size_t nodeID, NodeType type, ActivationFunction* function, size_t layerIndex, double bias)
+		: nodeID(nodeID), nodeType(type), activationFunction(function), layerIndex(layerIndex), bias(bias) {
+	}
+	NodeType nodeType;
+	ActivationFunction* activationFunction;
+	double bias;
+
+	size_t nodeID;
+	size_t layerIndex;
+};
+
+class SynapseGene 
+{
+public:
+	SynapseGene(int innovation, size_t fromNode, size_t toNode, double w, bool enabled)
+		: innovationNumber(innovation), fromNodeID(fromNode), toNodeID(toNode), weight(w), isEnabled(enabled) 
+	{}
+
+	int innovationNumber;
+	size_t fromNodeID;
+	size_t toNodeID;
+	double weight;
+	bool isEnabled;
+};
+
+class NEATNetworkInterface
+{
+	std::vector<NodeGene> nodeGenes;
+	std::vector<SynapseGene> synapseGenes;
+public:
+	NEATNetworkInterface() {};
+	~NEATNetworkInterface() {};
+
+
+	void AddNodeGene(const NodeGene& nodeGene) {
+		nodeGenes.push_back(nodeGene);
+	}
+
+	void AddSynapseGene(const SynapseGene& synapseGene) {
+		synapseGenes.push_back(synapseGene);
+	}
+
+	NeuralNetwork* ConstructNetworkFromGenes(std::vector<ActivationFunction*>& functions);
+
+	void ConstructGenesFromNetwork(NeuralNetwork* network);
+private:
 };

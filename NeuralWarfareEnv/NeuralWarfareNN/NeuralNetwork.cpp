@@ -511,16 +511,77 @@ void Synapse::Unlink()
 	out->inputs.remove(this);
 }
 
+NeuralNetwork* NEATNetworkInterface::ConstructNetworkFromGenes(std::vector<ActivationFunction*>& functions)
+{
+	NeuralNetwork* newNetwork = new NeuralNetwork(functions);
 
+	std::unordered_map<size_t, Node*> networkNodes;
+	for (NodeGene& nodeGene : nodeGenes)
+	{
+		Node* newNode = new Node(nullptr, nodeGene.activationFunction, nodeGene.bias);
+		networkNodes.emplace(nodeGene.nodeID, newNode);
+		switch (nodeGene.nodeType)
+		{
+		case NodeType::INPUT:
+			newNetwork->AddInput(newNode);
+			break;
+		case NodeType::OUTPUT:
+			newNetwork->AddOutput(newNode);
+			break;
+		case NodeType::HIDDEN:
+		{
+			// Check to see if layer index will place the output layer or out of range
+			while (nodeGene.layerIndex < newNetwork->size() - 1)
+			{
+				// insert layers before the output layer
+				new Layer(newNetwork, std::prev(std::prev(newNetwork->end())));
+			}
+			auto it = newNetwork->begin();
+			std::advance(it, nodeGene.layerIndex);
+			newNode->SetLayer(*it);
+			break;
+		}
+		default:
+			break;
+		}
+	}
+	for (SynapseGene& synapseGene : synapseGenes)
+	{
+		if (synapseGene.isEnabled)
+		{
+			try
+			{
+				new Synapse(networkNodes.at(synapseGene.fromNodeID), networkNodes.at(synapseGene.toNodeID), synapseGene.weight);
+			}
+			catch (const std::out_of_range& e)
+			{
+				std::cerr << "Error: Couldn't find node for synapse creation from NEAT synapse gene\n";
+			}
+		}
+	}
+	return newNetwork;
+}
 
+void NEATNetworkInterface::ConstructGenesFromNetwork(NeuralNetwork* network)
+{
+	NeuralNetwork::iterator layeriter = network->begin();
+	std::unordered_map<Node*, size_t> nodeMap;
+	size_t nodeID = 0;
+	size_t layerIndex = 0;
+	while (layeriter != network->end())
+	{
+		Layer* layer = *layeriter;
 
+		for (Node* node : *layer)
+		{
+			nodeMap.emplace(nodeID, node);
+			NodeType nType = layer == network->front() ? NodeType::INPUT : layer == network->back() ? NodeType::OUTPUT : NodeType::HIDDEN;
+			NodeGene gene(nodeID,nType,node->function,)
+			nodeID++;
+		}
 
-
-
-
-
-
-
-
+		layerIndex++;
+	}
+}
 
 

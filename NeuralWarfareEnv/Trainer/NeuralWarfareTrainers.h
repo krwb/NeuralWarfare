@@ -126,3 +126,41 @@ private:
 	std::mt19937& gen;
 	MyHyperparameters hyperparameters;
 };
+
+
+class NEATTrainer : public Trainer
+{
+public:
+	NEATTrainer(Environment* env, std::mt19937& gen, ActivationFunction* newLayerFunction, size_t populationSize);
+	~NEATTrainer() override;
+
+	void Update() override;
+
+private:
+	class Agent
+	{
+	public:
+		Agent(NeuralNetwork* network, NEATNetworkInterface* neatInterface);
+		~Agent();
+		void SetNetwork(NeuralNetwork* newNetwork);
+		float fitness = 0;
+		size_t species = 0;
+
+	private:
+		NeuralNetwork* network;
+		NEATNetworkInterface* neatInterface;
+	};
+
+	void Evolve();
+	void Speciate();
+	double CompatibilityDistance(const Agent& a, const Agent& b);
+	void InitializeAgents();
+
+	ActivationFunction* newLayerFunction = nullptr;
+	std::vector<Agent*> agents;
+	std::vector<std::vector<Agent*>> species;
+	std::mt19937& gen;
+	Environment* environment;
+	size_t populationSize;
+	double compatibilityThreshold;
+};
