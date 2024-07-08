@@ -102,6 +102,7 @@ int main()
 	auto framestart = std::chrono::high_resolution_clock::now();
 	auto frameend = std::chrono::high_resolution_clock::now();
 	float deltaTime = std::chrono::duration<float>(frameend - framestart).count();
+	bool drawEng = true;
 	float resetTimer = 0;
 	std::future<void>* trainerFuture = nullptr;
 	while (!WindowShouldClose())
@@ -114,7 +115,11 @@ int main()
 		{
 			resetTimer += 1.0f/60.0f;//deltaTime;
 
+<<<<<<< Updated upstream
 			if (resetTimer > 5)
+=======
+			if (resetTimer > 10)
+>>>>>>> Stashed changes
 			{
 				eng.Reset();
 				resetTimer = 0;
@@ -139,7 +144,10 @@ int main()
 
 		BeginDrawing();
 		ClearBackground(BLACK);
-		eng.Draw(drawRec);
+		if (drawEng)
+		{
+			eng.Draw(drawRec);
+		}
 
 		if (IsKeyDown(KEY_SPACE))
 		{
@@ -170,7 +178,10 @@ int main()
 		{
 			stepsPerFrame++;
 		}
-
+		if (IsKeyPressed(KEY_E))
+		{
+			drawEng = !drawEng;
+		}
 		DrawText(("FPS: " + std::to_string(1 / deltaTime)).c_str(), 0, 0, 18, WHITE);
 		EndDrawing();
 	}
