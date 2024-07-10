@@ -38,10 +38,10 @@ bool UIButton::isDown(MouseButton mousebutton) {
 
 bool UIButtonRec::isOver() {
 	Vector2 mPos = GetMousePosition();
-	if (mPos.x > buttonRec.x &&
-		mPos.y > buttonRec.y &&
-		mPos.x < buttonRec.x + buttonRec.width &&
-		mPos.y < buttonRec.y + buttonRec.height) {
+	if (mPos.x > rec.x &&
+		mPos.y > rec.y &&
+		mPos.x < rec.x + rec.width &&
+		mPos.y < rec.y + rec.height) {
 		isover = true;
 		return isover;
 	}
@@ -52,4 +52,19 @@ bool UIButtonRec::isOver() {
 bool UIButtonCircle::isOver() {
 	isover = (Vec2(GetMousePosition()) - pos).Length() < radius;
 	return isover;
+}
+
+void UITextLine::draw(float alpha)
+{
+	Color color = parentContainer->textColor;
+	color.a += alpha;
+	DrawText(text.c_str(), pos.x - MeasureText(text.c_str(), size)/2, pos.y, size, color);
+}
+
+void UITextBox::draw(float alpha)
+{
+	Color color = parentContainer->secondaryColor;
+	color.a += alpha;
+	DrawRectangleRec(rec, color);
+	DrawTextRec(GetFontDefault(), text.c_str(), {rec.x + size/2,rec.y + size/2, rec.width - size / 2,rec.height - size / 2 }, size, size / 5, true, parentContainer->textColor);
 }

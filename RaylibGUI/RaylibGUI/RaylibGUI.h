@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+
 #include <list>
 #include "Vec2.h"
 #include <iostream>
@@ -12,11 +13,11 @@ class UIElement
 {
 public:
 	UIElement(UIContainer* parentContainer);
-	~UIElement();
+	virtual ~UIElement();
 	bool hidden = false;
-	virtual void draw(float alpha = 255) = 0;
+	virtual void draw(float alpha = 0) = 0;
 	virtual void update() = 0;
-	
+
 	virtual void setPos(const Vec2& pos) = 0;
 	virtual Vec2 getPos() = 0;
 
@@ -28,16 +29,16 @@ class UIContainer
 {
 public:
 	UIContainer(Color& primaryColor, Color& secondaryColor, Color& textColor) :
-		primaryColor(primaryColor), 
-		secondaryColor(secondaryColor), 
+		primaryColor(primaryColor),
+		secondaryColor(secondaryColor),
 		textColor(textColor) {}
 
-	UIContainer(UIContainer& uiContainer) : 
-		primaryColor(uiContainer.primaryColor), 
-		secondaryColor(uiContainer.secondaryColor), 
+	UIContainer(UIContainer& uiContainer) :
+		primaryColor(uiContainer.primaryColor),
+		secondaryColor(uiContainer.secondaryColor),
 		textColor(uiContainer.textColor) {}
 
-	~UIContainer()
+	virtual ~UIContainer()
 	{
 		while (childElements.size())
 		{
@@ -68,7 +69,7 @@ public:
 			}
 		}
 	}
-	
+
 	Color& primaryColor;
 	Color& secondaryColor;
 	Color& textColor;
@@ -76,11 +77,11 @@ protected:
 	std::list<UIElement*> childElements;
 };
 
-class UISubContainer : public UIContainer, public UIElement
+class UISubContainer : public UIContainer, virtual public UIElement
 {
 public:
 	UISubContainer(UIContainer* parentContainer) : UIElement(parentContainer), UIContainer(*parentContainer) {};
-	~UISubContainer() {};
+	virtual ~UISubContainer() {};
 
 	void UIElement::draw(float alpha)
 	{
@@ -93,11 +94,11 @@ public:
 private:
 };
 
-class UIButton : public UIElement
+class UIButton : virtual public UIElement
 {
 public:
 	UIButton(UIContainer* parentContainer) : UIElement(parentContainer) {};
-	~UIButton() {};
+	virtual ~UIButton() {};
 
 	bool isPressed(MouseButton mousebutton);
 	bool isDown(MouseButton mousebutton);
@@ -106,30 +107,53 @@ protected:
 	bool isover = false;
 };
 
-template<typename T>
-struct is_simple_button : std::false_type {};
-
-
-class UIButtonRec : public UIButton
+class UIRectangle : virtual public UIElement
 {
 public:
-	UIButtonRec(UIContainer* parentContainer, Rectangle buttonRec) : UIButton(parentContainer), buttonRec(buttonRec)
+	UIRectangle(UIContainer* parentContainer, Rectangle rec) : UIElement(parentContainer), rec(rec) {};
+	virtual ~UIRectangle() {};
+
+	virtual void UIElement::draw(float alpha)
 	{
-	};
-	~UIButtonRec() {};
+		Color color = parentContainer->primaryColor;
+		color.a += alpha;
+		DrawRectangleRec(rec, color);
+	}
+
+	virtual void UIElement::setPos(const Vec2& pos) override
+	{
+		rec.x = pos.x - rec.width / 2;
+		rec.y = pos.y - rec.height / 2;
+	}
+
+	virtual Vec2 UIElement::getPos()
+	{
+		return Vec2(rec.x + rec.width / 2, rec.y + rec.height / 2);
+	}
+
+protected:
+	Rectangle rec;
+};
+
+
+class UIButtonRec : public UIButton, public UIRectangle
+{
+public:
+	UIButtonRec(UIContainer* parentContainer, Rectangle buttonRec) : UIElement(parentContainer), UIButton(parentContainer), UIRectangle(parentContainer, buttonRec) {}
+	virtual ~UIButtonRec() {};
 
 	virtual void UIElement::draw(float alpha)
 	{
 		if (isOver()) {
 			Color color = parentContainer->primaryColor;
-			color.a = alpha;
-			DrawRectangleRec(buttonRec, color);
+			color.a += alpha;
+			DrawRectangleRec(rec, color);
 		}
 		else
 		{
 			Color color = parentContainer->secondaryColor;
-			color.a = alpha;
-			DrawRectangleRec(buttonRec, color);
+			color.a += alpha;
+			DrawRectangleRec(rec, color);
 		}
 	}
 
@@ -137,39 +161,25 @@ public:
 
 	virtual bool UIButton::isOver();
 
-	virtual void UIElement::setPos(const Vec2& pos)
-	{
-		buttonRec.x = pos.x - buttonRec.width / 2;
-		buttonRec.y = pos.y - buttonRec.height / 2;
-	}
-
-	virtual Vec2 UIElement::getPos()
-	{
-		return Vec2(buttonRec.x + buttonRec.width / 2, buttonRec.y + buttonRec.height / 2);
-	}
-
 protected:
-	Rectangle buttonRec;
-};
 
-template<>
-struct is_simple_button<UIButtonRec> : std::true_type {};
+};
 
 
 class UIButtonCircle : public UIButton
 {
 public:
-	UIButtonCircle(UIContainer* parentContainer, Vec2 pos, float radius) : UIButton(parentContainer), pos(pos),radius(radius) {};
+	UIButtonCircle(UIContainer* parentContainer, Vec2 pos, float radius) : UIElement(parentContainer), UIButton(parentContainer), pos(pos), radius(radius) {};
 	~UIButtonCircle() {};
 
 	virtual void UIElement::draw(float alpha)
 	{
 		if (isOver()) {
-			DrawCircleV(pos.vector2(), radius,parentContainer->primaryColor);
+			DrawCircleV(pos.vector2(), radius, parentContainer->primaryColor);
 		}
 		else
 		{
-			DrawCircleV(pos.vector2(), radius,parentContainer->secondaryColor);
+			DrawCircleV(pos.vector2(), radius, parentContainer->secondaryColor);
 		}
 	}
 	virtual void UIElement::update() {};
@@ -191,14 +201,11 @@ protected:
 	float radius;
 };
 
-template<>
-struct is_simple_button<UIButtonCircle> : std::true_type {};
-
 
 class UISlider : public UIButtonRec
 {
 public:
-	UISlider(UIContainer* parentContainer, Rectangle buttonRec, float speed) : UIButtonRec(parentContainer, buttonRec), speed(speed)
+	UISlider(UIContainer* parentContainer, Rectangle buttonRec, float speed) : UIElement(parentContainer), UIButtonRec(parentContainer, buttonRec), speed(speed)
 	{
 		if (buttonRec.height > buttonRec.width)
 		{
@@ -227,13 +234,13 @@ public:
 
 		if (griped)
 		{
-			if (buttonRec.height > buttonRec.width)
+			if (rec.height > rec.width)
 			{
-				value = (GetMouseY() - buttonRec.y - radius) / range;
+				value = (GetMouseY() - rec.y - radius) / range;
 			}
 			else
 			{
-				value = (GetMouseX() - buttonRec.x - radius) / range;
+				value = (GetMouseX() - rec.x - radius) / range;
 			}
 			griped = !IsMouseButtonUp(MOUSE_LEFT_BUTTON);
 		}
@@ -249,21 +256,21 @@ public:
 
 	virtual void UIElement::draw(float alpha)
 	{
-		DrawRectangleRec(buttonRec, parentContainer->secondaryColor);
-		if (buttonRec.height > buttonRec.width)
+		UIRectangle::draw(alpha);
+		if (rec.height > rec.width)
 		{
-			DrawCircle(buttonRec.x + radius, buttonRec.y + range * value + radius, radius, parentContainer->primaryColor);
+			DrawCircle(rec.x + radius, rec.y + range * value + radius, radius, parentContainer->primaryColor);
 		}
 		else
 		{
-			DrawCircle(buttonRec.x + range * value + radius, buttonRec.y + radius, radius, parentContainer->primaryColor);
+			DrawCircle(rec.x + range * value + radius, rec.y + radius, radius, parentContainer->primaryColor);
 		}
 	}
 
 	float value = 0;
 private:
 	bool griped = false;
-	float radius;	
+	float radius;
 	float range;
 	float speed;
 };
@@ -271,7 +278,7 @@ private:
 class UISliderContainer : public UIContainer, public UISlider
 {
 public:
-	UISliderContainer(UIContainer* parentContainer, Rectangle buttonRec, float speed) : UISlider(parentContainer, buttonRec,speed) , UIContainer(*parentContainer) {};
+	UISliderContainer(UIContainer* parentContainer, Rectangle buttonRec, float speed) : UIElement(parentContainer), UISlider(parentContainer, buttonRec, speed), UIContainer(*parentContainer) {};
 	~UISliderContainer() {};
 
 	virtual void UIElement::update()
@@ -280,7 +287,7 @@ public:
 		UIContainer::update();
 		findRange();
 		float moveAmount = (oldValue - value) * range;
-		if (buttonRec.width < buttonRec.height)
+		if (rec.width < rec.height)
 		{
 			for (auto element : childElements)
 			{
@@ -304,9 +311,9 @@ public:
 	virtual void UIElement::draw(float alpha)
 	{
 		UISlider::draw(alpha);
-		if (buttonRec.width < buttonRec.height)
+		if (rec.width < rec.height)
 		{
-			float drawRange = buttonRec.height / 2;
+			float drawRange = rec.height / 2;
 			for (auto element : childElements)
 			{
 				element->hidden = abs(getPos().y - element->getPos().y) > drawRange;
@@ -314,7 +321,7 @@ public:
 		}
 		else
 		{
-			float drawRange = buttonRec.width / 2;
+			float drawRange = rec.width / 2;
 			for (auto element : childElements)
 			{
 				element->hidden = abs(getPos().x - element->getPos().x) > drawRange;
@@ -331,7 +338,7 @@ private:
 	{
 		float firstElementPos;
 		float lastElementPos;
-		if (buttonRec.width < buttonRec.height)
+		if (rec.width < rec.height)
 		{
 			firstElementPos = childElements.front()->getPos().y;
 			lastElementPos = firstElementPos;
@@ -369,6 +376,16 @@ private:
 	}
 };
 
+
+template<typename T>
+struct is_simple_button : std::false_type {};
+
+template<>
+struct is_simple_button<UIButtonRec> : std::true_type {};
+
+template<>
+struct is_simple_button<UIButtonCircle> : std::true_type {};
+
 template<typename T>
 concept SimpleButton = is_simple_button<T>::value && std::derived_from<T, UIButton>;
 
@@ -379,7 +396,7 @@ class UIFunctionButton : public UIButton, public UIContainer
 	std::function<void()> function;
 public:
 	template<typename... Args>
-	UIFunctionButton(UIContainer* parentContainer, std::function<void()> func, Args&&... args) : UIButton(parentContainer), UIContainer(*parentContainer), function(func)
+	UIFunctionButton(UIContainer* parentContainer, std::function<void()> func, Args&&... args) : UIElement(parentContainer), UIButton(parentContainer), UIContainer(*parentContainer), function(func)
 	{
 		button = new ButtonType(this, std::forward<Args>(args)...);
 	}
@@ -387,7 +404,7 @@ public:
 	{
 		delete button;
 	}
-	
+
 	virtual void UIElement::update()
 	{
 		if (button)
@@ -427,3 +444,62 @@ private:
 
 };
 
+class UIText : virtual public UIElement
+{
+public:
+	UIText(UIContainer* parentContainer) : UIElement(parentContainer) {}
+	UIText(UIContainer* parentContainer, std::string text) : UIElement(parentContainer), text(text) {}
+	UIText(UIContainer* parentContainer, std::string text, float size) : UIElement(parentContainer), text(text), size(size) {}
+	virtual ~UIText() {};
+
+	virtual void update() {}
+
+	inline void SetText(std::string text) { UIText::text = text; }
+	inline void SetSize(float size) { UIText::size = size; }
+
+protected:
+	float size = 20;
+	std::string text;
+};
+
+class UITextLine : public UIText
+{
+public:
+	UITextLine(UIContainer* parentContainer, Vec2 pos) : UIElement(parentContainer), UIText(parentContainer), pos(pos) {}
+	UITextLine(UIContainer* parentContainer, Vec2 pos, std::string text) : UIElement(parentContainer), UIText(parentContainer, text), pos(pos) {}
+	UITextLine(UIContainer* parentContainer, Vec2 pos, std::string text, float size) : UIElement(parentContainer), UIText(parentContainer, text, size), pos(pos) {}
+
+	virtual ~UITextLine() {};
+
+	virtual void draw(float alpha);
+
+	virtual void setPos(const Vec2& pos) { UITextLine::pos = pos; }
+	virtual Vec2 getPos() { return pos; }
+
+private:
+	Vec2 pos;
+
+};
+
+class UITextBox : public UIRectangle, public UIText
+{
+public:
+	UITextBox(UIContainer* parentContainer, Rectangle rec) : UIElement(parentContainer), UIRectangle(parentContainer,rec), UIText(parentContainer) {}
+	UITextBox(UIContainer* parentContainer, Rectangle rec, std::string text) : UIElement(parentContainer), UIRectangle(parentContainer,rec), UIText(parentContainer, text) {}
+	UITextBox(UIContainer* parentContainer, Rectangle rec, std::string text, float size) : UIElement(parentContainer), UIRectangle(parentContainer,rec), UIText(parentContainer, text, size) {}
+	virtual ~UITextBox() {};
+
+	virtual void draw(float alpha);
+private:
+};
+
+
+//class UITextInput
+//{
+//public:
+//	UITextInput();
+//	virtual ~UITextInput();
+//
+//private:
+//
+//};
