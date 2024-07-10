@@ -7,32 +7,79 @@
 #include <functional>
 #include <concepts>
 #include <utility>
+#include <type_traits>
 
 class UIContainer;
+
+
+/// <summary>
+/// Base class for UI elements.
+/// </summary>
 class UIElement
 {
 public:
+	/// <summary>
+	/// Constructor for UIElement.
+	/// </summary>
+	/// <param name="parentContainer">Pointer to the parent container.</param>
 	UIElement(UIContainer* parentContainer);
+
+	/// <summary>
+	/// Virtual destructor for UIElement.
+	/// </summary>
 	virtual ~UIElement();
-	bool hidden = false;
+
+	bool hidden = false; // Visibility flag for the UI element.
+
+	/// <summary>
+	/// Draws the UI element.
+	/// </summary>
+	/// <param name="alpha">Optional alpha value for transparency.</param>
 	virtual void draw(float alpha = 0) = 0;
+
+	/// <summary>
+	/// Updates the UI element.
+	/// </summary>
 	virtual void update() = 0;
 
+	/// <summary>
+	/// Sets the position of the UI element.
+	/// </summary>
+	/// <param name="pos">New position.</param>
 	virtual void setPos(const Vec2& pos) = 0;
+
+	/// <summary>
+	/// Gets the position of the UI element.
+	/// </summary>
+	/// <returns>Current position.</returns>
 	virtual Vec2 getPos() = 0;
 
 protected:
-	UIContainer* parentContainer;
+	UIContainer* parentContainer; // Pointer to the parent container.
 };
 
+
+/// <summary>
+/// Container for managing multiple UI elements.
+/// </summary>
 class UIContainer
 {
 public:
+	/// <summary>
+	/// Constructs a UIContainer with specified colors.
+	/// </summary>
+	/// <param name="primaryColor">Primary color.</param>
+	/// <param name="secondaryColor">Secondary color.</param>
+	/// <param name="textColor">Text color.</param>
 	UIContainer(Color& primaryColor, Color& secondaryColor, Color& textColor) :
 		primaryColor(primaryColor),
 		secondaryColor(secondaryColor),
 		textColor(textColor) {}
 
+	/// <summary>
+	/// Copy constructor for UIContainer.
+	/// </summary>
+	/// <param name="uiContainer">UIContainer to copy from.</param>
 	UIContainer(UIContainer& uiContainer) :
 		primaryColor(uiContainer.primaryColor),
 		secondaryColor(uiContainer.secondaryColor),
@@ -46,9 +93,21 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// Adds a UI element to the container.
+	/// </summary>
+	/// <param name="element">Element to add.</param>
 	virtual void add(UIElement* element);
+
+	/// <summary>
+	/// Removes a UI element from the container.
+	/// </summary>
+	/// <param name="element">Element to remove.</param>
 	virtual void remove(UIElement* element);
 
+	/// <summary>
+	/// Updates all visible child elements.
+	/// </summary>
 	void update()
 	{
 		for (auto element : childElements)
@@ -59,6 +118,11 @@ public:
 			}
 		}
 	}
+
+	/// <summary>
+	/// Draws all visible child elements.
+	/// </summary>
+	/// <param name="alpha">Optional alpha value for transparency.</param>
 	void draw(float alpha = 255)
 	{
 		for (auto element : childElements)
@@ -70,23 +134,38 @@ public:
 		}
 	}
 
-	Color& primaryColor;
-	Color& secondaryColor;
-	Color& textColor;
+	Color& primaryColor; // Primary color for the container.
+	Color& secondaryColor; // Secondary color for the container.
+	Color& textColor; // Text color for the container.
 protected:
-	std::list<UIElement*> childElements;
+	std::list<UIElement*> childElements; // List of child elements.
 };
 
+/// <summary>
+/// A UIContainer that also functions as a UIElement.
+/// </summary>
 class UISubContainer : public UIContainer, virtual public UIElement
 {
 public:
+	/// <summary>
+	/// Constructs a UISubContainer.
+	/// </summary>
+	/// <param name="parentContainer">Pointer to the parent container.</param>
 	UISubContainer(UIContainer* parentContainer) : UIElement(parentContainer), UIContainer(*parentContainer) {};
+
 	virtual ~UISubContainer() {};
 
+	/// <summary>
+	/// Draws the UISubContainer and its elements.
+	/// </summary>
 	void UIElement::draw(float alpha)
 	{
 		UIContainer::draw();
 	}
+
+	/// <summary>
+	/// Updates the UISubContainer and its elements.
+	/// </summary>
 	void UIElement::update()
 	{
 		UIContainer::update();
@@ -94,25 +173,65 @@ public:
 private:
 };
 
+/// <summary>
+/// Button UI element.
+/// </summary>
 class UIButton : virtual public UIElement
 {
 public:
+	/// <summary>
+	/// Constructs a UIButton.
+	/// </summary>
+	/// <param name="parentContainer">Pointer to the parent container.</param>
 	UIButton(UIContainer* parentContainer) : UIElement(parentContainer) {};
+
+	/// <summary>
+	/// Virtual destructor for UIButton.
+	/// </summary>
 	virtual ~UIButton() {};
 
+	/// <summary>
+	/// Checks if the button is pressed.
+	/// </summary>
+	/// <param name="mousebutton">Mouse button to check.</param>
+	/// <returns>True if pressed, false otherwise.</returns>
 	bool isPressed(MouseButton mousebutton);
+
+	/// <summary>
+	/// Checks if the button is held down.
+	/// </summary>
+	/// <param name="mousebutton">Mouse button to check.</param>
+	/// <returns>True if held down, false otherwise.</returns>
 	bool isDown(MouseButton mousebutton);
+
+	/// <summary>
+	/// Checks if the mouse is over the button.
+	/// </summary>
+	/// <returns>True if over, false otherwise.</returns>
 	virtual bool isOver() = 0;
 protected:
-	bool isover = false;
+	bool isover = false; // Flag indicating if the mouse is over the button.
 };
 
+/// <summary>
+/// Rectangle UI element.
+/// </summary>
 class UIRectangle : virtual public UIElement
 {
 public:
+	/// <summary>
+	/// Constructs a UIRectangle.
+	/// </summary>
+	/// <param name="parentContainer">Pointer to the parent container.</param>
+	/// <param name="rec">Rectangle dimensions.</param>
 	UIRectangle(UIContainer* parentContainer, Rectangle rec) : UIElement(parentContainer), rec(rec) {};
+
 	virtual ~UIRectangle() {};
 
+	/// <summary>
+	/// Draws the rectangle.
+	/// </summary>
+	/// <param name="alpha">Optional alpha value for transparency.</param>
 	virtual void UIElement::draw(float alpha)
 	{
 		Color color = parentContainer->primaryColor;
@@ -120,23 +239,30 @@ public:
 		DrawRectangleRec(rec, color);
 	}
 
+	/// <summary>
+	/// Sets the position of the rectangle.
+	/// </summary>
+	/// <param name="pos">New position.</param>
 	virtual void UIElement::setPos(const Vec2& pos) override
 	{
 		rec.x = pos.x - rec.width / 2;
 		rec.y = pos.y - rec.height / 2;
 	}
 
+	/// <summary>
+	/// Gets the position of the rectangle.
+	/// </summary>
+	/// <returns>Current position.</returns>
 	virtual Vec2 UIElement::getPos()
 	{
 		return Vec2(rec.x + rec.width / 2, rec.y + rec.height / 2);
 	}
 
 protected:
-	Rectangle rec;
+	Rectangle rec; // Rectangle dimensions.
 };
 
-
-class UIButtonRec : public UIButton, public UIRectangle
+class UIButtonRec : virtual public UIButton, virtual public UIRectangle
 {
 public:
 	UIButtonRec(UIContainer* parentContainer, Rectangle buttonRec) : UIElement(parentContainer), UIButton(parentContainer), UIRectangle(parentContainer, buttonRec) {}
@@ -164,7 +290,6 @@ public:
 protected:
 
 };
-
 
 class UIButtonCircle : public UIButton
 {
@@ -201,11 +326,10 @@ protected:
 	float radius;
 };
 
-
 class UISlider : public UIButtonRec
 {
 public:
-	UISlider(UIContainer* parentContainer, Rectangle buttonRec, float speed) : UIElement(parentContainer), UIButtonRec(parentContainer, buttonRec), speed(speed)
+	UISlider(UIContainer* parentContainer, Rectangle buttonRec, float speed) : UIElement(parentContainer), UIRectangle(parentContainer, buttonRec), UIButton(parentContainer), UIButtonRec(parentContainer, buttonRec), speed(speed)
 	{
 		if (buttonRec.height > buttonRec.width)
 		{
@@ -278,7 +402,7 @@ private:
 class UISliderContainer : public UIContainer, public UISlider
 {
 public:
-	UISliderContainer(UIContainer* parentContainer, Rectangle buttonRec, float speed) : UIElement(parentContainer), UISlider(parentContainer, buttonRec, speed), UIContainer(*parentContainer) {};
+	UISliderContainer(UIContainer* parentContainer, Rectangle buttonRec, float speed) : UIElement(parentContainer), UIButton(parentContainer), UIRectangle(parentContainer,buttonRec), UISlider(parentContainer, buttonRec, speed), UIContainer(*parentContainer) {};
 	~UISliderContainer() {};
 
 	virtual void UIElement::update()
@@ -376,7 +500,6 @@ private:
 	}
 };
 
-
 template<typename T>
 struct is_simple_button : std::false_type {};
 
@@ -462,7 +585,7 @@ protected:
 	std::string text;
 };
 
-class UITextLine : public UIText
+class UITextLine : virtual public UIText
 {
 public:
 	UITextLine(UIContainer* parentContainer, Vec2 pos) : UIElement(parentContainer), UIText(parentContainer), pos(pos) {}
@@ -476,12 +599,12 @@ public:
 	virtual void setPos(const Vec2& pos) { UITextLine::pos = pos; }
 	virtual Vec2 getPos() { return pos; }
 
-private:
+protected:
 	Vec2 pos;
 
 };
 
-class UITextBox : public UIRectangle, public UIText
+class UITextBox : virtual public UIRectangle, virtual public UIText
 {
 public:
 	UITextBox(UIContainer* parentContainer, Rectangle rec) : UIElement(parentContainer), UIRectangle(parentContainer,rec), UIText(parentContainer) {}
@@ -493,13 +616,74 @@ public:
 private:
 };
 
+template<typename T>
+struct is_simple_text : std::false_type {};
 
-//class UITextInput
-//{
-//public:
-//	UITextInput();
-//	virtual ~UITextInput();
-//
-//private:
-//
-//};
+template<>
+struct is_simple_text<UITextLine> : std::true_type {};
+
+template<>
+struct is_simple_text<UITextBox> : std::true_type {};
+
+template<typename T>
+concept SimpleText = is_simple_text<T>::value && std::derived_from<T, UIText>;
+
+template<SimpleText TextType>
+class UITextInput : virtual public UIText, public TextType, public UIButtonRec
+{
+public:
+	template<typename T, typename... Args>
+	UITextInput(UIContainer* parentContainer, T t, Args&&... args) : UIElement(parentContainer), UIRectangle(parentContainer, rec), UIButton(parentContainer), UIText(parentContainer, std::forward<Args>(args)...), UIButtonRec(parentContainer, rec), TextType(parentContainer, t,std::forward<Args>(args)...)
+	{
+		if constexpr (std::is_same_v<TextType, UITextLine>)
+		{
+			rec = { t.x - size / 2,t.y,size,size};
+		}
+		else if constexpr (std::is_same_v<TextType, UITextBox>)
+		{
+			rec = t;
+		}
+	}
+
+	virtual ~UITextInput() {};
+
+	void draw(float alpha) override
+	{
+		UIButtonRec::draw(alpha);
+		TextType::draw(alpha);
+	}
+	void update()
+	{
+		if (isPressed(MOUSE_LEFT_BUTTON))
+		{
+			selected = true;
+		}
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !isover)
+		{
+			selected = false;
+		}
+		if (selected)
+		{
+			if (IsKeyPressed(KEY_BACKSPACE) && !text.empty())
+			{
+				text.pop_back();
+			}
+			else if (KeyboardKey inputkey = static_cast<KeyboardKey>(GetKeyPressed()))
+			{
+				text.push_back(inputkey);
+			}
+
+		}
+	}
+	void setPos(const Vec2& pos) override
+	{
+		TextType::setPos(pos);
+		UIButtonRec::setPos(pos);
+	}
+	Vec2 getPos() override
+	{
+		return UIButtonRec::getPos();
+	}
+private:
+	bool selected = false;
+};
