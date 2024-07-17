@@ -134,8 +134,9 @@ public:
 	Color& primaryColor; // Primary color for the container.
 	Color& secondaryColor; // Secondary color for the container.
 	Color& textColor; // Text color for the container.
-protected:
 	std::list<UIElement*> childElements; // List of child elements.
+
+protected:
 };
 
 /// <summary>
@@ -231,7 +232,7 @@ public:
 	/// <param name="alpha">Optional alpha value for transparency.</param>
 	virtual void UIElement::draw(float alpha)
 	{
-		Color color = parentContainer->primaryColor;
+		Color color = parentContainer->secondaryColor;
 		color.a += alpha;
 		DrawRectangleRec(rec, color);
 	}
@@ -455,11 +456,11 @@ public:
 	}
 
 	float value = 0; // Slider value.
-private:
+	float speed; // Speed of the slider movement.
 	bool griped = false; // Indicates if the slider is being gripped.
+private:
 	float radius; // Radius of the slider button.
 	float range; // Range of the slider movement.
-	float speed; // Speed of the slider movement.
 };
 
 /// <summary>
@@ -474,35 +475,24 @@ public:
 	/// <param name="parentContainer">Pointer to the parent container.</param>
 	/// <param name="buttonRec">Slider button rectangle dimensions.</param>
 	/// <param name="speed">Speed of the slider movement.</param>
-	UISliderContainer(UIContainer* parentContainer, Rectangle buttonRec, float speed) : UIElement(parentContainer), UIButton(parentContainer), UIRectangle(parentContainer, buttonRec), UISlider(parentContainer, buttonRec, speed), UIContainer(*parentContainer) {};
+	UISliderContainer(UIContainer* parentContainer, Rectangle buttonRec, float speed)
+		: UIElement(parentContainer), UIButton(parentContainer), UIRectangle(parentContainer, buttonRec), UISlider(parentContainer, buttonRec, speed), UIContainer(*parentContainer)
+	{
+		findRange();
+	}
 	~UISliderContainer() {};
 
 	/// <summary>
 	/// Updates the slider container state.
 	/// </summary>
-	virtual void UIElement::update()
+	virtual void UIElement::update() override
 	{
 		UISlider::update();
 		UIContainer::update();
 		findRange();
-		float moveAmount = (oldValue - value) * range;
-		if (rec.width < rec.height)
+		for (auto element : childElements)
 		{
-			for (auto element : childElements)
-			{
-				Vec2 newpos = element->getPos();
-				newpos.y += moveAmount;
-				element->setPos(newpos);
-			}
-		}
-		else
-		{
-			for (auto element : childElements)
-			{
-				Vec2 newpos = element->getPos();
-				newpos.x += moveAmount;
-				element->setPos(newpos);
-			}
+			adjustChildPosition(element);
 		}
 		oldValue = value;
 	}
@@ -511,7 +501,7 @@ public:
 	/// Draws the slider container.
 	/// </summary>
 	/// <param name="alpha">Optional alpha value for transparency.</param>
-	virtual void UIElement::draw(float alpha)
+	virtual void UIElement::draw(float alpha) override
 	{
 		UISlider::draw(alpha);
 		if (rec.width < rec.height)
@@ -542,20 +532,25 @@ private:
 	/// </summary>
 	void findRange()
 	{
-		float firstElementPos;
-		float lastElementPos;
+		if (childElements.empty())
+		{
+			range = 0;
+			return;
+		}
+
+		float firstElementPos = INFINITY;
+		float lastElementPos = - INFINITY;
 		if (rec.width < rec.height)
 		{
-			firstElementPos = childElements.front()->getPos().y;
-			lastElementPos = firstElementPos;
+			firstElementPos = lastElementPos = childElements.front()->getPos().y;
 			for (auto element : childElements)
 			{
 				float elementPos = element->getPos().y;
-				if (firstElementPos > elementPos)
+				if (elementPos < firstElementPos)
 				{
 					firstElementPos = elementPos;
 				}
-				if (lastElementPos < elementPos)
+				if (elementPos > lastElementPos)
 				{
 					lastElementPos = elementPos;
 				}
@@ -563,22 +558,49 @@ private:
 		}
 		else
 		{
-			firstElementPos = childElements.front()->getPos().x;
-			lastElementPos = firstElementPos;
+			firstElementPos = lastElementPos = childElements.front()->getPos().x;
 			for (auto element : childElements)
 			{
 				float elementPos = element->getPos().x;
-				if (firstElementPos > elementPos)
+				if (elementPos < firstElementPos)
 				{
 					firstElementPos = elementPos;
 				}
-				if (lastElementPos < elementPos)
+				if (elementPos > lastElementPos)
 				{
 					lastElementPos = elementPos;
 				}
 			}
 		}
-		range = (lastElementPos - firstElementPos);
+		range = lastElementPos - firstElementPos;
+	}
+
+	/// <summary>
+	/// Adds a child element and adjusts its position.
+	/// </summary>
+	/// <param name="element">Pointer to the new child element.</param>
+	void add(UIElement* element) override
+	{
+		UIContainer::add(element); // Call base class method
+	}
+
+	/// <summary>
+	/// Adjusts the position of a newly added child element based on the current slider value.
+	/// </summary>
+	/// <param name="element">Pointer to the new child element.</param>
+	void adjustChildPosition(UIElement* element)
+	{
+		float moveAmount = (oldValue - value) * range;
+		Vec2 newpos = element->getPos();
+		if (rec.width < rec.height)
+		{
+			newpos.y += moveAmount;
+		}
+		else
+		{
+			newpos.x += moveAmount;
+		}
+		element->setPos(newpos);
 	}
 };
 
@@ -958,9 +980,9 @@ public:
 	/// Constructs a UIFunctionButton.
 	/// </summary>
 	/// <param name="parentContainer">Pointer to the parent container.</param>
-	/// <param name="func">Function to be executed on button press.</param>
+	/// <param name="text">Label text to be displayed.</param>
+	/// <param name="size">Size of the displayed text.</param>
 	/// <param name="args">Arguments to construct the button.</param>
-	
 	template<typename... Args>
 	UILabeledButton(UIContainer* parentContainer, std::string text, float size, Args&&... args) : UIElement(parentContainer), UIButton(parentContainer), UIContainer(*parentContainer), UIText(parentContainer, text, size), UITextLine(parentContainer, {})
 	{
@@ -981,10 +1003,15 @@ public:
 	/// </summary>
 	virtual void UIElement::update()
 	{
-		if (!button)
+		if (button)
+		{
+			button->update();
+		}
+		else
 		{
 			delete this;
 		}
+		UITextLine::update();
 	}
 
 	/// <summary>

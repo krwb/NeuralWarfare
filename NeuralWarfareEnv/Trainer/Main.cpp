@@ -115,11 +115,7 @@ int main()
 		{
 			resetTimer += 1.0f/60.0f;//deltaTime;
 
-<<<<<<< Updated upstream
-			if (resetTimer > 5)
-=======
 			if (resetTimer > 10)
->>>>>>> Stashed changes
 			{
 				eng.Reset();
 				resetTimer = 0;

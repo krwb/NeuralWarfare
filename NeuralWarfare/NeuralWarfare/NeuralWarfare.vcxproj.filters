@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\GameStates">
+      <UniqueIdentifier>{de5fabe9-1829-42b4-9ed2-abf1d2c8b517}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libarys">
+      <UniqueIdentifier>{615ee91a-69e5-4249-b3db-56c88d95dd49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameStates">
+      <UniqueIdentifier>{3626e97a-293e-4be6-af75-e8b8b60d39b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Libarys">
+      <UniqueIdentifier>{8c00d8d6-f14c-4fbc-bef2-cfef007f3a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Libarys\3rd Party">
+      <UniqueIdentifier>{02c1c266-3da6-41b8-b768-3104067ceac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Libarys\3rd Party">
+      <UniqueIdentifier>{3327993f-a8c0-4b21-9ca3-fe5e458f18a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Libarys\NN">
+      <UniqueIdentifier>{de42e9c6-cc33-41d9-adcd-ab1f375e2d17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libarys\NN">
+      <UniqueIdentifier>{a71c9c6f-dfca-4d06-ae6d-c269a9aab0f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libarys\Simulation and training">
+      <UniqueIdentifier>{dfd43266-e877-4b34-af1c-1d3206750408}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Libarys\Simulation and training">
+      <UniqueIdentifier>{252bfc64-4639-4dd5-a036-e24f71f4f976}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>Source Files\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="TrainingState.cpp">
+      <Filter>Source Files\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>Source Files\Libarys\3rd Party</Filter>
+    </ClCompile>
+    <ClCompile Include="RaylibGUI.cpp">
+      <Filter>Source Files\Libarys</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralNetwork.cpp">
+      <Filter>Source Files\Libarys\NN</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralWarfareEngine.cpp">
+      <Filter>Source Files\Libarys\Simulation and training</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralWarfareEnv.cpp">
+      <Filter>Source Files\Libarys\Simulation and training</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralWarfareTrainers.cpp">
+      <Filter>Source Files\Libarys\Simulation and training</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Configs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Header Files\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="RaylibGUI.h">
+      <Filter>Header Files\Libarys</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>Header Files\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="TrainingState.h">
+      <Filter>Header Files\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>Header Files\Libarys\3rd Party</Filter>
+    </ClInclude>
+    <ClInclude Include="ActivationFunctions.h">
+      <Filter>Header Files\Libarys\NN</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralNetwork.h">
+      <Filter>Header Files\Libarys\NN</Filter>
+    </ClInclude>
+    <ClInclude Include="RaylibNetworkVis.h">
+      <Filter>Header Files\Libarys\NN</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleMutate.h">
+      <Filter>Header Files\Libarys\NN</Filter>
+    </ClInclude>
+    <ClInclude Include="Trainer.h">
+      <Filter>Header Files\Libarys\Simulation and training</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralWarfareTrainers.h">
+      <Filter>Header Files\Libarys\Simulation and training</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralWarfareEnv.h">
+      <Filter>Header Files\Libarys\Simulation and training</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralWarfareEngine.h">
+      <Filter>Header Files\Libarys\Simulation and training</Filter>
+    </ClInclude>
+    <ClInclude Include="KDTree.h">
+      <Filter>Header Files\Libarys\Simulation and training</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment.h">
+      <Filter>Header Files\Libarys\Simulation and training</Filter>
+    </ClInclude>
+    <ClInclude Include="angleTools.h">
+      <Filter>Header Files\Libarys\Simulation and training</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec2.h">
+      <Filter>Header Files\Libarys\Simulation and training</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="config.xml" />
+  </ItemGroup>
+</Project>
