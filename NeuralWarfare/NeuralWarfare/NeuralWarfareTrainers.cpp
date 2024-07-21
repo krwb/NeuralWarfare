@@ -18,6 +18,15 @@ void TestTrainer::Update()
 	if (LastStepResults)
 	{
 		nextActions = new std::list<Environment::Action*>();
+		bool allTruncated = true;
+		for (Environment::StepResult& sr : *LastStepResults)
+		{
+			if (!sr.truncated) { allTruncated = false; }
+		}
+		if (allTruncated && training)
+		{
+			env->Reset();
+		}
 		for (Environment::StepResult& sr : *LastStepResults)
 		{
 			Environment::Action* action = new NeuralWarfareEnv::MyAction(sr);
@@ -42,6 +51,16 @@ void StaticNNTrainer::Update()
 	if (LastStepResults)
 	{
 		nextActions = new std::list<Environment::Action*>();
+		bool allTruncated = true;
+		for (Environment::StepResult& sr : *LastStepResults)
+		{
+			if (!sr.truncated) { allTruncated = false; }
+		}
+		if (allTruncated && training)
+		{
+			env->Reset();
+		}
+
 		for (Environment::StepResult& sr : *LastStepResults)
 		{
 			Environment::Action* action = new NeuralWarfareEnv::MyAction(sr);
@@ -83,9 +102,10 @@ void GeneticAlgorithmNNTrainer::Update()
 			agents[sr.ID]->fitness += sr.reward;
 			if (!sr.truncated) { allTruncated = false; }
 		}
-		if (allTruncated)
+		if (allTruncated && training)
 		{
 			Evolve();
+			env->Reset();
 		}
 		for (Environment::StepResult& sr : *LastStepResults)
 		{
@@ -238,7 +258,7 @@ GeneticAlgorithmNNTrainer::Agent::Agent(NeuralNetwork* network) : network(networ
 }
 GeneticAlgorithmNNTrainer::Agent::~Agent()
 {
-
+	network->Delete();
 }
 
 void GeneticAlgorithmNNTrainer::Agent::SetNetwork(NeuralNetwork* newNetwork)

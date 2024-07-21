@@ -120,7 +120,7 @@ public:
 	/// Draws all visible child elements.
 	/// </summary>
 	/// <param name="alpha">Optional alpha value for transparency.</param>
-	void draw(float alpha = 255)
+	void draw(float alpha = 0)
 	{
 		for (auto element : childElements)
 		{
@@ -158,7 +158,7 @@ public:
 	/// </summary>
 	void UIElement::draw(float alpha)
 	{
-		UIContainer::draw();
+		UIContainer::draw(alpha);
 	}
 
 	/// <summary>
@@ -167,6 +167,34 @@ public:
 	void UIElement::update()
 	{
 		UIContainer::update();
+	}
+
+	/// <summary>
+	/// Gets the position of the UI element.
+	/// </summary>
+	/// <returns>Current position.</returns>
+	virtual Vec2 getPos()
+	{
+		Vec2 pos = { 0,0 };
+		for (UIElement* child : childElements)
+		{
+			pos += child->getPos();
+		}
+		pos /= childElements.size();
+		return pos;
+	}
+
+	/// <summary>
+	/// Sets the position of the UI element.
+	/// </summary>
+	/// <param name="pos">New position.</param>
+	virtual void setPos(const Vec2& pos)
+	{
+		Vec2 move = getPos() - pos;
+		for (UIElement* child : childElements)
+		{
+			child->setPos(child->getPos() - move);
+		}
 	}
 private:
 };
@@ -233,7 +261,8 @@ public:
 	virtual void UIElement::draw(float alpha)
 	{
 		Color color = parentContainer->secondaryColor;
-		color.a += alpha;
+		float ta = static_cast<float>(color.a) + alpha;
+		color.a = ta > 0 ? ta < 255 ? ta : 255 : 0;
 		DrawRectangleRec(rec, color);
 	}
 
@@ -255,6 +284,8 @@ public:
 	{
 		return Vec2(rec.x + rec.width / 2, rec.y + rec.height / 2);
 	}
+
+	virtual void update() {};
 
 protected:
 	Rectangle rec; // Rectangle dimensions.
@@ -283,13 +314,15 @@ public:
 		if (isOver()) 
 		{
 			Color color = parentContainer->primaryColor;
-			color.a += alpha;
+			float ta = static_cast<float>(color.a) + alpha;
+			color.a = ta > 0 ? ta < 255 ? ta : 255 : 0;
 			DrawRectangleRec(rec, color);
 		}
 		else
 		{
 			Color color = parentContainer->secondaryColor;
-			color.a += alpha;
+			float ta = static_cast<float>(color.a) + alpha;
+			color.a = ta > 0 ? ta < 255 ? ta : 255 : 0;
 			DrawRectangleRec(rec, color);
 		}
 	}
@@ -504,23 +537,32 @@ public:
 	virtual void UIElement::draw(float alpha) override
 	{
 		UISlider::draw(alpha);
-		if (rec.width < rec.height)
+		float drawRange;
+		bool vertical = rec.width < rec.height;
+		if (vertical)
 		{
-			float drawRange = rec.height / 2;
-			for (auto element : childElements)
-			{
-				element->hidden = abs(getPos().y - element->getPos().y) > drawRange;
-			}
+			drawRange = rec.height / 2;
 		}
 		else
 		{
-			float drawRange = rec.width / 2;
-			for (auto element : childElements)
+			drawRange = rec.width / 2;
+		}
+
+		for (auto element : childElements)
+		{
+			float distance = vertical ? abs(getPos().y - element->getPos().y) : abs(getPos().x - element->getPos().x);
+			if (distance > drawRange)
 			{
-				element->hidden = abs(getPos().x - element->getPos().x) > drawRange;
+				element->hidden = true;
+			}
+			else
+			{
+				element->hidden = false;
+				float fadeFactor = (distance - drawRange * 0.8) / (drawRange * 0.2);
+				float fadeAlpha = 255 * (fadeFactor > 0 ? fadeFactor < 1 ? fadeFactor : 1 : 0);
+				element->draw(-fadeAlpha);
 			}
 		}
-		UIContainer::draw();
 	}
 
 private:
@@ -751,6 +793,9 @@ public:
 	/// </summary>
 	/// <param name="text">Text to display.</param>
 	inline void SetText(std::string text) { UIText::text = text; }
+	
+	inline std::string GetText() { return text; }
+
 
 	/// <summary>
 	/// Sets the size of the text.
@@ -849,12 +894,33 @@ public:
 
 	virtual ~UITextBox() {};
 
+	virtual void update() { UIRectangle::update(); UIText::update(); }
+
 	/// <summary>
 	/// Draws the text box.
 	/// </summary>
 	/// <param name="alpha">Optional alpha value for transparency.</param>
 	virtual void draw(float alpha);
 private:
+};
+
+class UIBackgroundlessTextBox : public UITextBox
+{
+public:
+	/// <summary>
+	/// Constructs a DerivedUITextBox with specified rectangle dimensions.
+	/// </summary>
+	/// <param name="parentContainer">Pointer to the parent container.</param>
+	/// <param name="rec">Rectangle dimensions.</param>
+	UIBackgroundlessTextBox(UIContainer* parentContainer, Rectangle rec) : UIElement(parentContainer), UIRectangle(parentContainer, rec), UIText(parentContainer),  UITextBox(parentContainer, rec) {}
+
+	UIBackgroundlessTextBox(UIContainer* parentContainer, Rectangle rec, std::string text) : UIElement(parentContainer), UIRectangle(parentContainer, rec), UIText(parentContainer, text), UITextBox(parentContainer, rec, text) {}
+
+	UIBackgroundlessTextBox(UIContainer* parentContainer, Rectangle rec, std::string text, float size) : UIElement(parentContainer), UIRectangle(parentContainer, rec), UIText(parentContainer, text, size), UITextBox(parentContainer, rec, text, size) {}
+
+	virtual ~UIBackgroundlessTextBox() {}
+
+	virtual void draw(float alpha) override;
 };
 
 /// <summary>
@@ -874,6 +940,12 @@ struct is_simple_text<UITextLine> : std::true_type {};
 /// </summary>
 template<>
 struct is_simple_text<UITextBox> : std::true_type {};
+
+/// <summary>
+/// Specialization of is_simple_text for UIBackgroundlessTextBox.
+/// </summary>
+template<>
+struct is_simple_text<UIBackgroundlessTextBox> : std::true_type {};
 
 /// <summary>
 /// Concept to enforce a type to be a SimpleText.
@@ -897,11 +969,11 @@ public:
 	template<typename T, typename... Args>
 	UITextInput(UIContainer* parentContainer, T t, Args&&... args) : UIElement(parentContainer), UIRectangle(parentContainer, rec), UIButton(parentContainer), UIText(parentContainer, std::forward<Args>(args)...), UIButtonRec(parentContainer, rec), TextType(parentContainer, t, std::forward<Args>(args)...)
 	{
-		if constexpr (std::is_same_v<TextType, UITextLine>)
+		if constexpr (std::is_same_v<UITextLine, UITextBox>)
 		{
 			rec = { t.x - size / 2, t.y, size, size };
 		}
-		else if constexpr (std::is_same_v<TextType, UITextBox>)
+		else if constexpr (std::is_base_of_v<UITextBox, TextType>)
 		{
 			rec = t;
 		}
@@ -924,6 +996,8 @@ public:
 	/// </summary>
 	void update()
 	{
+		UIButtonRec::update();
+		isSubmited = false;
 		if (isPressed(MOUSE_LEFT_BUTTON))
 		{
 			selected = true;
@@ -938,11 +1012,22 @@ public:
 			{
 				text.pop_back();
 			}
+			else if (IsKeyPressed(KEY_ENTER) && !text.empty())
+			{
+				isSubmited = true;
+				selected = false;
+			}
 			else if (KeyboardKey inputkey = static_cast<KeyboardKey>(GetKeyPressed()))
 			{
 				text.push_back(inputkey);
 			}
+
 		}
+	}
+
+	bool IsSubmited()
+	{
+		return isSubmited;
 	}
 
 	/// <summary>
@@ -963,9 +1048,33 @@ public:
 	{
 		return UIButtonRec::getPos();
 	}
+	bool selected = false; // Indicates if the text input is selected.
 
 private:
-	bool selected = false; // Indicates if the text input is selected.
+	bool isSubmited = false;
+};
+
+/// <summary>
+/// Live updateing text UI element.
+/// </summary>
+template<SimpleText TextType>
+class UILiveText : public TextType
+{
+public:
+	template<typename T, typename... Args>
+	UILiveText(UIContainer* parentContainer, std::function<std::string()> function , T t, Args&&... args) : UIElement(parentContainer), UIText(parentContainer, std::forward<Args>(args)...), TextType(parentContainer, t, std::forward<Args>(args)...), function(function)
+	{
+
+	}
+	virtual ~UILiveText() {}
+
+	virtual void update() override
+	{
+		TextType::update();
+		TextType::SetText(function());
+	}
+private:
+	std::function<std::string()> function; // Function to get new text
 };
 
 template<typename T>

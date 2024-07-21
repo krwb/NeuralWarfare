@@ -16,10 +16,10 @@ public:
 
 	Config& config;
 	std::mt19937 gen;
+	GameState* currentGameState = nullptr;
 protected:
 private:
 	void ChangeToNextState();
 	bool shouldExit = false;
-	GameState* currentGameState = nullptr;
 	EgameState nextState = EgameState::NONE;
 };

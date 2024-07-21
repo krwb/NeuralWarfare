@@ -20,9 +20,15 @@ MenuState::MenuState(Application& app) : GameState(app)
     };
 
     new UILabeledButton<UIFunctionButton<UIButtonRec>>{
+    ui, "TEST", buttonHeight,
+    [&app]() { app.ChangeState(EgameState::TESTSELECTION); },
+    Rectangle{buttonXpos, buttonYpos + buttonVSpaceing, buttonWidth, buttonHeight}
+    };
+
+    new UILabeledButton<UIFunctionButton<UIButtonRec>>{
         ui, "QUIT", buttonHeight,
         [&app]() { app.Quit(); },
-        Rectangle{buttonXpos, buttonYpos + buttonVSpaceing, buttonWidth, buttonHeight}
+        Rectangle{buttonXpos, buttonYpos + buttonVSpaceing * 2, buttonWidth, buttonHeight}
     };
 }
 

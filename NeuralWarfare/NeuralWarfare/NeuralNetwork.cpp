@@ -140,7 +140,6 @@ void NeuralNetwork::CleanNodes()
 	}
 }
 
-
 void NeuralNetwork::Clean()
 {
 	CleanNodes();
@@ -193,9 +192,9 @@ std::vector<char> NeuralNetwork::GetBin(const NeuralNetwork& network)
 	return data;
 }
 
-void NeuralNetwork::Save(const NeuralNetwork& network, std::string filename)
+void NeuralNetwork::Save(const NeuralNetwork& network, std::filesystem::path path)
 {
-	std::ofstream file(filename, std::ios::binary);
+	std::ofstream file(path, std::ios::binary);
 	std::vector<char> data = GetBin(network);
 	file.write(data.data(), data.size());
 	file.close();
@@ -287,10 +286,10 @@ NeuralNetwork* NeuralNetwork::MakeFromBin(std::vector<char>& data, std::vector<A
 	return network;
 }
 
-NeuralNetwork* NeuralNetwork::Load(std::vector<ActivationFunction*>& functions, std::string filename)
+NeuralNetwork* NeuralNetwork::Load(std::vector<ActivationFunction*>& functions, std::filesystem::path path)
 {
 	// Open the file in binary mode
-	std::ifstream file(filename, std::ios::binary);
+	std::ifstream file(path, std::ios::binary);
 
 	// Check if the file opened successfully
 	if (!file) {

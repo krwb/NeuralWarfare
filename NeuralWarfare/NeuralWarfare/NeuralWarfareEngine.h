@@ -50,7 +50,8 @@ public:
 		Vec2 pos; // position
 		double dir; // direction in radians
 		float health; // agent health
-		
+		size_t kills = 0;;
+
 		float reward = 0;
 
 		/// <summary>
@@ -65,9 +66,9 @@ public:
 		void Reset();
 
 		float baseHealth; // agent spawn/starting health
+		Vec2 spawnPos; // Agent spawn/starting position
 
 	private:
-		Vec2 spawnPos; // Agent spawn/starting position
 
 	};
 

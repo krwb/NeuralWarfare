@@ -26,6 +26,8 @@ public:
 	/// <param name="actions"></param>
 	void TakeAction(std::list<Action*>& actions) override;
 
+	void SetTeamSpawnPos(Vec2 pos);
+
 	/// <summary>
 	/// Function to get the result of the last action preformed
 	/// </summary>
@@ -36,7 +38,7 @@ public:
 	/// Function to reset the environment
 	/// </summary>
 	/// <returns>array of StepResult from the reset state of the Environment</returns>
-	std::list<StepResult>* Reset() override;
+	void Reset() override;
 
 	static class MyAction : public Action
 	{
@@ -93,9 +95,22 @@ public:
 	private:
 
 	};
+	size_t teamId; // The team ID of the agents connected the environment
+
+
+	void UpdateKillTrackers();
+
+	size_t GetTotalKillsThisEpisode();
+	size_t GetHighestKillsThisEpisode();
+	size_t GetTotalKillsAllEpisodes();
+	size_t GetHighestKillsAllEpisodes();
 
 private:
-	size_t teamId; // The team ID of the agents connected the environment
+	size_t totalKillsThisEpisode = 0;
+	size_t highestKillsThisEpisode = 0;
+	size_t totalKillsPastEpisodes = 0;
+	size_t highestKillsPastEpisodes = 0;
+
 	NeuralWarfareEngine& engine; // Reference the game engine
 	std::vector<NeuralWarfareEngine::Agent*> agents; // array of pointers that this environment is training
 

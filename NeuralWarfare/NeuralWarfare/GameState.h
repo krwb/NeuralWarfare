@@ -1,9 +1,12 @@
 #pragma once
+#include "RaylibGUI.h"
 class Application;
 enum class EgameState {
 	NONE,
 	MAINMENU,
-	TRAINING
+	TRAINING,
+	TESTSELECTION,
+	TESTING
 };
 
 class GameState
@@ -21,4 +24,6 @@ public:
 
 
 protected:
+	UIContainer* ui;
+
 };

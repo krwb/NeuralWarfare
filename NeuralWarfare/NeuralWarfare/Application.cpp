@@ -2,6 +2,8 @@
 #include "MainMenuState.h"
 #include <chrono>
 #include "TrainingState.h"
+#include "TestSelectionState.h";
+#include "TestingState.h"
 void Application::Run()
 {
     InitWindow(config.app.screenWidth, config.app.screenHeight, "NeuralWarfare");
@@ -40,17 +42,24 @@ void Application::ChangeToNextState()
     if (currentGameState)
     {
         currentGameState->Unload();
-        delete currentGameState;
     }
+    GameState* newGameState;
     switch (nextState)
     {
-    case EgameState::MAINMENU:  currentGameState = new MenuState(*this);        break;
-    case EgameState::TRAINING:  currentGameState = new TrainingState(*this);    break;
+    case EgameState::MAINMENU:      newGameState = new MenuState(*this);            break;
+    case EgameState::TRAINING:      newGameState = new TrainingState(*this);        break;
+    case EgameState::TESTSELECTION: newGameState = new TestSelectionState(*this);   break;
+    case EgameState::TESTING: newGameState = new TestingState(*this);               break;
     default:    // Handle invalid gamestate
         std::cout << "Error: InvalidGamestate\n";
-        currentGameState = new MenuState(*this);
+        newGameState = new MenuState(*this);
         break;
     }
-    currentGameState->Load();
+    if (currentGameState)
+    {
+        delete currentGameState;
+    }
+    newGameState->Load();
+    currentGameState = newGameState;
     nextState = EgameState::NONE;
 }

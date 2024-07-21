@@ -2,6 +2,7 @@
 #include <list>
 #include <vector>
 #include <string>
+#include <filesystem>
 
 /// <summary>
 /// Represents an activation function used by neural network nodes.
@@ -124,7 +125,7 @@ public:
 	/// </summary>
 	/// <param name="network">The neural network to save.</param>
 	/// <param name="filename">The name of the file to save to.</param>
-	static void Save(const NeuralNetwork& network, std::string filename);
+	static void Save(const NeuralNetwork& network, std::filesystem::path path);
 
 	/// <summary>
 	/// Constructs a neural network from its binary representation.
@@ -141,7 +142,7 @@ public:
 	/// <param name="functions">Available activation functions for nodes.</param>
 	/// <param name="filename">The name of the file to load the neural network from.</param>
 	/// <returns>A new instance of the loaded neural network.</returns>
-	static NeuralNetwork* Load(std::vector<ActivationFunction*>& functions, std::string filename);
+	static NeuralNetwork* Load(std::vector<ActivationFunction*>& functions, std::filesystem::path path);
 
 	// List interface methods:
 

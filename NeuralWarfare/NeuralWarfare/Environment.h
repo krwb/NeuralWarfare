@@ -119,7 +119,7 @@ public:
 	/// Function to reset the environment
 	/// </summary>
 	/// <returns>array of StepResult from the reset state of the Environment</returns>
-	virtual std::list<StepResult>* Reset() = 0;
+	virtual void Reset() = 0;
 
 	private:
 

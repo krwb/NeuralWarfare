@@ -57,14 +57,28 @@ bool UIButtonCircle::isOver() {
 void UITextLine::draw(float alpha)
 {
 	Color color = parentContainer->textColor;
-	color.a += alpha;
+	float ta = static_cast<float>(color.a) + alpha;
+	color.a = ta > 0 ? ta < 255 ? ta : 255 : 0;
 	DrawText(text.c_str(), pos.x - MeasureText(text.c_str(), size)/2, pos.y - size/2, size, color);
 }
 
 void UITextBox::draw(float alpha)
 {
 	Color color = parentContainer->secondaryColor;
-	color.a += alpha;
+	float ta = static_cast<float>(color.a) + alpha;
+	color.a = ta > 0 ? ta < 255 ? ta : 255 : 0;
 	DrawRectangleRec(rec, color);
-	DrawTextRec(GetFontDefault(), text.c_str(), {rec.x + size/2,rec.y + size/2, rec.width - size / 2,rec.height - size / 2 }, size, size / 5, true, parentContainer->textColor);
+	color = parentContainer->textColor;
+	ta = static_cast<float>(color.a) + alpha;
+	color.a = ta > 0 ? ta < 255 ? ta : 255 : 0;
+	DrawTextRec(GetFontDefault(), text.c_str(), {rec.x + size/2,rec.y + size/2, rec.width - size / 2,rec.height - size / 2 }, size, size / 5, true, color);
+}
+
+void UIBackgroundlessTextBox::draw(float alpha)
+{
+	Color color = parentContainer->textColor;
+	float ta = static_cast<float>(color.a) + alpha;
+	color.a = ta > 0 ? ta < 255 ? ta : 255 : 0;
+	DrawTextRec(GetFontDefault(), text.c_str(), { rec.x + size / 2,rec.y + size / 2, rec.width - size / 2,rec.height - size / 2 }, size, size / 5, true, color);
+
 }

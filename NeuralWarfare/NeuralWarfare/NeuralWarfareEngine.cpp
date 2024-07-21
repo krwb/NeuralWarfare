@@ -28,6 +28,7 @@ void NeuralWarfareEngine::Agent::Reset()
 {
     pos = spawnPos;
     health = baseHealth;
+    kills = 0;
 }
 
 void NeuralWarfareEngine::DoCollision(Agent* agentA, Agent* agentB)
@@ -43,6 +44,7 @@ void NeuralWarfareEngine::DoCollision(Agent* agentA, Agent* agentB)
     {
         agentA->health -= 1;
         agentB->reward += 1;
+        agentB->kills += 1;
         agentA->UpdatePos(agentSize * 2);
         agentB->UpdatePos(agentSize * 2);
     }
@@ -50,6 +52,7 @@ void NeuralWarfareEngine::DoCollision(Agent* agentA, Agent* agentB)
     {
         agentB->health -= 1;
         agentA->reward += 1;
+        agentA->kills += 1;
         agentA->UpdatePos(agentSize * 2);
         agentB->UpdatePos(agentSize * 2);
     }

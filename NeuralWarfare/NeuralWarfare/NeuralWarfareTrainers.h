@@ -102,7 +102,7 @@ public:
 	void Update() override;
 
 	NeuralNetwork* masterNetwork;
-
+	MyHyperparameters hyperparameters;
 private:
 
 	void SetNewLayerFunction();
@@ -124,5 +124,4 @@ private:
 	ActivationFunction* newLayerFunction = nullptr;
 	std::vector<Agent*> agents;
 	std::mt19937& gen;
-	MyHyperparameters hyperparameters;
 };

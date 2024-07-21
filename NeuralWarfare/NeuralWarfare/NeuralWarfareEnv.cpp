@@ -23,6 +23,14 @@ void NeuralWarfareEnv::TakeAction(std::list<Action*>& actions)
 	}
 }
 
+void NeuralWarfareEnv::SetTeamSpawnPos(Vec2 pos)
+{
+	for (NeuralWarfareEngine::Agent* agent : agents)
+	{
+		agent->spawnPos = pos;
+	}
+}
+
 std::list<Environment::StepResult>* NeuralWarfareEnv::GetResult()
 {
 	std::list<StepResult>* srts = new std::list<StepResult>();
@@ -33,9 +41,13 @@ std::list<Environment::StepResult>* NeuralWarfareEnv::GetResult()
 	return srts;
 }
 
-std::list<Environment::StepResult>* NeuralWarfareEnv::Reset()
+void NeuralWarfareEnv::Reset()
 {
-	return GetResult();
+	totalKillsPastEpisodes += totalKillsThisEpisode;
+	if (highestKillsThisEpisode > highestKillsPastEpisodes)
+	{
+		highestKillsPastEpisodes = highestKillsThisEpisode;
+	}
 }
 
 void NeuralWarfareEnv::ConnectToTeam(size_t teamId)
@@ -58,6 +70,41 @@ std::pair<float,double> getRelativePolarPos(const Vec2& origin, const Vec2& poin
 	out.second = normalizeAngle(relative.Direction() - originDirection);
 	return out;
 }
+
+void NeuralWarfareEnv::UpdateKillTrackers()
+{
+	totalKillsThisEpisode = 0;
+	highestKillsThisEpisode = 0;
+	for (NeuralWarfareEngine::Agent* agent : agents)
+	{
+		totalKillsThisEpisode += agent->kills;
+		if (agent->kills > highestKillsThisEpisode)
+		{
+			highestKillsThisEpisode = agent->kills;
+		}
+	}
+}
+
+size_t NeuralWarfareEnv::GetTotalKillsThisEpisode()
+{
+	return totalKillsThisEpisode;
+}
+
+size_t NeuralWarfareEnv::GetHighestKillsThisEpisode()
+{
+	return highestKillsThisEpisode;
+}
+
+size_t NeuralWarfareEnv::GetTotalKillsAllEpisodes()
+{
+	return totalKillsThisEpisode + totalKillsPastEpisodes;
+}
+
+size_t NeuralWarfareEnv::GetHighestKillsAllEpisodes()
+{
+	return highestKillsThisEpisode > highestKillsPastEpisodes ? highestKillsThisEpisode : highestKillsPastEpisodes;
+}
+
 
 Environment::Observation* NeuralWarfareEnv::getObservation(NeuralWarfareEngine::Agent* agent)
 {

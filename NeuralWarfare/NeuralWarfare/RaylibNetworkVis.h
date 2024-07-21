@@ -116,7 +116,7 @@ private:
 			Vector2 pos2 = posMap.at(synapse->out);
 			Color synapseColor = (synapse->weight > 0) ? posSynapseColor : negSynapseColor;
 			float lineThickness = abs(synapse->weight) * drawWeightMultiplier;
-			DrawLineEx(pos1, pos2, lineThickness, synapseColor);
+			DrawLineEx(pos1, pos2, lineThickness > 1 ? lineThickness : 1, synapseColor);
 		}
 	}
 

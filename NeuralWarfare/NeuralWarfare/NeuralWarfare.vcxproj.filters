@@ -75,6 +75,12 @@
     <ClCompile Include="NeuralWarfareTrainers.cpp">
       <Filter>Source Files\Libarys\Simulation and training</Filter>
     </ClCompile>
+    <ClCompile Include="TestSelectionState.cpp">
+      <Filter>Source Files\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="TestingState.cpp">
+      <Filter>Source Files\GameStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -134,8 +140,15 @@
     <ClInclude Include="Vec2.h">
       <Filter>Header Files\Libarys\Simulation and training</Filter>
     </ClInclude>
+    <ClInclude Include="TestSelectionState.h">
+      <Filter>Header Files\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="TestingState.h">
+      <Filter>Header Files\GameStates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />
+    <Xml Include="hyperperameters.xml" />
   </ItemGroup>
 </Project>

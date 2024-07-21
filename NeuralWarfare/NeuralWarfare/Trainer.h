@@ -84,9 +84,16 @@ public:
 	}
 
 	Environment* env; // Pointer to the environment being used for training.
-
+	bool training = false;
 protected:
 	std::list<Environment::StepResult>* LastStepResults = nullptr; // List of the last step results observed from the environment.
 	std::list<Environment::Action*>* nextActions = nullptr; // List of the next actions to be executed in the environment.
 };
 
+static void UpdateTrainers(std::vector<Trainer*>& trainers)
+{
+	for (Trainer* trainer : trainers)
+	{
+		trainer->Update();
+	}
+}

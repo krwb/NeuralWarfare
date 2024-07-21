@@ -143,6 +143,8 @@
     <ClCompile Include="NeuralWarfareEnv.cpp" />
     <ClCompile Include="NeuralWarfareTrainers.cpp" />
     <ClCompile Include="RaylibGUI.cpp" />
+    <ClCompile Include="TestingState.cpp" />
+    <ClCompile Include="TestSelectionState.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="TrainingState.cpp" />
   </ItemGroup>
@@ -162,6 +164,8 @@
     <ClInclude Include="RaylibGUI.h" />
     <ClInclude Include="RaylibNetworkVis.h" />
     <ClInclude Include="SimpleMutate.h" />
+    <ClInclude Include="TestingState.h" />
+    <ClInclude Include="TestSelectionState.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Trainer.h" />
     <ClInclude Include="TrainingState.h" />
@@ -169,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />
+    <Xml Include="hyperperameters.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

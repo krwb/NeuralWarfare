@@ -1,6 +1,5 @@
 #pragma once
 #include "GameState.h"
-#include "RaylibGUI.h"
 class MenuState : public GameState
 {
 public:
@@ -15,5 +14,4 @@ public:
 
 protected:
 private:
-	UIContainer* ui;
 };

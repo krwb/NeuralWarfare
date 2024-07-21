@@ -3,6 +3,7 @@
 #include <string>
 #include "raylib.h"
 #include "tinyxml2.h"
+#include <filesystem>
 
 static std::string MakeFilename(const std::string& filename, const std::string& extension) {
 	std::string correctExtension = (extension[0] == '.') ? extension : "." + extension;
@@ -32,19 +33,22 @@ public:
 	UI ui;
 	struct FilePaths
 	{
-		std::string configPath;
-		std::string modelFolder = "models/";
+		std::filesystem::path configPath;
+		std::filesystem::path modelFolder = "models";
 	};
 	FilePaths filePaths;
 	struct Engine
 	{
-		float sizeX;
-		float sizeY;
+		float sizeX = 550;
+		float sizeY = 350;;
+		size_t teamSize = 100;
+		float agentBaseHealth = 2;
 	};
 	Engine engine;
 
-	Config(std::string configPath) : filePaths({configPath,""}) 
+	Config(std::string configPath)
 	{
+		filePaths.configPath = configPath;
 		Load();
 	}
 
@@ -55,7 +59,7 @@ public:
 		tinyxml2::XMLError e;
 		tinyxml2::XMLDocument doc;
 		{
-			if ((e = doc.LoadFile(filePaths.configPath.c_str())) != tinyxml2::XML_SUCCESS)
+			if ((e = doc.LoadFile(filePaths.configPath.string().c_str())) != tinyxml2::XML_SUCCESS)
 			{
 				std::cerr << "Error loading XML file: " << filePaths.configPath << "TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 				return;
@@ -296,6 +300,9 @@ public:
 		{
 			if ((e = engineElement->QueryFloatAttribute("SizeX", &engine.sizeX)) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load config Attribute 'engine.sizeX' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 			if ((e = engineElement->QueryFloatAttribute("SizeY", &engine.sizeY)) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load config Attribute 'engine.sizeY' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+			if ((e = engineElement->QueryUnsigned64Attribute("TeamSize", &engine.teamSize)) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load config Attribute 'engine.teamSize' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+			if ((e = engineElement->QueryFloatAttribute("AgentBaseHealth", &engine.agentBaseHealth)) != tinyxml2::XML_SUCCESS) std::cerr << "Error: Failed to load config Attribute 'engine.agentBaseHealth' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+
 		}
 		else
 		{
@@ -356,19 +363,21 @@ public:
 		uiElement->SetAttribute("BaseTextSize", ui.baseTextSize);
 		root->InsertEndChild(uiElement);
 
-		// Save FilePaths
+		// Save filePaths
 		tinyxml2::XMLElement* filePathsElement = doc.NewElement("FilePaths");
-		filePathsElement->SetAttribute("ModelFolder", filePaths.modelFolder.c_str());
+		filePathsElement->SetAttribute("ModelFolder", filePaths.modelFolder.string().c_str());
 		root->InsertEndChild(filePathsElement);
 
-		// Save FilePaths
+		// Save engine
 		tinyxml2::XMLElement* engineElement = doc.NewElement("Engine");
 		engineElement->SetAttribute("SizeX", engine.sizeX);
 		engineElement->SetAttribute("SizeY", engine.sizeY);
+		engineElement->SetAttribute("TeamSize", engine.teamSize);
+		engineElement->SetAttribute("AgentBaseHealth", engine.agentBaseHealth);
 		root->InsertEndChild(engineElement);
 
 		// Save to file
-		if (doc.SaveFile(filePaths.configPath.c_str()) == tinyxml2::XML_SUCCESS)
+		if (doc.SaveFile(filePaths.configPath.string().c_str()) == tinyxml2::XML_SUCCESS)
 		{
 			std::cout << "Config file saved successfully." << std::endl;
 		}
