@@ -6,6 +6,9 @@
 #include "RaylibNetworkVis.h"
 
 class TrainingState;
+/// <summary>
+/// UIElement for displaying and storing information on a trainer
+/// </summary>
 class TrainerListEntry : public UISubContainer, public UIRectangle
 {
 public:
@@ -25,7 +28,9 @@ public:
 private:
 };
 
-
+/// <summary>
+/// UIPopup class basically just a UISubContainer with a built in UIRectangle
+/// </summary>
 class UIPopup : public UISubContainer, public UIRectangle
 {
 public:
@@ -50,25 +55,73 @@ private:
 
 };
 
-
+/// <summary>
+/// Gamestate for training AI
+/// </summary>
 class TrainingState : public GameState
 {
 public:
+	/// <summary>
+	/// TrainingState constructor
+	/// </summary>
+	/// <param name="app">Application reference allows the gamestate to change the state or access configs </param>
 	TrainingState(Application& app);
 	virtual ~TrainingState();
 
+	/// <summary>
+	/// Function to load the gamestate (called after previous gamestate has been deleted
+	/// </summary>
 	virtual void Load();
+
+	/// <summary>
+	/// Function to Unload the gamestate (called before previous gamestate has been created
+	/// </summary>
 	virtual void Unload();
 
+	/// <summary>
+	/// Primary update function
+	/// </summary>
+	/// <param name="deltaTime"> frame delta</param>
 	virtual void Update(float deltaTime);
+
+	/// <summary>
+	/// Primary draw function
+	/// </summary>
 	virtual void Draw();
 
+	/// <summary>
+	/// Function to select the trainer linked to the training controls
+	/// </summary>
+	/// <param name="trainer"></param>
 	void SetSelectedTrainer(TrainerListEntry* trainer);
+
+	/// <summary>
+	/// Creates a new model
+	/// </summary>
 	void AddNewModel();
+
+	/// <summary>
+	/// loads an existing model from the model folder
+	/// </summary>
+	/// <param name="modelName"> name of the model to be loaded</param>
 	void LoadModel(std::string modelName);
+
+	/// <summary>
+	/// sets the load PopUp as hidden or visible
+	/// </summary>
+	/// <param name="hidden"> true if PopUp should be hidden</param>
 	void SetLoadPopupHidden(bool hidden);
+
+	/// <summary>
+	/// creates a trainer for the a model and adds it for training
+	/// </summary>
+	/// <param name="network"></param>
+	/// <param name="modelName"></param>
 	void AddTrainer(NeuralNetwork* network, std::string modelName);
 
+	/// <summary>
+	/// saves the currently selected model
+	/// </summary>
 	void SaveSelectedModel();
 
 	TrainerListEntry* selectedTrainer = nullptr;
@@ -111,5 +164,8 @@ private:
 	std::vector<NeuralWarfareEnv*> envs;
 	std::vector<Trainer*> trainers;
 
+	/// <summary>
+	/// Update the Hyperparameter Controls
+	/// </summary>
 	void UpdateHyperparameterControls();
 };

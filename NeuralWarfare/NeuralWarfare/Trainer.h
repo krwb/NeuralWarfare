@@ -61,7 +61,7 @@ public:
 	}
 
 	/// <summary>
-	/// Updates the trainer. This function is responsible for both determining actions and training the ai.
+	/// Updates the trainer. This function is responsible for both determining actions and training the AI.
 	/// </summary>
 	virtual void Update() = 0;
 

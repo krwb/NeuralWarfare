@@ -19,7 +19,7 @@ TestSelectionState::TestSelectionState(Application& app) : GameState(app)
 		app.config.app.screenWidth * 0.025f, app.config.app.screenHeight * 0.62f
 		}, 10
 	);
-	new UITextLine(ui, { modelListEntryXPos + modelListEntryWidth * 0.5f,modelListEntryYPos - modelListEntryHeight * 0.2f }, "Avalable Models", modelListEntryHeight * 0.25);
+	new UITextLine(ui, { modelListEntryXPos + modelListEntryWidth * 0.5f,modelListEntryYPos - modelListEntryHeight * 0.2f }, "Available Models", modelListEntryHeight * 0.25);
 
 	selectedModelList = new UISliderContainer(ui, {
 		app.config.app.screenWidth * 0.875f, app.config.app.screenHeight * 0.14f,
@@ -201,7 +201,7 @@ void TestSelectionState::GetModels()
 				},
 				file.path().stem().string(),
 				std::string(
-					"Filesize: " + FormatFileSize(file.file_size()) + "\n"
+					"File-size: " + FormatFileSize(file.file_size()) + "\n"
 					)
 			);
 

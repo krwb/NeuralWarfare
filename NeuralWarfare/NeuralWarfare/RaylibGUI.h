@@ -1055,7 +1055,7 @@ private:
 };
 
 /// <summary>
-/// Live updateing text UI element.
+/// Live updating text UI element.
 /// </summary>
 template<SimpleText TextType>
 class UILiveText : public TextType

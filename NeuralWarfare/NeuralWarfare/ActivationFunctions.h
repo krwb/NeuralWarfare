@@ -43,7 +43,7 @@ private:
 };
 
 // Sigmoid Function
-// Behavior: The Sigmoid function squashes input values to a range between 0 and 1, making it suitable for binary classification problems.It is smoothand differentiable, making it useful for gradient - based optimization algorithms.
+// Behavior: The Sigmoid function squashes input values to a range between 0 and 1, making it suitable for binary classification problems.It is smooth and differentiable, making it useful for gradient - based optimization algorithms.
 // Use case: Binary classification problems, output layer of a neural network for probability estimation.
 class SigmoidFunction : public ActivationFunction
 {

@@ -415,7 +415,7 @@ void TrainingState::UpdateHyperparameterControls()
 	}
 	catch (const std::invalid_argument&)
 	{
-		std::cerr << "Error: Invalid string convertion";
+		std::cerr << "Error: Invalid string conversion";
 	}
 	if (!topAgentCountInput->selected) topAgentCountInput->SetText(floatToString(static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.topAgentCount));
 	if (!mutationCountInput->selected) mutationCountInput->SetText(floatToString(static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.mutationCount));

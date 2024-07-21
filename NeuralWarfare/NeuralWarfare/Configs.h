@@ -5,6 +5,12 @@
 #include "tinyxml2.h"
 #include <filesystem>
 
+/// <summary>
+/// helper function to ensure filenames have the correct extension
+/// </summary>
+/// <param name="filename">the filename with or without the extension</param>
+/// <param name="extension">the extension the file should have</param>
+/// <returns>filename with extension </returns>
 static std::string MakeFilename(const std::string& filename, const std::string& extension) {
 	std::string correctExtension = (extension[0] == '.') ? extension : "." + extension;
 	size_t lastDot = filename.find_last_of('.');
@@ -12,6 +18,9 @@ static std::string MakeFilename(const std::string& filename, const std::string& 
 	return baseFilename + correctExtension;
 }
 
+/// <summary>
+/// class for managing configs
+/// </summary>
 class Config
 {
 public:
@@ -52,7 +61,68 @@ public:
 		Load();
 	}
 
+	/// <summary>
+	/// Helper function to load colors from XML document
+	/// </summary>
+	/// <param name="root">the element containing the color element </param>
+	/// <param name="name"> the name the color is saved under</param>
+	/// <param name="value"> pointer to color value to be set</param>
+	/// <returns> and tinyxml2::XMLErrors returned when reading elements</returns>
+	static tinyxml2::XMLError LoadColor(tinyxml2::XMLElement* element, std::string name, Color* value)
+	{
+		// Loading backgroundColor
+		tinyxml2::XMLError e = tinyxml2::XML_SUCCESS;
+		tinyxml2::XMLElement* colorElement = element->FirstChildElement(name.c_str());
+		if (colorElement)
+		{
+			int intValue;
 
+			if ((e = colorElement->QueryIntAttribute("r", &intValue)) == tinyxml2::XML_SUCCESS)
+			{
+				value->r = static_cast<unsigned char>(intValue);
+			}
+			else
+			{
+				std::cerr << "Error: Failed to load config color Attribute '" << element->Name() << "." << name << ".a' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+			}
+
+			if ((e = colorElement->QueryIntAttribute("g", &intValue)) == tinyxml2::XML_SUCCESS)
+			{
+				value->g = static_cast<unsigned char>(intValue);
+			}
+			else
+			{
+				std::cerr << "Error: Failed to load config color Attribute '" << element->Name() << "." << name << ".a' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+			}
+
+			if ((e = colorElement->QueryIntAttribute("b", &intValue)) == tinyxml2::XML_SUCCESS)
+			{
+				value->b = static_cast<unsigned char>(intValue);
+			}
+			else
+			{
+				std::cerr << "Error: Failed to load config color Attribute '" << element->Name() << "." << name << ".a' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+			}
+
+			if ((e = colorElement->QueryIntAttribute("a", &intValue)) == tinyxml2::XML_SUCCESS)
+			{
+				value->a = static_cast<unsigned char>(intValue);
+			}
+			else
+			{
+				std::cerr << "Error: Failed to load config color Attribute '" << element->Name() << "." << name << ".a' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+			}
+		}
+		else
+		{
+			std::cerr << "Error: Color Element '" << element->Name() << "." << name << "'  not found in the configuration file." << std::endl;
+		}
+		return e;
+	}
+
+	/// <summary>
+	/// load the configs from file
+	/// </summary>
 	void Load()
 	{
 
@@ -89,191 +159,27 @@ public:
 		if (uiElement) 
 		{
 			// Loading backgroundColor
-			tinyxml2::XMLElement* backgroundColorElement = uiElement->FirstChildElement("BackgroundColor");
-			if (backgroundColorElement)
+			if ((e = LoadColor(uiElement,"BackgroundColor",&ui.backgroundColor)) != tinyxml2::XML_SUCCESS)
 			{
-				int intValue;
-
-				if ((e = backgroundColorElement->QueryIntAttribute("r", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.backgroundColor.r = static_cast<unsigned char>(intValue);
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.backgroundColor.r' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = backgroundColorElement->QueryIntAttribute("g", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.backgroundColor.g = static_cast<unsigned char>(intValue);
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.backgroundColor.g' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-				
-				if ((e = backgroundColorElement->QueryIntAttribute("b", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.backgroundColor.b = static_cast<unsigned char>(intValue);
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.backgroundColor.b' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = backgroundColorElement->QueryIntAttribute("a", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.backgroundColor.a = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.backgroundColor.a' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-			}
-			else
-			{
-				std::cerr << "Error: 'UI.BackgroundColor' element not found in the configuration file." << std::endl;
+				std::cerr << "Error: Failed to load color 'ui.backgroundColor' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 			}
 
 			// Loading primaryColor
-			tinyxml2::XMLElement* primaryColorElement = uiElement->FirstChildElement("PrimaryColor");
-			if (primaryColorElement)
+			if ((e = LoadColor(uiElement, "PrimaryColor", &ui.primaryColor)) != tinyxml2::XML_SUCCESS)
 			{
-				int intValue; // Temporary integer variable for attribute retrieval
-
-				if ((e = primaryColorElement->QueryIntAttribute("r", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.primaryColor.r = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.primaryColor.r' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = primaryColorElement->QueryIntAttribute("g", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.primaryColor.g = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.primaryColor.g' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = primaryColorElement->QueryIntAttribute("b", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.primaryColor.b = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.primaryColor.b' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = primaryColorElement->QueryIntAttribute("a", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.primaryColor.a = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.primaryColor.a' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-			}
-			else
-			{
-				std::cerr << "Error: 'UI.PrimaryColor' element not found in the configuration file." << std::endl;
+				std::cerr << "Error: Failed to load color 'ui.primaryColor' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 			}
 
 			// Loading secondaryColor
-			tinyxml2::XMLElement* secondaryColorElement = uiElement->FirstChildElement("SecondaryColor");
-			if (secondaryColorElement)
+			if ((e = LoadColor(uiElement, "SecondaryColor", &ui.secondaryColor)) != tinyxml2::XML_SUCCESS)
 			{
-				int intValue; // Temporary integer variable for attribute retrieval
-
-				if ((e = secondaryColorElement->QueryIntAttribute("r", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.secondaryColor.r = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.secondaryColor.r' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = secondaryColorElement->QueryIntAttribute("g", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.secondaryColor.g = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.secondaryColor.g' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = secondaryColorElement->QueryIntAttribute("b", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.secondaryColor.b = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.secondaryColor.b' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = secondaryColorElement->QueryIntAttribute("a", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.secondaryColor.a = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.secondaryColor.a' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-			}
-			else
-			{
-				std::cerr << "Error: 'UI.SecondaryColor' element not found in the configuration file." << std::endl;
+				std::cerr << "Error: Failed to load color 'ui.secondaryColor' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 			}
 
 			// Loading textColor
-			tinyxml2::XMLElement* textColorElement = uiElement->FirstChildElement("TextColor");
-			if (textColorElement)
+			if ((e = LoadColor(uiElement, "TextColor", &ui.textColor)) != tinyxml2::XML_SUCCESS)
 			{
-				int intValue; // Temporary integer variable for attribute retrieval
-
-				if ((e = textColorElement->QueryIntAttribute("r", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.textColor.r = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.textColor.r' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = textColorElement->QueryIntAttribute("g", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.textColor.g = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.textColor.g' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = textColorElement->QueryIntAttribute("b", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.textColor.b = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.textColor.b' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-
-				if ((e = textColorElement->QueryIntAttribute("a", &intValue)) == tinyxml2::XML_SUCCESS)
-				{
-					ui.textColor.a = static_cast<unsigned char>(intValue); // Convert int to unsigned char
-				}
-				else
-				{
-					std::cerr << "Error: Failed to load config Attribute 'ui.textColor.a' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
-				}
-			}
-			else
-			{
-				std::cerr << "Error: 'UI.TextColor' element not found in the configuration file." << std::endl;
+				std::cerr << "Error: Failed to load color 'ui.textColor' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 			}
 
 			// Loading baseTextSize
@@ -311,6 +217,9 @@ public:
 
 	}
 
+	/// <summary>
+	/// Save the configs to file
+	/// </summary>
 	void Save()
 	{
 		tinyxml2::XMLDocument doc;
