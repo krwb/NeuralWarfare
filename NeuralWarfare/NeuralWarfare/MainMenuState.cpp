@@ -11,7 +11,9 @@ MenuState::MenuState(Application& app) : GameState(app)
     float buttonWidth = app.config.app.screenWidth - app.config.app.screenWidth * 0.12f;
     float buttonVSpaceing = buttonHeight * 1.5;
     float buttonXpos = app.config.app.screenWidth * 0.06f;
-    float buttonYpos = app.config.app.screenHeight * 0.3f;
+    float buttonYpos = app.config.app.screenHeight * 0.4f;
+
+    new UITextLine(ui, { app.config.app.screenWidth * 0.5f,app.config.app.screenHeight * 0.2f }, "Neural Warfare", app.config.app.screenHeight * 0.1f);
 
     new UILabeledButton<UIFunctionButton<UIButtonRec>>{
         ui, "TRAIN", buttonHeight,
