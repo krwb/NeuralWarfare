@@ -144,11 +144,6 @@ void GeneticAlgorithmNNTrainer::Evolve()
 		while (otherAgentsIter != agents.end())
 		{
 			if (topAgentsIter == topAgentsEnd) { topAgentsIter = agents.begin(); }
-
-			if ((*otherAgentsIter)->network == (*topAgentsIter)->network)
-			{
-				std::cout << "test";
-			}
 			(*otherAgentsIter)->SetNetwork(NeuralNetwork::Copy((*topAgentsIter)->network));
 
 			for (size_t i = 0; i < hyperparameters.mutationCount; i++)
@@ -183,40 +178,40 @@ void GeneticAlgorithmNNTrainer::MyHyperparameters::Load(std::string fileName)
 
 	e = doc.LoadFile(fileName.c_str());
 	if (e != tinyxml2::XML_SUCCESS) {
-		std::cerr << "Error loading XML file: " << fileName << " TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load XML file  " << fileName << " TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 		return;
 	}
 
 	tinyxml2::XMLElement* root = doc.RootElement();
 	if (!root) {
-		std::cerr << "Error: No root element found in XML file." << std::endl;
+		std::cerr << "ERROR: No root element found in XML file." << std::endl;
 		return;
 	}
 
 	if ((e = root->QueryUnsigned64Attribute("topAgentCount", &topAgentCount)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'topAgentCount' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'topAgentCount' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryUnsigned64Attribute("mutationCount", &mutationCount)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'mutationCount' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'mutationCount' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryDoubleAttribute("biasMutationRate", &biasMutationRate)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'biasMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'biasMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryDoubleAttribute("biasMutationMagnitude", &biasMutationMagnitude)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'biasMutationMagnitude' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'biasMutationMagnitude' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryDoubleAttribute("weightMutationRate", &weightMutationRate)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'weightMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'weightMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryDoubleAttribute("weightMutationMagnitude", &weightMutationMagnitude)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'weightMutationMagnitude' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'weightMutationMagnitude' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryDoubleAttribute("synapseMutationRate", &synapseMutationRate)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'synapseMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'synapseMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryDoubleAttribute("newSynapseMagnitude", &newSynapseMagnitude)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'newSynapseMagnitude' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'newSynapseMagnitude' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryDoubleAttribute("nodeMutationRate", &nodeMutationRate)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'nodeMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'nodeMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryDoubleAttribute("layerMutationRate", &layerMutationRate)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'layerMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'layerMutationRate' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryIntAttribute("newLayerSizeAverage", &newLayerSizeAverage)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'newLayerSizeAverage' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'newLayerSizeAverage' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 	if ((e = root->QueryIntAttribute("newLayerSizeRange", &newLayerSizeRange)) != tinyxml2::XML_SUCCESS)
-		std::cerr << "Error: Failed to load hyperparameter 'newLayerSizeRange' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
+		std::cerr << "ERROR: Failed to load hyperparameter 'newLayerSizeRange' TinyXMLError[" << e << "] = " << tinyxml2::XMLDocument::ErrorIDToName(e) << std::endl;
 
 	newLayerFunction = root->Attribute("newLayerFunction");
 }

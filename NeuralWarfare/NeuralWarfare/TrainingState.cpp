@@ -174,7 +174,6 @@ TrainingState::~TrainingState()
 	}
 }
 
-
 void TrainingState::Load()
 {
 }
@@ -196,7 +195,7 @@ void TrainingState::Update(float deltaTime)
 	{
 		resetTimer += 1.0f / 60.0f;//deltaTime;
 
-		if (resetTimer > 5)
+		if (resetTimer > app.config.engine.resetTime)
 		{
 			for (NeuralWarfareEnv* env : envs)
 			{
@@ -212,7 +211,7 @@ void TrainingState::Update(float deltaTime)
 
 		delete trainerFuture;
 		trainerFuture = new std::future<void>(std::async(std::launch::async, UpdateTrainers, std::ref(trainers)));
-		eng.Update(4);
+		eng.Update(app.config.engine.updateDelta);
 		trainerFuture->wait();
 
 		for (Trainer* trainer : trainers)
@@ -227,10 +226,15 @@ void TrainingState::Update(float deltaTime)
 		{
 			selectedTrainer->nameText->SetText(nameInput->GetText());
 		}
-		else if (!nameInput->selected)
+		if (!nameInput->selected)
 		{
 			nameInput->SetText(selectedTrainer->nameText->GetText());
 		}
+		if (nameInput->isPressed(MOUSE_LEFT_BUTTON))
+		{
+			nameInput->SetText("");
+		}
+
 		netVis.network = static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->masterNetwork;
 	}
 	if (!loadModelInput->hidden && loadNameInput->IsSubmited())
@@ -263,11 +267,11 @@ void TrainingState::AddNewModel()
 	{
 		network->AddInput(new Node(nullptr, &addfunction));
 	}
-	for (size_t i = 0; i < (inputSize + outputSize) / 2; i++)
-	{
-		new Node(*std::prev(network->end()), &tanhFunction);
-	}
-	new Layer(network);
+	//for (size_t i = 0; i < (inputSize + outputSize) / 2; i++)
+	//{
+	//	new Node(*std::prev(network->end()), &tanhFunction);
+	//}
+	//new Layer(network);
 	for (size_t i = 0; i < outputSize; i++)
 	{
 		network->AddOutput(new Node(nullptr, &sigmoidFunction));
@@ -279,11 +283,11 @@ void TrainingState::LoadModel(std::string modelName)
 {
 	std::filesystem::path modelPath = std::filesystem::current_path() / app.config.filePaths.modelFolder / MakeFilename(modelName,"bin");
 	if (!std::filesystem::exists(modelPath)) {
-		std::cerr << "Error: Model '" << modelName << "' not found in model folder\n";
+		std::cerr << "ERROR: Model '" << modelName << "' not found in model folder\n";
 		return;
 	}
 	AddTrainer(NeuralNetwork::Load(functions, modelPath),modelName);
-	std::cerr << "Loaded model '" << modelName << "'\n";
+	std::cerr << "INFO: Loaded model '" << modelName << "'\n";
 }
 
 void TrainingState::SetLoadPopupHidden(bool hidden)
@@ -308,7 +312,7 @@ void TrainingState::AddTrainer(NeuralNetwork* network,std::string modelName)
 		for (size_t i = 0; i < envs.size(); i++)
 		{
 			double angle = 2 * std::numbers::pi * i / envs.size();
-			envs[i]->SetTeamSpawnPos({ static_cast<float>(app.config.engine.sizeX * 0.5 * cos(angle)) , static_cast<float>(app.config.engine.sizeY * 0.5 * sin(angle)) });
+			envs[i]->SetTeamSpawnPos(Vec2{ static_cast<float>(app.config.engine.sizeX * 0.5 * cos(angle)) , static_cast<float>(app.config.engine.sizeY * 0.5 * sin(angle)) } * -1);
 		}
 	}
 
@@ -369,7 +373,7 @@ void TrainingState::SaveSelectedModel()
 		NeuralNetwork::Save(*static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->masterNetwork,
 			modelFolder / MakeFilename(selectedTrainer->nameText->GetText(), "bin")
 		);
-		std::cerr << "Model saved to: " << modelFolder.string().c_str() << std::endl;
+		std::cerr << "INFO: Model saved to: " << modelFolder.string().c_str() << std::endl;
 	}
 }
 
@@ -399,23 +403,22 @@ void TrainingState::UpdateHyperparameterControls()
 
 	try
 	{
-		if (topAgentCountInput->IsSubmited())  static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.topAgentCount = abs(std::stoi(topAgentCountInput->GetText()));
-		if (mutationCountInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.mutationCount = abs(std::stoi(mutationCountInput->GetText()));
-		if (biasMutationRateInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.biasMutationRate = std::stof(biasMutationRateInput->GetText());
-		if (biasMutationMagnitudeInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.biasMutationMagnitude = std::stof(biasMutationMagnitudeInput->GetText());
-		if (weightMutationRateInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.weightMutationRate = std::stof(weightMutationRateInput->GetText());
-		if (weightMutationMagnitudeInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.weightMutationMagnitude = std::stof(weightMutationMagnitudeInput->GetText());
-		if (synapseMutationRateInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.synapseMutationRate = std::stof(synapseMutationRateInput->GetText());
-		if (newSynapseMagnitudeInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.newSynapseMagnitude = std::stof(newSynapseMagnitudeInput->GetText());
-		if (nodeMutationRateInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.nodeMutationRate = std::stof(nodeMutationRateInput->GetText());
-		if (layerMutationRateInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.layerMutationRate = std::stof(layerMutationRateInput->GetText());
-		if (newLayerSizeAverageInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.newLayerSizeAverage = abs(std::stoi(newLayerSizeAverageInput->GetText()));
-		if (newLayerSizeRangeInput->IsSubmited()) static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.newLayerSizeRange = abs(std::stoi(newLayerSizeRangeInput->GetText()));
-
+		if (topAgentCountInput->IsSubmited())  { size_t value = abs(std::stoi(topAgentCountInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.topAgentCount = value < app.config.hyperparameterCap.topAgentCount || app.config.hyperparameterCap.topAgentCount == 0 ? value : app.config.hyperparameterCap.topAgentCount; }
+		if (mutationCountInput->IsSubmited()) { size_t value = abs(std::stoi(mutationCountInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.mutationCount = value < app.config.hyperparameterCap.mutationCount || app.config.hyperparameterCap.mutationCount == 0 ? value : app.config.hyperparameterCap.mutationCount; }
+		if (biasMutationRateInput->IsSubmited()) { float value = abs(std::stof(biasMutationRateInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.biasMutationRate = value < app.config.hyperparameterCap.biasMutationRate || app.config.hyperparameterCap.biasMutationRate == 0 ? value : app.config.hyperparameterCap.biasMutationRate; }
+		if (biasMutationMagnitudeInput->IsSubmited()) { float value = abs(std::stof(biasMutationMagnitudeInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.biasMutationMagnitude = value < app.config.hyperparameterCap.biasMutationMagnitude || app.config.hyperparameterCap.biasMutationMagnitude == 0 ? value : app.config.hyperparameterCap.biasMutationMagnitude; }
+		if (weightMutationRateInput->IsSubmited()) { float value = abs(std::stof(weightMutationRateInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.weightMutationRate = value < app.config.hyperparameterCap.weightMutationRate || app.config.hyperparameterCap.weightMutationRate == 0 ? value : app.config.hyperparameterCap.weightMutationRate; }
+		if (weightMutationMagnitudeInput->IsSubmited()) { float value = abs(std::stof(weightMutationMagnitudeInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.weightMutationMagnitude = value < app.config.hyperparameterCap.weightMutationMagnitude || app.config.hyperparameterCap.weightMutationMagnitude == 0 ? value : app.config.hyperparameterCap.weightMutationMagnitude; }
+		if (synapseMutationRateInput->IsSubmited()) { float value = abs(std::stof(synapseMutationRateInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.synapseMutationRate = value < app.config.hyperparameterCap.synapseMutationRate || app.config.hyperparameterCap.synapseMutationRate == 0 ? value : app.config.hyperparameterCap.synapseMutationRate; }
+		if (newSynapseMagnitudeInput->IsSubmited()) { float value = abs(std::stof(newSynapseMagnitudeInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.newSynapseMagnitude = value < app.config.hyperparameterCap.newSynapseMagnitude || app.config.hyperparameterCap.newSynapseMagnitude == 0 ? value : app.config.hyperparameterCap.newSynapseMagnitude; }
+		if (nodeMutationRateInput->IsSubmited()) { float value = abs(std::stof(nodeMutationRateInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.nodeMutationRate = value < app.config.hyperparameterCap.nodeMutationRate || app.config.hyperparameterCap.nodeMutationRate == 0 ? value : app.config.hyperparameterCap.nodeMutationRate; }
+		if (layerMutationRateInput->IsSubmited()) { float value = abs(std::stof(layerMutationRateInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.layerMutationRate = value < app.config.hyperparameterCap.layerMutationRate || app.config.hyperparameterCap.layerMutationRate == 0 ? value : app.config.hyperparameterCap.layerMutationRate; }
+		if (newLayerSizeAverageInput->IsSubmited()) { size_t value = abs(std::stoi(newLayerSizeAverageInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.newLayerSizeAverage = value < app.config.hyperparameterCap.newLayerSizeAverage || app.config.hyperparameterCap.newLayerSizeAverage == 0 ? value : app.config.hyperparameterCap.newLayerSizeAverage; }
+		if (newLayerSizeRangeInput->IsSubmited()) { size_t value = abs(std::stoi(newLayerSizeRangeInput->GetText())); static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.newLayerSizeRange = value < app.config.hyperparameterCap.newLayerSizeRange || app.config.hyperparameterCap.newLayerSizeRange == 0 ? value : app.config.hyperparameterCap.newLayerSizeRange; }
 	}
 	catch (const std::invalid_argument&)
 	{
-		std::cerr << "Error: Invalid string conversion";
+		std::cerr << "ERROR: Invalid string conversion";
 	}
 	if (!topAgentCountInput->selected) topAgentCountInput->SetText(floatToString(static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.topAgentCount));
 	if (!mutationCountInput->selected) mutationCountInput->SetText(floatToString(static_cast<GeneticAlgorithmNNTrainer*>(selectedTrainer->trainer)->hyperparameters.mutationCount));

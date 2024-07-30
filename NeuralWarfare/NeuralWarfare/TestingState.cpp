@@ -38,7 +38,7 @@ TestingState::TestingState(Application& app) : GameState(app), eng(app.gen, { ap
 		}
 		else
 		{
-			std::cerr << "Error: Failed to convert UIElement ModelListEntry\n";
+			std::cerr << "ERROR: Failed to convert UIElement ModelListEntry\n";
 		}
 	}
 
@@ -138,7 +138,7 @@ void TestingState::Update(float deltaTime)
 	{
 		resetTimer += 1.0f / 60.0f;//deltaTime;
 
-		if (resetTimer > 5)
+		if (resetTimer > app.config.engine.resetTime)
 		{
 			for (NeuralWarfareEnv* env : envs)
 			{
@@ -154,7 +154,7 @@ void TestingState::Update(float deltaTime)
 
 		delete trainerFuture;
 		trainerFuture = new std::future<void>(std::async(std::launch::async, UpdateTrainers, std::ref(trainers)));
-		eng.Update(4);
+		eng.Update(app.config.engine.updateDelta);
 		trainerFuture->wait();
 		for (Trainer* trainer : trainers)
 		{
@@ -175,14 +175,20 @@ void TestingState::LoadTrainer(std::string modelName, size_t totalTrainers)
 	double angle = 2 * std::numbers::pi * envs.size() / totalTrainers;
 
 	NeuralWarfareEnv* env = new NeuralWarfareEnv(eng,
-		eng.AddTeam(app.config.engine.teamSize, app.config.engine.agentBaseHealth, {
+		eng.AddTeam(app.config.engine.teamSize, app.config.engine.agentBaseHealth, Vec2{
 		static_cast<float>(app.config.engine.sizeX * 0.5 * cos(angle)) ,
 		static_cast<float>(app.config.engine.sizeY * 0.5 * sin(angle)) 
-		}
+		} * -1
 	));
 	envs.push_back(env);
 
 	std::filesystem::path path = app.config.filePaths.modelFolder / MakeFilename(modelName, "bin");
+	if (!std::filesystem::exists(path))
+	{
+		std::cerr << "ERROR: File '"<< path.filename().string().c_str() << "' does not exist, model has likely been removed or renamed by an external entity";
+		app.ChangeState(EgameState::TESTSELECTION);
+		return;
+	}
 	NeuralNetwork* network = NeuralNetwork::Load(functions, path);
 	Trainer* trainer = new StaticNNTrainer(env, network);
 
@@ -242,7 +248,7 @@ void TestingState::FindBestTrainer()
 		}
 		else
 		{
-			std::cerr << "Error: Failed to convert UIElement TrainerListEntry\n";
+			std::cerr << "ERROR: Failed to convert UIElement TrainerListEntry\n";
 		}
 	}
 	bestTrainerListEntry->nameText->SetText(bestTrainerModelName);
