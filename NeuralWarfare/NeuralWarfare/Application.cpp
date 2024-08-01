@@ -24,8 +24,11 @@ void Application::Run()
         BeginDrawing();
         ClearBackground(config.ui.backgroundColor);
         currentGameState->Draw();
-        std::string fpsString = "FPS: " + std::to_string(1 / deltaTime);
-        DrawText(fpsString.c_str(), config.app.screenWidth - MeasureText(fpsString.c_str(),18), 0, 18, WHITE);
+        if (config.ui.fpsTextSize > 0)
+        {
+            std::string fpsString = "FPS: " + std::to_string((int)round(1 / deltaTime));
+            DrawText(fpsString.c_str(), config.app.screenWidth * 0.995 - MeasureText(fpsString.c_str(), config.ui.fpsTextSize), 0, config.ui.fpsTextSize, config.ui.textColor);
+        }
         EndDrawing();
 
     }
@@ -44,14 +47,16 @@ void Application::ChangeToNextState()
         currentGameState->Unload();
     }
     GameState* newGameState;
-    switch (nextState)
+    EgameState newState = nextState;
+    nextState = EgameState::NONE;
+    switch (newState)
     {
     case EgameState::MAINMENU:      newGameState = new MenuState(*this);            break;
     case EgameState::TRAINING:      newGameState = new TrainingState(*this);        break;
     case EgameState::TESTSELECTION: newGameState = new TestSelectionState(*this);   break;
-    case EgameState::TESTING: newGameState = new TestingState(*this);               break;
+    case EgameState::TESTING:       newGameState = new TestingState(*this);         break;
     default:    // Handle invalid gamestate
-        std::cout << "Error: InvalidGamestate\n";
+        std::cerr << "ERROR: InvalidGamestate\n";
         newGameState = new MenuState(*this);
         break;
     }
@@ -61,5 +66,4 @@ void Application::ChangeToNextState()
     }
     newGameState->Load();
     currentGameState = newGameState;
-    nextState = EgameState::NONE;
 }

@@ -288,12 +288,17 @@ NeuralNetwork* NeuralNetwork::MakeFromBin(std::vector<char>& data, std::vector<A
 
 NeuralNetwork* NeuralNetwork::Load(std::vector<ActivationFunction*>& functions, std::filesystem::path path)
 {
+	if (!std::filesystem::exists(path))
+	{
+		throw std::runtime_error("File does not exist");
+		return nullptr;
+	}
 	// Open the file in binary mode
 	std::ifstream file(path, std::ios::binary);
 
 	// Check if the file opened successfully
 	if (!file) {
-		throw std::runtime_error("Unable to open file: test.bin");
+		throw std::runtime_error("Unable to open file");
 	}
 
 	// Move the file pointer to the end to get the file size

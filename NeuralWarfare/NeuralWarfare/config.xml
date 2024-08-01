@@ -1,11 +1,12 @@
 <Config>
     <App screenWidth="1200" screenHeight="800" targetFPS="60"/>
-    <UI BaseTextSize="20">
+    <UI FPSTextSize="20">
         <BackgroundColor r="0" g="0" b="0" a="255"/>
         <PrimaryColor r="230" g="44" b="44" a="255"/>
         <SecondaryColor r="155" g="44" b="44" a="255"/>
         <TextColor r="255" g="255" b="255" a="255"/>
     </UI>
     <FilePaths ModelFolder="models"/>
-    <Engine SizeX="550" SizeY="350" TeamSize="100" AgentBaseHealth="2"/>
+    <Engine SizeX="550" SizeY="350" TeamSize="100" AgentBaseHealth="2" UpdateDelta="4" ResetTime="10"/>
+    <HyperparameterCap MutationCount="100" BiasMutationRate="1" BiasMutationMagnitude="0" WeightMutationRate="1" WeightMutationMagnitude="0" SynapseMutationRate="1" NewSynapseMagnitude="0" NodeMutationRate="1" LayerMutationRate="1" NewLayerSizeAverage="5" NewLayerSizeRange="3"/>
 </Config>

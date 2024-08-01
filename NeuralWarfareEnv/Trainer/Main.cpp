@@ -86,7 +86,7 @@ int main()
 		trainers.push_back(new GeneticAlgorithmNNTrainer(envs.back(), gen, hyperperameters, NeuralNetwork::Load(functions,MakeFilename("red0", "bin"))));
 		i++;
 		envs.push_back(new NeuralWarfareEnv(eng, eng.AddTeam(200, 2, { -static_cast<float>(cos(std::numbers::pi * (static_cast<double>(i) / static_cast<double>(trainerCount) * 2.0f))) * eng.simSize.x / 2.0f, -static_cast<float>(sin(std::numbers::pi * (static_cast<double>(i) / static_cast<double>(trainerCount) * 2.0f))) * eng.simSize.y / 2.0f })));
-		trainers.push_back(new GeneticAlgorithmNNTrainer(envs.back(), gen, hyperperameters, NeuralNetwork::Load(functions, MakeFilename("4v4red	", "bin"))));
+		trainers.push_back(new GeneticAlgorithmNNTrainer(envs.back(), gen, hyperperameters, NeuralNetwork::Load(functions, MakeFilename("test", "bin"))));
 
 	}
 
